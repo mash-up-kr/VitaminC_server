@@ -12,7 +12,7 @@ $ pnpm install
 $ npx prisma generate
 ```
 
-### 3. Create .env
+### 3. Create .development.env
 
 ```js
 // ./.env
