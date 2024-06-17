@@ -8,6 +8,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
+    "migrate:dev": "env $(cat ./.development.env | xargs) npx prisma migrate dev",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "export NODE_ENV=production&& nest start",
     "start:dev": "export NODE_ENV=development&& nest start --watch",
@@ -24,12 +25,15 @@
     "schema": "./src/prisma/schema.prisma"
   },
   "dependencies": {
+    "@nestjs/axios": "^3.0.2",
     "@nestjs/common": "^10.3.9",
     "@nestjs/config": "^3.2.2",
     "@nestjs/core": "^10.3.9",
     "@nestjs/mapped-types": "*",
+    "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.3.9",
     "@prisma/client": "^5.15.0",
+    "passport-custom": "^1.1.1",
     "prisma": "^5.15.0",
     "reflect-metadata": "^0.2.2",
     "rimraf": "^5.0.7",
