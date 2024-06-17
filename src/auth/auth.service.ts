@@ -3,23 +3,32 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 import { User } from 'src/prisma/client';
 import { UsersService } from 'src/users/users.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly httpService: HttpService,
     private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
   ) {}
 
-  async signInThroughOauth(provider: string): Promise<User> {
-    let user = await this.usersService.findOne({
+  private signIn(user: User) {
+    const accessToken = this.jwtService.sign({ id: user.id });
+
+    return { user, accessToken };
+  }
+
+  async signInThroughOauth(provider: string) {
+    let user: User = await this.usersService.findOne({
       provider: { equals: provider },
     });
 
     if (!user) {
       user = await this.usersService.create({ provider });
     }
-    return user;
+
+    return this.signIn(user);
   }
 
   async signInToKakao(accessToken: string) {
