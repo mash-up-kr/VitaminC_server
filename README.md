@@ -1,5 +1,11 @@
 ## Before getting started
 
+### 0. Install pnpm
+
+```bash
+$ npx pnpm@9.3.0 install
+```
+
 ### 1. Install deps
 
 ```bash
