@@ -1,7 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
+
 import { AppService } from './app.service';
-import { UseAuthGuard } from './common/decorators/auth-guard.decorator';
 import { USER } from './common/constant/role.constant';
+import { UseAuthGuard } from './common/decorators/auth-guard.decorator';
 
 @Controller()
 export class AppController {
