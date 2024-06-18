@@ -18,7 +18,7 @@ $ npx prisma generate
   command + shift + p > Developer: Reload Window
 ```
 
-### 3. Create .env
+### 3. Create .development.env
 
 ```js
 // ./.env
