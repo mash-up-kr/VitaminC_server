@@ -12,6 +12,12 @@ $ pnpm install
 $ npx prisma generate
 ```
 
+### 2.1. Reload window
+
+```bash
+  command + shift + p > Developer: Reload Window
+```
+
 ### 3. Create .development.env
 
 ```js
@@ -19,7 +25,7 @@ $ npx prisma generate
 DATABASE_URL=postgresql://postgres:1q2w3e4r@localhost:5432/postgres?schema=public
 ```
 
-### 3.1 Create local postgres (optional)
+### 3.1. Create local postgres (optional)
 
 ```bash
 $ docker run -p 5432:5432 --name postgres -e POSTGRES_PASSWORD=1q2w3e4r -d postgres
