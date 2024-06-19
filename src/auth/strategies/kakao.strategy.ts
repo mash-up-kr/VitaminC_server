@@ -1,7 +1,9 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy, VerifiedCallback } from 'passport-custom';
+
 import { Request } from 'express';
+import { Strategy, VerifiedCallback } from 'passport-custom';
+
 import { AuthService } from '../auth.service';
 
 @Injectable()

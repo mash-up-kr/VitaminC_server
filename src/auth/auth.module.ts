@@ -1,12 +1,14 @@
-import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
-import { KakaoStrategy } from './strategies/kakao.strategy';
-import { AuthService } from './auth.service';
-import { UsersModule } from 'src/users/users.module';
-import { AuthController } from './auth.controller';
-import { JwtModule } from '@nestjs/jwt';
+import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+
+import { UsersModule } from 'src/users/users.module';
+
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { KakaoStrategy } from './strategies/kakao.strategy';
 
 @Module({
   imports: [
