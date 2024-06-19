@@ -1,8 +1,11 @@
 import { Controller, Get } from '@nestjs/common';
 
+import { User } from '@prisma/client';
+
 import { AppService } from './app.service';
 import { USER } from './common/constant/role.constant';
 import { UseAuthGuard } from './common/decorators/auth-guard.decorator';
+import { CurrentUser } from './common/decorators/user.decorator';
 
 @Controller()
 export class AppController {
@@ -13,9 +16,9 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get('/auth-test')
+  @Get('/me')
   @UseAuthGuard([USER])
-  getHelloTest(): string {
-    return this.appService.getHello();
+  getMe(@CurrentUser() user: User): User {
+    return user;
   }
 }
