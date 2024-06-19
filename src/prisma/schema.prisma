@@ -16,12 +16,19 @@ datasource db {
 model User {
   id Int @id @default(autoincrement())
 
-  name     String?
-  provider String
-  role     Role    @default(USER)
+  name       String?
+  provider   Provider
+  providerId String
+  role       Role     @default(USER)
+
+  @@unique([provider, providerId])
 }
 
 enum Role {
   USER
   ADMIN
+}
+
+enum Provider {
+  KAKAO
 }

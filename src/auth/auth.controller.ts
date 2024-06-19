@@ -1,5 +1,7 @@
 import { Controller, Post, UseGuards } from '@nestjs/common';
 
+import { $Enums } from '@prisma/client';
+
 import { CurrentId } from 'src/common/decorators/id.decorator';
 import { KakaoGuard } from 'src/common/guards/kakao.guard';
 
@@ -11,7 +13,10 @@ export class AuthController {
 
   @Post('kakao')
   @UseGuards(KakaoGuard)
-  signInToKakao(@CurrentId() id: string) {
-    return this.authService.signInThroughOauth(`kakao_${id}`);
+  signInToKakao(@CurrentId() providerId: string) {
+    return this.authService.signInThroughOauth({
+      provider: $Enums.Provider.KAKAO,
+      providerId,
+    });
   }
 }
