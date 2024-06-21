@@ -1,28 +1,40 @@
 import { Injectable } from '@nestjs/common';
 
-import { Prisma } from 'src/prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { FilterQuery } from '@mikro-orm/core';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { wrap } from '@mikro-orm/postgresql';
+
+import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
+import { User } from './entities/user.entity';
+import { UsersRepository } from './users.repository';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
-  create(createUserDto: Prisma.UserCreateInput) {
-    return this.prisma.user.create({ data: createUserDto });
+  constructor(
+    @InjectRepository(User) private readonly usersRepository: UsersRepository,
+  ) {}
+  async create(createUserDto: CreateUserDto) {
+    const user: User = this.usersRepository.create(createUserDto);
+    await this.usersRepository.persistAndFlush(user);
+    return user;
   }
 
-  findAll() {
-    return this.prisma.user.findMany();
+  findAll(): Promise<User[]> {
+    return this.usersRepository.findAll();
   }
 
-  findOne(where: Prisma.UserWhereInput) {
-    return this.prisma.user.findFirst({ where });
+  findOne(where: FilterQuery<User>): Promise<User> {
+    return this.usersRepository.findOne(where);
   }
-
-  update(id: number, updateUserDto: Prisma.UserUpdateInput) {
-    return this.prisma.user.update({ where: { id }, data: updateUserDto });
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const user = await this.usersRepository.findOneOrFail(id);
+    wrap(user).assign(updateUserDto);
+    await this.usersRepository.persistAndFlush(user);
+    return user;
   }
 
   remove(id: number) {
-    return this.prisma.user.delete({ where: { id } });
+    return this.usersRepository.nativeDelete({ id });
   }
 }

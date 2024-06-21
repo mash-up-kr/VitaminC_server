@@ -1,5 +1,14 @@
-import { Enum, Index, PrimaryKey, Property, Unique } from '@mikro-orm/core';
+import {
+  Entity,
+  EntityRepositoryType,
+  Enum,
+  Index,
+  PrimaryKey,
+  Property,
+  Unique,
+} from '@mikro-orm/core';
 
+import { UsersRepository } from '../users.repository';
 import {
   UserProvider,
   UserProviderValueType,
@@ -11,6 +20,7 @@ const uniqueIndexKeyName = ['provider', 'providerId'];
 
 @Unique({ properties: uniqueIndexKeyName })
 @Index({ properties: uniqueIndexKeyName })
+@Entity({ repository: () => UsersRepository })
 export class User {
   @PrimaryKey({ autoincrement: true })
   id: number;
@@ -18,12 +28,18 @@ export class User {
   @Property({ type: 'string', default: null })
   nickname: string | null = null;
 
-  @Enum(() => UserProvider)
+  @Enum({ items: () => UserProvider, nativeEnumName: 'user_provider' })
   provider: UserProviderValueType;
 
   @Property()
   providerId: string;
 
-  @Enum({ items: () => UserRole, default: UserRole.USER })
+  @Enum({
+    items: () => UserRole,
+    default: UserRole.USER,
+    nativeEnumName: 'user_role',
+  })
   role: UserRoleValueType;
+
+  [EntityRepositoryType]?: UsersRepository;
 }

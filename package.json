@@ -11,7 +11,8 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "migrate:dev": "dotenv -e .development.env -- npx prisma migrate dev",
+    "migrate:create:dev": "dotenv -e .development.env -- npx mikro-orm migration:create",
+    "migrate:up:dev": "dotenv -e .development.env -- npx mikro-orm migration:up",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "export NODE_ENV=production&& nest start",
     "start:dev": "export NODE_ENV=development&& nest start --watch",
@@ -24,9 +25,6 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prepare": "husky"
-  },
-  "prisma": {
-    "schema": "./src/prisma/schema.prisma"
   },
   "dependencies": {
     "@mikro-orm/core": "^6.2.9",
@@ -42,10 +40,10 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.3.9",
-    "@prisma/client": "^5.15.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "passport-custom": "^1.1.1",
     "passport-jwt": "^4.0.1",
-    "prisma": "^5.15.0",
     "reflect-metadata": "^0.2.2",
     "rimraf": "^5.0.7",
     "rxjs": "^7.8.1"
