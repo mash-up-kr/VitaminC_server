@@ -29,6 +29,11 @@
     "schema": "./src/prisma/schema.prisma"
   },
   "dependencies": {
+    "@mikro-orm/core": "^6.2.9",
+    "@mikro-orm/migrations": "^6.2.9",
+    "@mikro-orm/nestjs": "^6.0.2",
+    "@mikro-orm/postgresql": "^6.2.9",
+    "@mikro-orm/sql-highlighter": "^1.0.1",
     "@nestjs/axios": "^3.0.2",
     "@nestjs/common": "^10.3.9",
     "@nestjs/config": "^3.2.2",
@@ -46,6 +51,7 @@
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
+    "@mikro-orm/cli": "^6.2.9",
     "@nestjs/cli": "^10.3.2",
     "@nestjs/schematics": "^10.1.1",
     "@nestjs/testing": "^10.3.9",
@@ -73,6 +79,12 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.5"
+  },
+  "mikro-orm": {
+    "useTsNode": true,
+    "configPaths": [
+      "./src/mikro-orm.config.ts"
+    ]
   },
   "jest": {
     "moduleFileExtensions": [
