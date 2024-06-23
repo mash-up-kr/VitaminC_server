@@ -1,6 +1,6 @@
 import { SetMetadata, UseGuards, applyDecorators } from '@nestjs/common';
 
-import { UserRole, UserRoleValueType } from 'src/users/entities/user.type';
+import { UserRole, UserRoleValueType } from 'src/user/entities/user.type';
 
 import { PassportAuthGuard } from '../guards/passport-auth.guard';
 

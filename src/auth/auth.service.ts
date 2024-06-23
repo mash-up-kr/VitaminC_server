@@ -4,15 +4,15 @@ import { JwtService } from '@nestjs/jwt';
 
 import { firstValueFrom } from 'rxjs';
 
-import { User } from 'src/users/entities/user.entity';
-import { UserProviderValueType } from 'src/users/entities/user.type';
-import { UsersService } from 'src/users/users.service';
+import { User } from 'src/user/entities/user.entity';
+import { UserProviderValueType } from 'src/user/entities/user.type';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly httpService: HttpService,
-    private readonly usersService: UsersService,
+    private readonly userService: UserService,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -29,13 +29,13 @@ export class AuthService {
     provider: UserProviderValueType;
     providerId: string;
   }) {
-    let user: User = await this.usersService.findOne({
+    let user: User = await this.userService.findOne({
       provider,
       providerId,
     });
 
     if (!user) {
-      user = await this.usersService.create({ provider, providerId });
+      user = await this.userService.create({ provider, providerId });
     }
 
     return this.signIn(user);
