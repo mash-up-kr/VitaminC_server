@@ -33,7 +33,7 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Login to NCP Container Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ${{ secrets.NCP_CONTAINER_REGISTRY }}
           username: ${{ secrets.NCP_ACCESS_KEY }}
