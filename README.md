@@ -12,50 +12,37 @@ $ npx pnpm@9.3.0 install
 $ pnpm install
 ```
 
-### 2. Generate prisma
-
-```bash
-$ npx prisma generate
-```
-
-### 2.1. Reload window
-
-```bash
-  command + shift + p > Developer: Reload Window
-```
-
-### 3. Create .development.env
+### 2. Create .development.env
 
 ```js
 // ./.env
-DATABASE_URL=postgresql://postgres:1q2w3e4r@localhost:5432/postgres?schema=public
+  DB_USER=postgres
+  DB_NAME=postgres
+  DB_PASSWORD=1q2w3e4r
 ```
 
-### 3.1. Create local postgres (optional)
+### 2.1. Create local postgres (optional)
 
 ```bash
-$ docker run -p 5432:5432 --name postgres -e POSTGRES_PASSWORD=1q2w3e4r -d postgres
+$ docker compose --env-file .development.env up -d
 ```
 
-### 4. Migrate database (optional)
+### 2.2. Or with migrated local postgres
 
 ```bash
-$ pnpm migrate:dev
+$ pnpm postgres:local:up
 ```
 
-### 5. Start
+### 3. Migrate database (optional, can skip if you follow step 2.2.)
+
+```bash
+$ pnpm migrate:up:dev
+```
+
+### 4. Start
 
 ```bash
 $ pnpm start:dev
 ```
 
-## Prisma extensions
-
-VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=Prisma.prisma
-
 ## Todo
-
-1. 주병호
-   [ ] 1. prettier(import order)
-   [ ] 2. husky
-   [ ] 3. config service

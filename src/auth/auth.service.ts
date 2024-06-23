@@ -4,7 +4,8 @@ import { JwtService } from '@nestjs/jwt';
 
 import { firstValueFrom } from 'rxjs';
 
-import { $Enums, User } from 'src/prisma/client';
+import { User } from 'src/users/entities/user.entity';
+import { UserProviderValueType } from 'src/users/entities/user.type';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
@@ -25,12 +26,12 @@ export class AuthService {
     provider,
     providerId,
   }: {
-    provider: keyof typeof $Enums.Provider;
+    provider: UserProviderValueType;
     providerId: string;
   }) {
     let user: User = await this.usersService.findOne({
-      provider: { equals: provider },
-      providerId: { equals: providerId },
+      provider,
+      providerId,
     });
 
     if (!user) {

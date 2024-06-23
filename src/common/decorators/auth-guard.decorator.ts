@@ -1,13 +1,14 @@
 import { SetMetadata, UseGuards, applyDecorators } from '@nestjs/common';
 
-import { Roles, USER } from '../constant/role.constant';
+import { UserRole, UserRoleValueType } from 'src/users/entities/user.type';
+
 import { PassportAuthGuard } from '../guards/passport-auth.guard';
 
-export const UseAuthGuard = (roles?: Roles[] | Roles) =>
+export const UseAuthGuard = (roles?: UserRoleValueType[] | UserRoleValueType) =>
   applyDecorators(
     SetMetadata(
       'roles',
-      roles ? (Array.isArray(roles) ? roles : [roles]) : [USER],
+      roles ? (Array.isArray(roles) ? roles : [roles]) : [UserRole.USER],
     ),
     UseGuards(PassportAuthGuard),
   );

@@ -2,7 +2,7 @@ import { ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 
-import { ADMIN } from '../constant/role.constant';
+import { UserRole } from 'src/users/entities/user.type';
 
 @Injectable()
 export class PassportAuthGuard extends AuthGuard('jwt') {
@@ -19,7 +19,7 @@ export class PassportAuthGuard extends AuthGuard('jwt') {
     const req = context.switchToHttp().getRequest();
     const { role } = req.user;
 
-    if (role === ADMIN) {
+    if (role === UserRole.ADMIN) {
       return true;
     }
 
