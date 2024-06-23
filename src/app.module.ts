@@ -14,6 +14,7 @@ import { UsersModule } from './users/users.module';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: getEnvPath(`${__dirname}/..`),
+      cache: true,
     }),
     MikroOrmModule.forRoot(),
     AuthModule,
