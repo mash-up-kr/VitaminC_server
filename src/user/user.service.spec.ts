@@ -9,13 +9,13 @@ import {
 } from 'src/common/helper/mock.helper';
 
 import { User } from './entities/user.entity';
-import { UsersRepository } from './users.repository';
-import { UsersService } from './users.service';
+import { UserRepository } from './user.repository';
+import { UserService } from './user.service';
 
 type UserMockRepositoryType = MockRepository<ExtendedEntityRepository<User>>;
 
-describe('UsersService', () => {
-  let service: UsersService;
+describe('UserService', () => {
+  let service: UserService;
   let mockedRepository: UserMockRepositoryType;
 
   beforeEach(async () => {
@@ -23,15 +23,15 @@ describe('UsersService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        UsersService,
+        UserService,
         {
           provide: repositoryToken,
-          useFactory: MockRepositoryFactory.getMockRepository(UsersRepository),
+          useFactory: MockRepositoryFactory.getMockRepository(UserRepository),
         },
       ],
     }).compile();
 
-    service = module.get<UsersService>(UsersService);
+    service = module.get<UserService>(UserService);
     mockedRepository = module.get<UserMockRepositoryType>(repositoryToken);
   });
 

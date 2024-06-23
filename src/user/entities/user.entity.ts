@@ -8,7 +8,7 @@ import {
   Unique,
 } from '@mikro-orm/core';
 
-import { UsersRepository } from '../users.repository';
+import { UserRepository } from '../user.repository';
 import {
   UserProvider,
   UserProviderValueType,
@@ -20,7 +20,7 @@ const uniqueIndexKeyName = ['provider', 'providerId'];
 
 @Unique({ properties: uniqueIndexKeyName })
 @Index({ properties: uniqueIndexKeyName })
-@Entity({ repository: () => UsersRepository })
+@Entity({ repository: () => UserRepository })
 export class User {
   @PrimaryKey({ autoincrement: true })
   id: number;
@@ -41,5 +41,5 @@ export class User {
   })
   role: UserRoleValueType;
 
-  [EntityRepositoryType]?: UsersRepository;
+  [EntityRepositoryType]?: UserRepository;
 }

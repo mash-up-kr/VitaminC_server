@@ -8,7 +8,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { getEnvPath } from './common/helper/env.helper';
 import { envValidation } from './common/helper/env.validation';
-import { UsersModule } from './users/users.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -20,7 +20,7 @@ import { UsersModule } from './users/users.module';
     }),
     MikroOrmModule.forRoot(),
     AuthModule,
-    UsersModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

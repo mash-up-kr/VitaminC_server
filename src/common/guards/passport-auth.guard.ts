@@ -2,7 +2,7 @@ import { ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 
-import { UserRole } from 'src/users/entities/user.type';
+import { UserRole } from 'src/user/entities/user.type';
 
 @Injectable()
 export class PassportAuthGuard extends AuthGuard('jwt') {
