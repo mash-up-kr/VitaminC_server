@@ -12,8 +12,10 @@ const MikroOrmConfig: Options = {
   logger: logger.log.bind(logger),
   highlighter: new SqlHighlighter(),
   driver: PostgreSqlDriver,
-  clientUrl: configService.get('DATABASE_URL'),
   extensions: [Migrator],
+  user: configService.get('DB_USER'),
+  password: configService.get('DB_PASSWORD'),
+  dbName: configService.get('DB_NAME'),
   entities: ['dist/**/*.entity.js'],
   entitiesTs: ['src/**/*.entity.{ts,js}'],
 };

@@ -16,16 +16,24 @@ $ pnpm install
 
 ```js
 // ./.env
-DATABASE_URL=postgresql://postgres:1q2w3e4r@localhost:5432/postgres?schema=public
+  DB_USER=postgres
+  DB_NAME=postgres
+  DB_PASSWORD=1q2w3e4r
 ```
 
 ### 2.1. Create local postgres (optional)
 
 ```bash
-$ docker run -p 5432:5432 --name postgres -e POSTGRES_PASSWORD=1q2w3e4r -d postgres
+$ docker compose --env-file .development.env up -d
 ```
 
-### 3. Migrate database (optional)
+### 2.2. Or with migrated local postgres
+
+```bash
+$ pnpm postgres:local:up
+```
+
+### 3. Migrate database (optional, can skip if you follow step 2.2.)
 
 ```bash
 $ pnpm migrate:up:dev
