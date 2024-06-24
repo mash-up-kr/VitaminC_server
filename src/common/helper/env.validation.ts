@@ -8,20 +8,7 @@ import {
   validateSync,
 } from 'class-validator';
 
-const development = 'development';
-const production = 'production';
-const test = 'test';
-
-const nodeEnvironment = {
-  [development]: development,
-  [production]: production,
-  [test]: test,
-};
-
 export class EnvironmentVariables {
-  @IsEnum(nodeEnvironment)
-  NODE_ENV: keyof typeof nodeEnvironment;
-
   @IsString()
   DB_NAME: string;
 
