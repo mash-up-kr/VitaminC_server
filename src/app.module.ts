@@ -7,16 +7,16 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { getEnvPath } from './common/helper/env.helper';
-import { envValidation } from './common/helper/env.validation';
+// import { envValidation } from './common/helper/env.validation';
 import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: getEnvPath(`${__dirname}/..`),
+      // envFilePath: getEnvPath(`${__dirname}/..`),
       cache: true,
-      validate: envValidation,
+      // validate: envValidation,
     }),
     MikroOrmModule.forRoot(),
     AuthModule,
