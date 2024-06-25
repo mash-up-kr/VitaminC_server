@@ -21,31 +21,35 @@ export class UserController {
 
   @Post()
   @ApiOkResponse({ type: UserResponseDto })
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    const user = await this.userService.create(createUserDto);
+    return UserResponseDto.fromEntity(user);
   }
 
   @Get()
   @ApiOkResponse({ type: [UserResponseDto] })
-  findAll() {
-    return this.userService.findAll();
+  async findAll() {
+    const users = await this.userService.findAll();
+    return users.map((user) => UserResponseDto.fromEntity(user));
   }
 
   @Get(':id')
   @ApiOkResponse({ type: UserResponseDto })
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne({ id: +id });
+  async findOne(@Param('id') id: string) {
+    const user = await this.userService.findOne({ id: +id });
+    return UserResponseDto.fromEntity(user);
   }
 
   @Patch(':id')
   @ApiOkResponse({ type: UserResponseDto })
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    const user = await this.userService.update(+id, updateUserDto);
+    return UserResponseDto.fromEntity(user);
   }
 
   @Delete(':id')
   @ApiOkResponse({ type: Number })
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.userService.remove(+id);
   }
 }
