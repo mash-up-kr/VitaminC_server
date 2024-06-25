@@ -18,6 +18,9 @@ export const UserMapRole = {
   WRITE: 'WRITE',
 } as const;
 
+export type UserMapRoleValueType =
+  (typeof UserMapRole)[keyof typeof UserMapRole];
+
 @Entity({ repository: () => UserMapRepository })
 export class UserMap {
   @ManyToOne(() => User, { primary: true })
@@ -32,7 +35,7 @@ export class UserMap {
     default: [UserMapRole.READ, UserMapRole.WRITE],
     nativeEnumName: 'user-map-role',
   })
-  role: (typeof UserMapRole)[keyof typeof UserMapRole];
+  role: UserMapRoleValueType;
 
   [PrimaryKeyProp]: ['user', 'map'];
 
