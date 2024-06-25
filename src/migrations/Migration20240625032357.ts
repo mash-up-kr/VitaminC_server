@@ -1,13 +1,16 @@
 import { Migration } from '@mikro-orm/migrations';
 
-export class Migration20240624105844 extends Migration {
+export class Migration20240625032357 extends Migration {
   async up(): Promise<void> {
+    this.addSql(
+      "create type \"user-map-role\" as enum ('ADMIN', 'READ', 'WRITE');",
+    );
     this.addSql(
       'create table "map" ("id" varchar(255) not null, "name" varchar(255) not null, constraint "map_pkey" primary key ("id"));',
     );
 
     this.addSql(
-      'create table "user_map" ("user_id" int not null, "map_id" varchar(255) not null, "role" text[] not null default \'{READ,WRITE}\', constraint "user_map_pkey" primary key ("user_id", "map_id"));',
+      'create table "user_map" ("user_id" int not null, "map_id" varchar(255) not null, "role" "user-map-role"[] not null default \'{READ,WRITE}\', constraint "user_map_pkey" primary key ("user_id", "map_id"));',
     );
 
     this.addSql(
@@ -26,5 +29,7 @@ export class Migration20240624105844 extends Migration {
     this.addSql('drop table if exists "map" cascade;');
 
     this.addSql('drop table if exists "user_map" cascade;');
+
+    this.addSql('drop type "user-map-role";');
   }
 }
