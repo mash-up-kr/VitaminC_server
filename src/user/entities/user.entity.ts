@@ -1,12 +1,16 @@
 import {
+  Collection,
   Entity,
   EntityRepositoryType,
   Enum,
   Index,
+  OneToMany,
   PrimaryKey,
   Property,
   Unique,
 } from '@mikro-orm/core';
+
+import { UserMap } from 'src/user-map/entities/user-map.entity';
 
 import { UserRepository } from '../user.repository';
 import {
@@ -40,6 +44,9 @@ export class User {
     nativeEnumName: 'user_role',
   })
   role: UserRoleValueType;
+
+  @OneToMany({ entity: () => UserMap, mappedBy: (userMap) => userMap.user })
+  userMap = new Collection<UserMap>(this);
 
   [EntityRepositoryType]?: UserRepository;
 }

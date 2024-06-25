@@ -6,6 +6,54 @@
       "columns": {
         "id": {
           "name": "id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        }
+      },
+      "name": "map",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "map_pkey",
+          "columnNames": ["id"],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {
+        "user_provider": {
+          "name": "user_provider",
+          "schema": "public",
+          "items": ["KAKAO"]
+        },
+        "user_role": {
+          "name": "user_role",
+          "schema": "public",
+          "items": ["USER", "ADMIN"]
+        }
+      }
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
           "type": "serial",
           "unsigned": true,
           "autoincrement": true,
@@ -86,6 +134,82 @@
       ],
       "checks": [],
       "foreignKeys": {},
+      "nativeEnums": {
+        "user_provider": {
+          "name": "user_provider",
+          "schema": "public",
+          "items": ["KAKAO"]
+        },
+        "user_role": {
+          "name": "user_role",
+          "schema": "public",
+          "items": ["USER", "ADMIN"]
+        }
+      }
+    },
+    {
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "map_id": {
+          "name": "map_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "role": {
+          "name": "role",
+          "type": "text[]",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "'{READ,WRITE}'",
+          "enumItems": ["ADMIN", "READ", "WRITE"],
+          "mappedType": "array"
+        }
+      },
+      "name": "user_map",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "user_map_pkey",
+          "columnNames": ["user_id", "map_id"],
+          "composite": true,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "user_map_user_id_foreign": {
+          "constraintName": "user_map_user_id_foreign",
+          "columnNames": ["user_id"],
+          "localTableName": "public.user_map",
+          "referencedColumnNames": ["id"],
+          "referencedTableName": "public.user",
+          "updateRule": "cascade"
+        },
+        "user_map_map_id_foreign": {
+          "constraintName": "user_map_map_id_foreign",
+          "columnNames": ["map_id"],
+          "localTableName": "public.user_map",
+          "referencedColumnNames": ["id"],
+          "referencedTableName": "public.map",
+          "updateRule": "cascade"
+        }
+      },
       "nativeEnums": {
         "user_provider": {
           "name": "user_provider",
