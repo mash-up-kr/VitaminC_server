@@ -30,6 +30,7 @@ export class UserMap {
     items: () => UserMapRole,
     array: true,
     default: [UserMapRole.READ, UserMapRole.WRITE],
+    nativeEnumName: 'user-map-role',
   })
   role: (typeof UserMapRole)[keyof typeof UserMapRole];
 
