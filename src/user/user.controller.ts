@@ -7,37 +7,49 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { UserResponseDto } from './dtos/user-response.dto';
 import { UserService } from './user.service';
 
+@ApiTags('users')
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  @ApiOkResponse({ type: UserResponseDto })
+  async create(@Body() createUserDto: CreateUserDto) {
+    const user = await this.userService.create(createUserDto);
+    return UserResponseDto.fromEntity(user);
   }
 
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  @ApiOkResponse({ type: [UserResponseDto] })
+  async findAll() {
+    const users = await this.userService.findAll();
+    return users.map((user) => UserResponseDto.fromEntity(user));
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne({ id: +id });
+  @ApiOkResponse({ type: UserResponseDto })
+  async findOne(@Param('id') id: string) {
+    const user = await this.userService.findOne({ id: +id });
+    return UserResponseDto.fromEntity(user);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  @ApiOkResponse({ type: UserResponseDto })
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    const user = await this.userService.update(+id, updateUserDto);
+    return UserResponseDto.fromEntity(user);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  @ApiOkResponse({ type: Number })
+  async remove(@Param('id') id: string) {
     return this.userService.remove(+id);
   }
 }
