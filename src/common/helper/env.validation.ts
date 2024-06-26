@@ -9,11 +9,13 @@ import {
 } from 'class-validator';
 
 const development = 'development';
+const staging = 'staging';
 const production = 'production';
 const test = 'test';
 
-const nodeEnvironment = {
+export const nodeEnvironment = {
   [development]: development,
+  [staging]: staging,
   [production]: production,
   [test]: test,
 };
