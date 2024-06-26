@@ -3,10 +3,26 @@ on:
   push:
     branches:
       - main
-      - develop
+      - stage
+  pull_request:
+    branches:
+      - main
+      - stage
 
 jobs:
+  test:
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Run tests
+        run: |
+          echo "todo: add test"
+
   ci:
+    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.image.outputs.version }}
@@ -21,8 +37,8 @@ jobs:
           echo "Running on branch ${{ github.ref }}"
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
             echo "::set-output name=app_name::korrk-prod"
-          elif [ "${{ github.ref }}" = "refs/heads/develop" ]; then
-            echo "::set-output name=app_name::korrk-dev"
+          elif [ "${{ github.ref }}" = "refs/heads/stage" ]; then
+            echo "::set-output name=app_name::korrk-stage"
           fi
 
       - name: Get image version
