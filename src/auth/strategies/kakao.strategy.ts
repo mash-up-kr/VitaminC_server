@@ -1,30 +1,38 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 
-import { Request } from 'express';
-import { Strategy, VerifiedCallback } from 'passport-custom';
+import { Profile, Strategy } from 'passport-kakao';
 
-import { AuthService } from '../auth.service';
+export interface KakaoPayload {
+  id: number;
+  accessToken: string;
+  refreshToken: string;
+}
 
 @Injectable()
-export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
-  constructor(
-    @Inject('AUTH_SERVICE') private readonly authService: AuthService,
-  ) {
-    super();
+export class KakaoStrategy extends PassportStrategy(Strategy) {
+  constructor(private readonly configService: ConfigService) {
+    super({
+      clientID: configService.get('KAKAO_CLIENT_ID'),
+      callbackURL: configService.get('KAKAO_REDIRECT_URL'),
+    });
   }
 
-  async validate(req: Request, done: VerifiedCallback) {
-    const { authorization: accessToken } = req.headers;
+  async validate(
+    accessToken: string,
+    refreshToken: string,
+    profile: Profile,
+    done: (error: any, user?: KakaoPayload, info?: any) => void,
+  ) {
+    try {
+      const {
+        _json: { id },
+      }: { _json: { id: number } } = profile;
 
-    if (!/^bearer/i.test(accessToken))
-      throw new BadRequestException('Format of the access token is invalid');
-
-    if (!accessToken)
-      throw new BadRequestException('Authorizaion in headers is required');
-
-    const id = await this.authService.signInToKakao(accessToken);
-
-    return done(null, { id });
+      return done(null, { id, accessToken, refreshToken });
+    } catch (e) {
+      done(e);
+    }
   }
 }

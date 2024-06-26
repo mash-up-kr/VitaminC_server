@@ -18,4 +18,10 @@ export class UpdateUserDto implements Partial<User> {
 
   @IsOptional()
   role?: UserRoleValueType;
+
+  @IsOptional()
+  kakaoAccessToken?: string;
+
+  @IsOptional()
+  kakaoRefreshToken?: string;
 }

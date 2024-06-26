@@ -25,9 +25,13 @@ export class AuthService {
   async signInThroughOauth({
     provider,
     providerId,
+    kakaoAccessToken,
+    kakaoRefreshToken,
   }: {
     provider: UserProviderValueType;
     providerId: string;
+    kakaoAccessToken: string;
+    kakaoRefreshToken: string;
   }) {
     let user: User = await this.userService.findOne({
       provider,
@@ -35,7 +39,17 @@ export class AuthService {
     });
 
     if (!user) {
-      user = await this.userService.create({ provider, providerId });
+      user = await this.userService.create({
+        provider,
+        providerId,
+        kakaoAccessToken,
+        kakaoRefreshToken,
+      });
+    } else {
+      user = await this.userService.update(user.id, {
+        kakaoAccessToken,
+        kakaoRefreshToken,
+      });
     }
 
     return this.signIn(user);

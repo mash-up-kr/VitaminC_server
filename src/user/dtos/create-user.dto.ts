@@ -12,4 +12,10 @@ export class CreateUserDto implements Partial<User> {
 
   @IsNotEmpty()
   providerId: string;
+
+  @IsNotEmpty()
+  kakaoAccessToken: string;
+
+  @IsNotEmpty()
+  kakaoRefreshToken: string;
 }

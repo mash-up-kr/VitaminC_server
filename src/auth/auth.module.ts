@@ -30,12 +30,7 @@ import { KakaoStrategy } from './strategies/kakao.strategy';
     }),
     UserModule,
   ],
-  providers: [
-    KakaoStrategy,
-    JwtStrategy,
-    { provide: 'AUTH_SERVICE', useClass: AuthService },
-    AuthService,
-  ],
+  providers: [KakaoStrategy, JwtStrategy, AuthService],
   controllers: [AuthController],
   exports: [],
 })

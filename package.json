@@ -44,8 +44,8 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "joi": "^17.13.3",
-    "passport-custom": "^1.1.1",
     "passport-jwt": "^4.0.1",
+    "passport-kakao": "^1.0.1",
     "reflect-metadata": "^0.2.2",
     "rimraf": "^5.0.7",
     "rxjs": "^7.8.1"
@@ -62,6 +62,7 @@
     "@types/jest": "29.5.12",
     "@types/node": "^20.14.2",
     "@types/passport-jwt": "^4.0.1",
+    "@types/passport-kakao": "^1.0.3",
     "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^7.13.0",
     "@typescript-eslint/parser": "^7.13.0",

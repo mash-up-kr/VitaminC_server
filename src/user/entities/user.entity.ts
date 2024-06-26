@@ -32,6 +32,12 @@ export class User {
   @Property({ type: 'string', default: null })
   nickname: string | null = null;
 
+  @Property()
+  kakaoAccessToken: string;
+
+  @Property()
+  kakaoRefreshToken: string;
+
   @Enum({ items: () => UserProvider, nativeEnumName: 'user_provider' })
   provider: UserProviderValueType;
 

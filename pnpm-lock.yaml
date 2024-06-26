@@ -55,12 +55,12 @@ importers:
       joi:
         specifier: ^17.13.3
         version: 17.13.3
-      passport-custom:
-        specifier: ^1.1.1
-        version: 1.1.1
       passport-jwt:
         specifier: ^4.0.1
         version: 4.0.1
+      passport-kakao:
+        specifier: ^1.0.1
+        version: 1.0.1
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -104,6 +104,9 @@ importers:
       '@types/passport-jwt':
         specifier: ^4.0.1
         version: 4.0.1
+      '@types/passport-kakao':
+        specifier: ^1.0.3
+        version: 1.0.3
       '@types/supertest':
         specifier: ^6.0.2
         version: 6.0.2
@@ -1460,6 +1463,12 @@ packages:
     resolution:
       {
         integrity: sha512-Y0Ykz6nWP4jpxgEUYq8NoVZeCQPo1ZndJLfapI249g1jHChvRfZRO/LS3tqu26YgAS/laI1qx98sYGz0IalRXQ==,
+      }
+
+  '@types/passport-kakao@1.0.3':
+    resolution:
+      {
+        integrity: sha512-McK5kpeiOptvjIPkiA/QS3k82//z5JM7Y3yBLMDvEA0QMMhFMcWUHhyebL1Qy+0i0n8jS+Oe4U6xAvkU22SXXA==,
       }
 
   '@types/passport-strategy@0.2.38':
@@ -4610,6 +4619,12 @@ packages:
       }
     engines: { node: '>=8' }
 
+  oauth@0.9.15:
+    resolution:
+      {
+        integrity: sha512-a5ERWK1kh38ExDEfoO6qUHJb32rd7aYmPHuyCu3Fta/cnICvYmgd2uhuKXvPD+PXB+gCEYYEaQdIRAjCOwAKNA==,
+      }
+
   object-assign@4.1.1:
     resolution:
       {
@@ -4748,18 +4763,24 @@ packages:
       }
     engines: { node: '>= 0.8' }
 
-  passport-custom@1.1.1:
-    resolution:
-      {
-        integrity: sha512-/2m7jUGxmCYvoqenLB9UrmkCgPt64h8ZtV+UtuQklZ/Tn1NpKBeOorCYkB/8lMRoiZ5hUrCoMmDtxCS/d38mlg==,
-      }
-    engines: { node: '>= 0.10.0' }
-
   passport-jwt@4.0.1:
     resolution:
       {
         integrity: sha512-UCKMDYhNuGOBE9/9Ycuoyh7vP6jpeTp/+sfMJl7nLff/t6dps+iaeE0hhNkKN8/HZHcJ7lCdOyDxHdDoxoSvdQ==,
       }
+
+  passport-kakao@1.0.1:
+    resolution:
+      {
+        integrity: sha512-uItaYRVrTHL6iGPMnMZvPa/O1GrAdh/V6EMjOHcFlQcVroZ9wgG7BZ5PonMNJCxfHQ3L2QVNRnzhKWUzSsumbw==,
+      }
+
+  passport-oauth2@1.1.2:
+    resolution:
+      {
+        integrity: sha512-wpsGtJDHHQUjyc9WcV9FFB0bphFExpmKtzkQrxpH1vnSr6RcWa3ZEGHx/zGKAh2PN7Po9TKYB1fJeOiIBspNPA==,
+      }
+    engines: { node: '>= 0.4.0' }
 
   passport-strategy@1.0.0:
     resolution:
@@ -4958,6 +4979,13 @@ packages:
         integrity: sha512-HRDzbaKjC+AOWVXxAU/x54COGeIv9eb+6CkDSQoNTt4XyWoIJvuPsXizxu/Fr23EiekbtZwmh1IcIG/l/a10GQ==,
       }
     engines: { node: '>=8' }
+
+  pkginfo@0.3.1:
+    resolution:
+      {
+        integrity: sha512-yO5feByMzAp96LtP58wvPKSbaKAi/1C4kV9XpTctr6EepnP6F33RBNOiVrdz9BrPA98U2BMFsTNHo44TWcbQ2A==,
+      }
+    engines: { node: '>= 0.4.0' }
 
   pluralize@8.0.0:
     resolution:
@@ -6010,6 +6038,12 @@ packages:
       }
     engines: { node: '>=14.17' }
     hasBin: true
+
+  uid2@0.0.4:
+    resolution:
+      {
+        integrity: sha512-IevTus0SbGwQzYh3+fRsAMTVVPOoIVufzacXcHPmdlle1jUpq7BRL+mw3dgeLanvGZdwwbWhRV6XrcFNdBmjWA==,
+      }
 
   uid@2.0.2:
     resolution:
@@ -7351,6 +7385,11 @@ snapshots:
     dependencies:
       '@types/jsonwebtoken': 9.0.6
       '@types/passport-strategy': 0.2.38
+
+  '@types/passport-kakao@1.0.3':
+    dependencies:
+      '@types/express': 4.17.21
+      '@types/passport': 1.0.16
 
   '@types/passport-strategy@0.2.38':
     dependencies:
@@ -9407,6 +9446,8 @@ snapshots:
     dependencies:
       path-key: 3.1.1
 
+  oauth@0.9.15: {}
+
   object-assign@4.1.1: {}
 
   object-inspect@1.13.1: {}
@@ -9487,14 +9528,21 @@ snapshots:
 
   parseurl@1.3.3: {}
 
-  passport-custom@1.1.1:
-    dependencies:
-      passport-strategy: 1.0.0
-
   passport-jwt@4.0.1:
     dependencies:
       jsonwebtoken: 9.0.2
       passport-strategy: 1.0.0
+
+  passport-kakao@1.0.1:
+    dependencies:
+      passport-oauth2: 1.1.2
+      pkginfo: 0.3.1
+
+  passport-oauth2@1.1.2:
+    dependencies:
+      oauth: 0.9.15
+      passport-strategy: 1.0.0
+      uid2: 0.0.4
 
   passport-strategy@1.0.0: {}
 
@@ -9583,6 +9631,8 @@ snapshots:
   pkg-dir@4.2.0:
     dependencies:
       find-up: 4.1.0
+
+  pkginfo@0.3.1: {}
 
   pluralize@8.0.0: {}
 
@@ -10141,6 +10191,8 @@ snapshots:
   typescript@5.3.3: {}
 
   typescript@5.4.5: {}
+
+  uid2@0.0.4: {}
 
   uid@2.0.2:
     dependencies:
