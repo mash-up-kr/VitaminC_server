@@ -9,20 +9,23 @@ import {
 } from 'class-validator';
 
 const development = 'development';
-const staging = 'staging';
+const stage = 'stage';
 const production = 'production';
 const test = 'test';
 
-export const nodeEnvironment = {
+export const NODE_ENVIRONMENT = {
   [development]: development,
-  [staging]: staging,
+  [stage]: stage,
   [production]: production,
   [test]: test,
 };
 
 export class EnvironmentVariables {
-  @IsEnum(nodeEnvironment)
-  NODE_ENV: keyof typeof nodeEnvironment;
+  @IsEnum(NODE_ENVIRONMENT)
+  NODE_ENV: keyof typeof NODE_ENVIRONMENT;
+
+  @IsString()
+  DB_HOST: string;
 
   @IsString()
   DB_NAME: string;
