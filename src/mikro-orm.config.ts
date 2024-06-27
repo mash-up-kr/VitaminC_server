@@ -13,6 +13,7 @@ const MikroOrmConfig: Options = {
   highlighter: new SqlHighlighter(),
   driver: PostgreSqlDriver,
   extensions: [Migrator],
+  host: configService.get('DB_HOST'),
   user: configService.get('DB_USER'),
   password: configService.get('DB_PASSWORD'),
   dbName: configService.get('DB_NAME'),

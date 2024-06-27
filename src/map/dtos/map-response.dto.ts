@@ -4,7 +4,7 @@ import { IsNotEmpty } from 'class-validator';
 
 import { GroupMap } from '../entities/map.entity';
 
-export class CreateMapDto implements Partial<GroupMap> {
+export class MapResponseDto implements Partial<GroupMap> {
   @ApiProperty()
   @IsNotEmpty()
   id: string;

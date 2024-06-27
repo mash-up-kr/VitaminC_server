@@ -20,13 +20,16 @@ export class UserService {
     return user;
   }
 
-  findAll(): Promise<User[]> {
-    return this.userRepository.findAll();
+  async findAll() {
+    const users = await this.userRepository.findAll();
+    return users;
   }
 
-  findOne(where: FilterQuery<User>): Promise<User> {
-    return this.userRepository.findOne(where);
+  async findOne(where: FilterQuery<User>) {
+    const user = await this.userRepository.findOne(where);
+    return user;
   }
+
   async update(id: number, updateUserDto: UpdateUserDto) {
     const user = await this.userRepository.findOneOrFail(id);
     wrap(user).assign(updateUserDto);

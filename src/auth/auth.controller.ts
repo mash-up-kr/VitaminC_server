@@ -1,5 +1,6 @@
 import { Controller, Get, Res, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { ApiTags } from '@nestjs/swagger';
 
 import { Response } from 'express';
 
@@ -10,6 +11,7 @@ import { UserProvider } from 'src/user/entities/user.type';
 import { AuthService } from './auth.service';
 import { KakaoPayload } from './strategies/kakao.strategy';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(
