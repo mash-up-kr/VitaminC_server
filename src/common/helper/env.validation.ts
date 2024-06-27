@@ -13,7 +13,7 @@ const stage = 'stage';
 const production = 'production';
 const test = 'test';
 
-const nodeEnvironment = {
+export const NODE_ENVIRONMENT = {
   [development]: development,
   [stage]: stage,
   [production]: production,
@@ -21,8 +21,8 @@ const nodeEnvironment = {
 };
 
 export class EnvironmentVariables {
-  @IsEnum(nodeEnvironment)
-  NODE_ENV: keyof typeof nodeEnvironment;
+  @IsEnum(NODE_ENVIRONMENT)
+  NODE_ENV: keyof typeof NODE_ENVIRONMENT;
 
   @IsString()
   DB_HOST: string;
