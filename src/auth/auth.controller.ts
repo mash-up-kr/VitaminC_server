@@ -35,9 +35,9 @@ export class AuthController {
     });
 
     res.cookie('Authorization', 'Bearer ' + user.accessToken, {
-      httpOnly: true,
-      // sameSite: 'none',
-      // secure:
+      // httpOnly: true,
+      sameSite: 'none',
+      secure: true,
       //   this.configService.get('NODE_ENV') === NODE_ENVIRONMENT['development']
       //     ? false
       //     : true,
