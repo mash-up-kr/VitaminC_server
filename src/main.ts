@@ -4,9 +4,12 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+import cookieParser from 'cookie-parser';
+
 import { ResponseInterceptor } from 'src/core/intercepters/response.intercepter';
 
 import { AppModule } from './app.module';
+import { NODE_ENVIRONMENT } from './common/helper/env.validation';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -28,7 +31,18 @@ async function bootstrap() {
 
   const configService = app.select(AppModule).get(ConfigService);
   const port = configService.get('PORT');
+  app.enableCors({ origin: '*', credentials: true });
+  app.use(cookieParser());
   await app.listen(port);
+
+  // app.enableCors({
+  //   origin:
+  //     configService.get('NOE_ENV') === NODE_ENVIRONMENT['production']
+  //       ? 'https://korrk.kr'
+  //       : 'http://localhost:3000',
+  //   credentials: true,
+  // });
+
   console.log(`Application is running: http://localhost:${port}/api-docs`);
 }
 bootstrap();

@@ -7,9 +7,8 @@ import {
   MockRepository,
   MockRepositoryFactory,
 } from 'src/common/helper/mock.helper';
+import { User, UserRepository } from 'src/entities';
 
-import { User } from './entities/user.entity';
-import { UserRepository } from './user.repository';
 import { UserService } from './user.service';
 
 type UserMockRepositoryType = MockRepository<ExtendedEntityRepository<User>>;

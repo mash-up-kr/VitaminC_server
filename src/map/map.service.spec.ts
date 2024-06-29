@@ -7,9 +7,9 @@ import {
   MockRepository,
   MockRepositoryFactory,
 } from 'src/common/helper/mock.helper';
+import { GroupMap } from 'src/entities';
+import { GroupMapRepository } from 'src/entities';
 
-import { GroupMap } from './entities/map.entity';
-import { MapRepository } from './map.repository';
 import { MapService } from './map.service';
 
 type MapMockRepositoryType = MockRepository<ExtendedEntityRepository<GroupMap>>;
@@ -26,7 +26,8 @@ describe('MapService', () => {
         MapService,
         {
           provide: repositoryToken,
-          useFactory: MockRepositoryFactory.getMockRepository(MapRepository),
+          useFactory:
+            MockRepositoryFactory.getMockRepository(GroupMapRepository),
         },
       ],
     }).compile();

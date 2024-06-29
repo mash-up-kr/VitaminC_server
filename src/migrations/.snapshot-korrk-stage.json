@@ -1,0 +1,316 @@
+{
+  "namespaces": ["public"],
+  "name": "public",
+  "tables": [
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "map",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "map_pkey",
+          "columnNames": ["id"],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {
+        "user_provider": {
+          "name": "user_provider",
+          "schema": "public",
+          "items": ["KAKAO"]
+        },
+        "user_role": {
+          "name": "user_role",
+          "schema": "public",
+          "items": ["USER", "ADMIN"]
+        }
+      }
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "nickname": {
+          "name": "nickname",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "default": "null",
+          "mappedType": "string"
+        },
+        "kakao_access_token": {
+          "name": "kakao_access_token",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "kakao_refresh_token": {
+          "name": "kakao_refresh_token",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "provider": {
+          "name": "provider",
+          "type": "user_provider",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "nativeEnumName": "user_provider",
+          "enumItems": ["KAKAO"],
+          "mappedType": "enum"
+        },
+        "provider_id": {
+          "name": "provider_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "role": {
+          "name": "role",
+          "type": "user_role",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "nativeEnumName": "user_role",
+          "default": "'USER'",
+          "enumItems": ["USER", "ADMIN"],
+          "mappedType": "enum"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "user",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "user_provider_provider_id_index",
+          "columnNames": ["provider", "provider_id"],
+          "composite": true,
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "user_provider_provider_id_unique",
+          "columnNames": ["provider", "provider_id"],
+          "composite": true,
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "user_pkey",
+          "columnNames": ["id"],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {
+        "user_provider": {
+          "name": "user_provider",
+          "schema": "public",
+          "items": ["KAKAO"]
+        },
+        "user_role": {
+          "name": "user_role",
+          "schema": "public",
+          "items": ["USER", "ADMIN"]
+        }
+      }
+    },
+    {
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "map_id": {
+          "name": "map_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "role": {
+          "name": "role",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "enumItems": ["ADMIN", "READ", "WRITE"],
+          "mappedType": "enum"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "user_map",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "user_map_pkey",
+          "columnNames": ["user_id", "map_id"],
+          "composite": true,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "user_map_user_id_foreign": {
+          "constraintName": "user_map_user_id_foreign",
+          "columnNames": ["user_id"],
+          "localTableName": "public.user_map",
+          "referencedColumnNames": ["id"],
+          "referencedTableName": "public.user",
+          "updateRule": "cascade"
+        },
+        "user_map_map_id_foreign": {
+          "constraintName": "user_map_map_id_foreign",
+          "columnNames": ["map_id"],
+          "localTableName": "public.user_map",
+          "referencedColumnNames": ["id"],
+          "referencedTableName": "public.map",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {
+        "user_provider": {
+          "name": "user_provider",
+          "schema": "public",
+          "items": ["KAKAO"]
+        },
+        "user_role": {
+          "name": "user_role",
+          "schema": "public",
+          "items": ["USER", "ADMIN"]
+        }
+      }
+    }
+  ],
+  "nativeEnums": {
+    "user_provider": {
+      "name": "user_provider",
+      "schema": "public",
+      "items": ["KAKAO"]
+    },
+    "user_role": {
+      "name": "user_role",
+      "schema": "public",
+      "items": ["USER", "ADMIN"]
+    }
+  }
+}
