@@ -11,7 +11,7 @@ export const createException = (exceptionType: ExceptionType) => {
         super(exceptionType, defaultStatusCode, defaultMessage);
 
         if (arg) {
-          super.composedMessage = composeExceptionMessage(defaultMessage, arg);
+          this.composedMessage = composeExceptionMessage(defaultMessage, arg);
         }
       }
     };
