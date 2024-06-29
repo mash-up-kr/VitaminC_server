@@ -3,7 +3,10 @@ import { ConfigService } from '@nestjs/config';
 
 import { Migrator } from '@mikro-orm/migrations';
 import { Options, PostgreSqlDriver } from '@mikro-orm/postgresql';
+import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
 import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
+
+import { IS_DEV } from 'src/common/constants';
 
 const configService = new ConfigService();
 const logger = new Logger('MikroORM');
@@ -19,5 +22,7 @@ const MikroOrmConfig: Options = {
   dbName: configService.get('DB_NAME'),
   entities: ['dist/**/*.entity.js'],
   entitiesTs: ['src/**/*.entity.{ts,js}'],
+  metadataProvider: TsMorphMetadataProvider,
+  debug: IS_DEV,
 };
 export default MikroOrmConfig;
