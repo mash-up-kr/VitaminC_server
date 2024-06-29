@@ -18,7 +18,7 @@ export const NODE_ENVIRONMENT = {
   [stage]: stage,
   [production]: production,
   [test]: test,
-};
+} as const;
 
 export class EnvironmentVariables {
   @IsEnum(NODE_ENVIRONMENT)

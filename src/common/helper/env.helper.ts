@@ -1,19 +1,16 @@
-import { resolve } from 'path';
+import { InternalServerErrorException } from '@nestjs/common';
 
 import { NODE_ENVIRONMENT } from './env.validation';
 
-export const getEnvPath = (dest: string): string => {
-  const env: string = process.env.NODE_ENV;
-
-  if (env == nodeEnvironment.staging || env == nodeEnvironment.production) {
-    return undefined;
-  }
-
-  const filename: string = env ? `.${env}.env` : '.development.env';
-  return resolve(`${dest}/${filename}`);
-};
-
-export const ignoreEnvFile = ((): boolean => {
+export const getNodeEnv = (() => {
   const env = process.env.NODE_ENV;
-  return env === NODE_ENVIRONMENT.stage || env === NODE_ENVIRONMENT.production;
+  const nodeEnv = NODE_ENVIRONMENT[env];
+  if (nodeEnv === undefined) {
+    throw new InternalServerErrorException('Unknown NODE_ENV');
+  }
+  return nodeEnv;
 })();
+
+export const isIgnoreEnvFile =
+  getNodeEnv === NODE_ENVIRONMENT.stage ||
+  getNodeEnv === NODE_ENVIRONMENT.production;
