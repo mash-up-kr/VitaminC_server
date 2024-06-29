@@ -39,7 +39,7 @@ export class AuthController {
       secure: true,
       path: '/',
       maxAge: 360000,
-      domain: '.korrk.kr',
+      domain: '.vercel.app',
     });
 
     return res.redirect(302, this.configService.get('CLIENT_URL'));
