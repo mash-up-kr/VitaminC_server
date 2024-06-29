@@ -48,11 +48,8 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "joi": "^17.13.3",
-<<<<<<< HEAD
-=======
     "moment-timezone": "^0.5.45",
     "passport-custom": "^1.1.1",
->>>>>>> 503964b (Refactor: remove unused code)
     "passport-jwt": "^4.0.1",
     "passport-kakao": "^1.0.1",
     "reflect-metadata": "^0.2.2",
