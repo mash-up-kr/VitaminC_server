@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 import { SearchService } from './search.service';
 
@@ -50,9 +50,18 @@ export class SearchController {
   }
 
   @ApiOperation({ summary: '카카오 place에서 보내주는 장소 디테일 검색' })
+  @ApiQuery({
+    type: Boolean,
+    name: 'invalidate',
+    required: false,
+    description: '장소디테일 캐시를 무효화 할지 여부 (default false)',
+  })
   @Get('places/kakao/:id')
-  async searchPlaceDetail(@Param('id') id: string) {
-    return await this.searchService.searchPlaceDetail(id);
+  async searchPlaceDetail(
+    @Param('id') id: string,
+    @Query('invalidate') invalidate: boolean = false,
+  ) {
+    return await this.searchService.searchPlaceDetail(id, invalidate);
   }
 
   // 카카오 좌표계(wcongnamul) 쿼리
