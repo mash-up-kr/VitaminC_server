@@ -6,7 +6,6 @@ import { wrap } from '@mikro-orm/postgresql';
 
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { UserResponseDto } from './dtos/user-response.dto';
 import { User } from './entities/user.entity';
 import { UserRepository } from './user.repository';
 
@@ -15,7 +14,6 @@ export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: UserRepository,
   ) {}
-
   async create(createUserDto: CreateUserDto) {
     const user: User = this.userRepository.create(createUserDto);
     await this.userRepository.persistAndFlush(user);

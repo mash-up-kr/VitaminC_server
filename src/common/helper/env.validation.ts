@@ -46,6 +46,15 @@ export class EnvironmentVariables {
 
   @IsString()
   JWT_PUBLIC_KEY: string;
+
+  @IsString()
+  KAKAO_CLIENT_ID: string;
+
+  @IsString()
+  KAKAO_REDIRECT_URL: string;
+
+  @IsString()
+  CLIENT_URL: string;
 }
 
 export function envValidation(config: Record<string, unknown>) {

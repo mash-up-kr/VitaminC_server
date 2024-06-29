@@ -76,6 +76,24 @@
           "default": "null",
           "mappedType": "string"
         },
+        "kakao_access_token": {
+          "name": "kakao_access_token",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "kakao_refresh_token": {
+          "name": "kakao_refresh_token",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
         "provider": {
           "name": "provider",
           "type": "user_provider",
