@@ -12,7 +12,6 @@ import { CustomExceptionFilter } from 'src/core/exception-filters/custom-excepti
 import { ResponseInterceptor } from 'src/core/intercepters/response.intercepter';
 
 import { AppModule } from './app.module';
-import { CustomExceptionFilter } from './core/exception-filters/custom-exception.filter';
 import { UtilService } from './util/util.service';
 
 async function bootstrap() {

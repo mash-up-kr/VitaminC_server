@@ -1,12 +1,11 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 
-import { UtilService } from 'src/util/util.service';
-
 import { InjectRepository } from '@mikro-orm/nestjs';
 
+import { UtilService } from 'src/util/util.service';
+
 import { KakaoPlace, KakaoPlaceRepository } from '../entities';
-import { uniqueBy } from '../utils';
 import { KAKAO_SCRAPING_HEADERS, KakaoMapHelper } from './kakao-map.helper';
 import {
   KakaoCategoryGroupCode,
@@ -27,7 +26,9 @@ export class SearchService {
 
   async suggest(keyword: string): Promise<string[]> {
     const response = await this.httpService.axiosRef.get<{ items: any[] }>(
-      `https://m.map.kakao.com/actions/topSuggestV2Json?q=${encodeURIComponent(keyword)}`,
+      `https://m.map.kakao.com/actions/topSuggestV2Json?q=${encodeURIComponent(
+        keyword,
+      )}`,
       {
         responseType: 'json',
         headers: KAKAO_SCRAPING_HEADERS,
