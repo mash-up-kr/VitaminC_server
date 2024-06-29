@@ -72,6 +72,14 @@ export class SearchService {
         ({ menu, price }) => ({ menu, price }),
       );
 
+      // set coordinate
+      const coord = await this.kakaoMapHelper.congnamulToLongLat(
+        kakaoPlaceRaw.basicInfo.wpointx,
+        kakaoPlaceRaw.basicInfo.wpointy,
+      );
+      kakaoPlace.x = coord.x;
+      kakaoPlace.y = coord.y;
+
       // TODO: 음식사진 가져오는것도 약간 우선순위를 두면 좋을듯
       kakaoPlace.photoList = kakaoPlaceRaw.photo.photoList
         .flatMap((photo) => photo.list)

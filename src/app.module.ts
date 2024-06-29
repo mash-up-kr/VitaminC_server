@@ -11,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { getNodeEnv, isIgnoreEnvFile } from './common/helper/env.helper';
 import { envValidation } from './common/helper/env.validation';
 import { MapModule } from './map/map.module';
+import { PlaceModule } from './place/place.module';
 import { SearchModule } from './search/search.module';
 import { UserMapModule } from './user-map/user-map.module';
 import { UserModule } from './user/user.module';
@@ -30,6 +31,7 @@ import { UserModule } from './user/user.module';
     MapModule,
     UserMapModule,
     SearchModule,
+    PlaceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
