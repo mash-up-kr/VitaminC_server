@@ -1,4 +1,5 @@
 import { GroupMap } from './group-map.entity';
+import { KakaoPlace } from './kakao-place.entity';
 import { UserMap } from './user-map.entity';
 import { User } from './user.entity';
 
@@ -11,4 +12,7 @@ export * from './user-map.repository';
 export * from './user.entity';
 export * from './user.repository';
 
-export const entities = [User, GroupMap, UserMap];
+export * from './kakao-place.entity';
+export * from './kakao-place.repository';
+
+export const entities = [User, GroupMap, UserMap, KakaoPlace];
