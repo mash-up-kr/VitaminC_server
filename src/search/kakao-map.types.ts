@@ -157,42 +157,23 @@ export type KakaoPlaceDetailRaw = {
   menuInfo: {
     moreyn: string; // "Y"
     menuList: {
-      '0': {
-        price: string; // "14,000"
-        recommend: boolean; // false
-        menu: string; // "구이양념막창"
-      };
-      '1': {
-        price: string; // "14,000"
-        recommend: boolean; // false
-        menu: string; // "소금구이막창"
-      };
-      '2': {
-        price: string; // "15,000"
-        recommend: boolean; // false
-        menu: string; // "야채곱창볶음"
-      };
-      '3': {
-        price: string; // "17,000"
-        recommend: boolean; // false
-        menu: string; // "순대곱창볶음"
-      };
-    };
+      price: string; // "14,000"
+      recommend: boolean; // false
+      menu: string; // "구이양념막창"
+    }[];
     productyn: string; // "N"
     menuboardphotourl: string; // "https://postfiles.pstatic.net/MjAyNDA2MTJfNzQg/MDAxNzE4MTQ3ODA5OTMw.zeLbX5XZ9nkUSuo38EpVkuEo7IXMWg9C4lIWASeTVB0g.q2QQTpKvHlOMQQk9osA0wYHWd2_qy6u0wiaWi1YlqNIg.JPEG/IMG_0736.jpg?type=w773"
     menuboardphotocount: number; // 30
     timeexp: string; // "2024.01.25."
   };
   photo: {
-    photoCount: number; // 335
     photoList: {
-      photoid: string; // "M"
-      orgurl: string; // "http://t1.daumcdn.net/place/6DCE4A7D51924FE3A4437B8C91C553D4"
-    }[];
-    sortedPhotoList: {
-      photoid: string; // "Tfood935698273"
-      orgurl: string; // "https://postfiles.pstatic.net/MjAyNDAzMjBfOTAg/MDAxNzEwODkzMDAxNjQw.zqZaIHYTcWW3eQhusMhZEjwPfZDlbyztLXc-G_WOedUg.Z2QvhMnLfJahDnC5cquqpbfewKiLR_Wnb3NLmvy21skg.JPEG/IMG_3371.JPG?type=w966"
-      categoryName: string; // "음식"
+      photoCount: number; // 335
+      categoryName: string; // "all"
+      list: {
+        photoid: string; // "M"
+        orgurl: string; // "http://t1.daumcdn.net/place/6DCE4A7D51924FE3A4437B8C91C553D4"
+      }[];
     }[];
   };
   placeSubscribeInfo: {

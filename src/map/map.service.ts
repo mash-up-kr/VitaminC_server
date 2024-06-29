@@ -9,7 +9,6 @@ import {
   UniqueConstraintViolationException,
 } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
-import { EntityManager } from '@mikro-orm/postgresql';
 
 import {
   GroupMap,
@@ -22,13 +21,12 @@ import {
 
 import { CreateMapDto } from './dtos/create-map.dto';
 import { MapItemForUserDto } from './dtos/map-item-for-user.dto';
-import { MapResponseDto, MapUser } from './dtos/map-response.dto';
+import { MapResponseDto } from './dtos/map-response.dto';
 import { UpdateMapDto } from './dtos/update-map.dto';
 
 @Injectable()
 export class MapService {
   constructor(
-    private readonly em: EntityManager,
     @InjectRepository(GroupMap)
     private readonly mapRepository: GroupMapRepository,
     @InjectRepository(UserMap)
@@ -40,16 +38,18 @@ export class MapService {
     by: User,
   ): Promise<MapItemForUserDto> {
     try {
-      const { map, userMap } = await this.em.transactional(async () => {
-        const map = this.mapRepository.create(createMapDto);
-        const userMap = this.userMapRepository.create({
-          user: by,
-          role: UserMapRole.ADMIN,
-          map,
-        });
-
-        return { map, userMap };
+      const map = this.mapRepository.create(createMapDto);
+      const userMap = this.userMapRepository.create({
+        user: by,
+        role: UserMapRole.ADMIN,
+        map,
       });
+      this.mapRepository.persist(map);
+      this.userMapRepository.persist(userMap);
+
+      await this.mapRepository.flush();
+      // await this.userMapRepository.flush(); // 이거 왜 안하지?
+
       const mapItemForUser = new MapItemForUserDto();
       mapItemForUser.id = map.id;
       mapItemForUser.name = map.name;
