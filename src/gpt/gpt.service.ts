@@ -19,21 +19,26 @@ export class GptService {
       Return only the boolean type in javascript language as your response.
     `;
 
-    const response = await this.openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: text },
-      ],
-      temperature: 0.2,
-    });
+    try {
+      const response = await this.openai.chat.completions.create({
+        model: 'gpt-3.5-turbo',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: text },
+        ],
+        temperature: 0.2,
+      });
 
-    const res = response.choices[0].message?.content;
+      const res = response.choices[0].message?.content;
 
-    if (!['true', 'false'].includes(res)) {
+      if (!['true', 'false'].includes(res)) {
+        return false;
+      }
+
+      return JSON.parse(res);
+    } catch (e) {
+      console.error(e);
       return false;
     }
-
-    return JSON.parse(res);
   }
 }
