@@ -5,12 +5,15 @@ import {
   Get,
   Param,
   Patch,
-  Post,
+  Query,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
-import { CreateUserDto } from './dtos/create-user.dto';
-import { UpdateUserDto } from './dtos/update-user.dto';
+import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
+import { CurrentUser } from 'src/common/decorators/user.decorator';
+import { User, UserRole } from 'src/entities';
+
+import { UpdateUserRequestDto } from './dtos/update-user.dto';
 import { UserResponseDto } from './dtos/user-response.dto';
 import { UserService } from './user.service';
 
@@ -19,37 +22,33 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  @ApiOkResponse({ type: UserResponseDto })
-  async create(@Body() createUserDto: CreateUserDto) {
-    const user = await this.userService.create(createUserDto);
-    return UserResponseDto.fromEntity(user);
-  }
-
-  @Get()
-  @ApiOkResponse({ type: [UserResponseDto] })
-  async findAll() {
-    const users = await this.userService.findAll();
-    return users.map((user) => UserResponseDto.fromEntity(user));
-  }
-
   @Get(':id')
+  @UseAuthGuard([UserRole.USER])
   @ApiOkResponse({ type: UserResponseDto })
   async findOne(@Param('id') id: string) {
     const user = await this.userService.findOne({ id: +id });
-    return UserResponseDto.fromEntity(user);
+    return user;
   }
 
-  @Patch(':id')
+  @Patch()
+  @UseAuthGuard([UserRole.USER])
   @ApiOkResponse({ type: UserResponseDto })
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    const user = await this.userService.update(+id, updateUserDto);
-    return UserResponseDto.fromEntity(user);
+  async update(
+    @Body() updateUserDto: UpdateUserRequestDto,
+    @CurrentUser() user: User,
+  ) {
+    return await this.userService.update(+user.id, updateUserDto);
   }
 
   @Delete(':id')
   @ApiOkResponse({ type: Number })
   async remove(@Param('id') id: string) {
     return this.userService.remove(+id);
+  }
+
+  @Get('check/nickname')
+  @ApiOkResponse({})
+  async checkDuplicateNickname(@Query('nickname') nickname: string) {
+    return this.userService.checkDuplicateNickname(nickname);
   }
 }

@@ -4,6 +4,10 @@ import { FilterQuery } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 
 import { User, UserRepository } from 'src/entities';
+import {
+  DuplicateNicknameException,
+  UserNotFoundException,
+} from 'src/exceptions';
 
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -30,14 +34,27 @@ export class UserService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    const user = await this.userRepository.findOneOrFail(id);
-    // TODO: 다시 구현
-    // (wrap(user) as any).assign(updateUserDto);
-    await this.userRepository.persistAndFlush(user);
+    const user = await this.userRepository.findOne(id);
+    if (user == undefined) {
+      throw new UserNotFoundException();
+    }
+    Object.assign(user, updateUserDto); // Assign DTO properties to user entity
+    await this.userRepository.persistAndFlush(user); // Persist changes
     return user;
+    // (wrap(user) as any).assign(updateUserDto);
+    // await this.userRepository.persistAndFlush(user);
+    // return user;
   }
 
   remove(id: number) {
     return this.userRepository.nativeDelete({ id });
+  }
+
+  async checkDuplicateNickname(nickname: string) {
+    const user = await this.userRepository.findOne({ nickname });
+    if (user != undefined) {
+      console.log('afdfs');
+      throw new DuplicateNicknameException();
+    }
   }
 }
