@@ -22,6 +22,7 @@ export class AuthController {
 
   @Get('kakao')
   @UseGuards(KakaoGuard)
+  @Redirect('http://localhost:3000', 302)
   async signInToKakao(
     @KakaoInfo() { id, accessToken, refreshToken }: KakaoPayload,
     @Res() res: Response,
@@ -34,14 +35,11 @@ export class AuthController {
     });
 
     res.cookie('Authorization', 'Bearer ' + user.accessToken, {
-      httpOnly: true,
-      sameSite: 'none',
-      secure:
-        this.configService.get('NODE_ENV') === NODE_ENVIRONMENT['development']
-          ? false
-          : true,
+      // httpOnly: true,
+      sameSite: 'lax',
+      secure: true,
     });
 
-    return res.redirect(302, this.configService.get('CLIENT_URL'));
+    // return res.redirect(302, this.configService.get('CLIENT_URL'));
   }
 }
