@@ -4,6 +4,8 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+import cookieParser from 'cookie-parser';
+
 import { ResponseInterceptor } from 'src/core/intercepters/response.intercepter';
 
 import { AppModule } from './app.module';
@@ -29,6 +31,13 @@ async function bootstrap() {
   const configService = app.select(AppModule).get(ConfigService);
   const port = configService.get('PORT');
   await app.listen(port);
+
+  app.enableCors({
+    origin: '*',
+    credentials: true,
+  });
+  app.use(cookieParser());
+
   console.log(`Application is running: http://localhost:${port}/api-docs`);
 }
 bootstrap();
