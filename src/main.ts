@@ -40,6 +40,7 @@ async function bootstrap() {
   //       : 'http://localhost:3000',
   //   credentials: true,
   // });
+  app.enableCors();
   app.use(cookieParser());
 
   console.log(`Application is running: http://localhost:${port}/api-docs`);
