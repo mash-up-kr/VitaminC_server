@@ -29,12 +29,7 @@ export class UserMap {
   @ManyToOne(() => GroupMap, { primary: true })
   map: Rel<GroupMap>;
 
-  @Enum({
-    items: () => UserMapRole,
-    array: true,
-    default: [UserMapRole.READ, UserMapRole.WRITE],
-    nativeEnumName: 'user-map-role',
-  })
+  @Enum({ items: [UserMapRole.ADMIN, UserMapRole.READ, UserMapRole.WRITE] })
   role: UserMapRoleValueType;
 
   @Property()
