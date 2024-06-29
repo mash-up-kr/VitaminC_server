@@ -37,6 +37,20 @@ export class KakaoPlace {
   address: string;
 
   @Property({
+    type: 'number',
+    comment: '카카오맵 경도',
+    default: 0,
+  })
+  x: number;
+
+  @Property({
+    type: 'number',
+    comment: '카카오맵 위도',
+    default: 0,
+  })
+  y: number;
+
+  @Property({
     type: 'json',
     comment: '카카오맵 menuInfo.menuList',
   })

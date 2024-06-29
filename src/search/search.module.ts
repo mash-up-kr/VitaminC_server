@@ -12,5 +12,6 @@ import { SearchService } from './search.service';
   imports: [HttpModule, MikroOrmModule.forFeature([KakaoPlace])],
   controllers: [SearchController],
   providers: [SearchService, KakaoMapHelper],
+  exports: [SearchService],
 })
 export class SearchModule {}
