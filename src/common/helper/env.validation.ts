@@ -9,17 +9,20 @@ import {
   validateSync,
 } from 'class-validator';
 
-const development = 'development';
-const stage = 'stage';
-const production = 'production';
-const test = 'test';
+export type ArrayElement<T extends readonly unknown[]> =
+  T extends readonly (infer K)[] ? K : never;
 
-export const NODE_ENVIRONMENT = {
-  [development]: development,
-  [stage]: stage,
-  [production]: production,
-  [test]: test,
-} as const;
+const envArray = ['development', 'stage', 'production', 'test'] as const;
+
+export type EnvType = ArrayElement<typeof envArray>;
+
+export const NODE_ENVIRONMENT = envArray.reduce(
+  (acc, cur) => {
+    acc[cur] = cur;
+    return acc;
+  },
+  {} as Record<EnvType, EnvType>,
+);
 
 export class EnvironmentVariables {
   @IsEnum(NODE_ENVIRONMENT)

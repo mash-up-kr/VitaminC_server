@@ -10,7 +10,7 @@ import { ConfigService } from '@nestjs/config';
 import * as Sentry from '@sentry/nestjs';
 import { Response } from 'express';
 
-import { NODE_ENVIRONMENT } from 'src/common/helper/env.validation';
+import { EnvType } from 'src/common/helper/env.validation';
 import { UtilService } from 'src/util/util.service';
 
 type ResponseBody = {
@@ -77,11 +77,7 @@ export class CustomExceptionFilter implements ExceptionFilter {
     });
   }
 
-  private parseError(
-    request: Request,
-    error: Error,
-    env: keyof typeof NODE_ENVIRONMENT,
-  ): string {
+  private parseError(request: Request, error: Error, env: EnvType): string {
     return `노드팀 채찍 맞아라~~ 🦹🏿‍♀️👹🦹🏿
 에러 발생 API : ${request.method} ${request.url}
 
