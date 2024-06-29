@@ -33,6 +33,8 @@ async function bootstrap() {
   const configService = app.select(AppModule).get(ConfigService);
   app.useGlobalFilters(new CustomExceptionFilter(configService));
   const port = configService.get('PORT');
+  app.enableCors({ origin: '*', credentials: true });
+  app.use(cookieParser());
   await app.listen(port);
 
   // app.enableCors({
@@ -42,8 +44,6 @@ async function bootstrap() {
   //       : 'http://localhost:3000',
   //   credentials: true,
   // });
-  app.enableCors({ origin: '*', credentials: true });
-  app.use(cookieParser());
 
   console.log(`Application is running: http://localhost:${port}/api-docs`);
 }
