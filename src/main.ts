@@ -33,13 +33,13 @@ async function bootstrap() {
   const port = configService.get('PORT');
   await app.listen(port);
 
-  app.enableCors({
-    origin:
-      configService.get('NOE_ENV') === NODE_ENVIRONMENT['production']
-        ? 'https://korrk.kr'
-        : 'http://localhost:3000',
-    credentials: true,
-  });
+  // app.enableCors({
+  //   origin:
+  //     configService.get('NOE_ENV') === NODE_ENVIRONMENT['production']
+  //       ? 'https://korrk.kr'
+  //       : 'http://localhost:3000',
+  //   credentials: true,
+  // });
   app.use(cookieParser());
 
   console.log(`Application is running: http://localhost:${port}/api-docs`);
