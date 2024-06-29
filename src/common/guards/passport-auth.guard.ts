@@ -15,6 +15,7 @@ export class PassportAuthGuard extends AuthGuard('jwt') {
       'roles',
       context.getHandler(),
     );
+
     await super.canActivate(context);
     const req = context.switchToHttp().getRequest();
     const { role } = req.user;
