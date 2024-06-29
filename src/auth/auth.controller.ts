@@ -22,7 +22,6 @@ export class AuthController {
 
   @Get('kakao')
   @UseGuards(KakaoGuard)
-  @Redirect('http://localhost:3000', 302)
   async signInToKakao(
     @KakaoInfo() { id, accessToken, refreshToken }: KakaoPayload,
     @Res() res: Response,
