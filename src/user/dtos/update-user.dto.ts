@@ -1,27 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { IsOptional } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 import { User } from '../entities/user.entity';
-import {
-  UserProviderValueType,
-  UserRoleValueType,
-} from '../entities/user.type';
+import { UserRoleValueType } from '../entities/user.type';
 
 export class UpdateUserDto implements Partial<User> {
-  @ApiProperty({ required: false })
   @IsOptional()
   nickname?: string;
 
-  @ApiProperty({ required: false })
-  @IsOptional()
-  provider?: UserProviderValueType;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  providerId?: string;
-
-  @ApiProperty({ required: false })
   @IsOptional()
   role?: UserRoleValueType;
 
@@ -30,4 +17,11 @@ export class UpdateUserDto implements Partial<User> {
 
   @IsOptional()
   kakaoRefreshToken?: string;
+}
+
+export class UpdateUserRequestDto implements Partial<User> {
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  @IsString()
+  nickname: string;
 }
