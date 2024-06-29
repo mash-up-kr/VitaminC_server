@@ -11,5 +11,6 @@ declare namespace NodeJS {
     KAKAO_CLIENT_ID: string;
     KAKAO_REDIRECT_URL: string;
     CLIENT_URL: string;
+    GPT_KEY: string;
   }
 }

@@ -55,6 +55,9 @@ export class EnvironmentVariables {
 
   @IsString()
   CLIENT_URL: string;
+
+  @IsString()
+  GPT_KEY: string;
 }
 
 export function envValidation(config: Record<string, unknown>) {
