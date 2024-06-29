@@ -50,6 +50,7 @@ export class MapController {
   @Get(':id')
   @ApiOkResponse({ type: MapResponseDto })
   findOne(@Param('id') id: string) {
+    // TODO: findOne For user로 만들어서 (ADMIN, READ, WRITE)권한없으면 403을 반환하는 라우트를 만들어야 합니다.
     return this.mapService.findOne({ id });
   }
 
