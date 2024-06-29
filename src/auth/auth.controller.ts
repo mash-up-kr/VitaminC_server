@@ -36,8 +36,10 @@ export class AuthController {
 
     res.cookie('Authorization', 'Bearer ' + user.accessToken, {
       // httpOnly: true,
-      sameSite: 'lax',
+      sameSite: 'none',
       secure: true,
+      path: '/',
+      maxAge: 360000,
     });
 
     // return res.redirect(302, this.configService.get('CLIENT_URL'));
