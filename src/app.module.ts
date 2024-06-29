@@ -10,6 +10,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { getNodeEnv, isIgnoreEnvFile } from './common/helper/env.helper';
 import { envValidation } from './common/helper/env.validation';
+import { GptModule } from './gpt/gpt.module';
 import { MapModule } from './map/map.module';
 import { SearchModule } from './search/search.module';
 import { UserMapModule } from './user-map/user-map.module';
@@ -29,6 +30,7 @@ import { UserModule } from './user/user.module';
     UserModule,
     MapModule,
     UserMapModule,
+    GptModule,
     SearchModule,
   ],
   controllers: [AppController],
