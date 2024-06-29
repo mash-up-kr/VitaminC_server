@@ -35,13 +35,12 @@ export class AuthController {
     });
 
     res.cookie('Authorization', 'Bearer ' + user.accessToken, {
-      // httpOnly: true,
-      // sameSite: 'none',
-      // secure:
-      //   this.configService.get('NODE_ENV') === NODE_ENVIRONMENT['production']
-      //     ? true
-      //     : false,
-      domain: 'localhost',
+      httpOnly: true,
+      sameSite: 'none',
+      secure:
+        this.configService.get('NODE_ENV') === NODE_ENVIRONMENT['development']
+          ? false
+          : true,
     });
 
     return res.redirect(302, this.configService.get('CLIENT_URL'));
