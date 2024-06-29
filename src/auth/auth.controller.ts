@@ -34,12 +34,12 @@ export class AuthController {
     });
 
     res.cookie('Authorization', 'Bearer ' + user.accessToken, {
-      // httpOnly: true,
+      httpOnly: true,
       sameSite: 'none',
-      secure: true,
+      secure: false,
       path: '/',
       maxAge: 360000,
-      domain: 'api-dev.korrk.kr',
+      domain: 'https://vitamin-c-web.vercel.app/',
     });
 
     return res.redirect(302, this.configService.get('CLIENT_URL'));
