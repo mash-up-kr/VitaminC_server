@@ -6,6 +6,7 @@ import { Response } from 'express';
 
 import { KakaoInfo } from 'src/common/decorators/kakao-info.decorator';
 import { KakaoGuard } from 'src/common/guards/kakao.guard';
+import { NODE_ENVIRONMENT } from 'src/common/helper/env.validation';
 import { UserProvider } from 'src/entities';
 
 import { AuthService } from './auth.service';
@@ -34,6 +35,11 @@ export class AuthController {
 
     res.cookie('Authorization', 'Bearer ' + user.accessToken, {
       httpOnly: true,
+      sameSite: 'none',
+      secure:
+        this.configService.get('NODE_ENV') === NODE_ENVIRONMENT['production']
+          ? true
+          : false,
     });
 
     return res.redirect(302, this.configService.get('CLIENT_URL'));
