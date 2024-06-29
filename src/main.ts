@@ -36,8 +36,8 @@ async function bootstrap() {
   app.enableCors({
     origin:
       configService.get('NOE_ENV') === NODE_ENVIRONMENT['production']
-        ? 'korrk.kr'
-        : 'localhost:300',
+        ? 'https://korrk.kr'
+        : 'http://localhost:3000',
     credentials: true,
   });
   app.use(cookieParser());
