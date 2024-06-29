@@ -54,6 +54,9 @@ export class EnvironmentVariables {
   KAKAO_REDIRECT_URL: string;
 
   @IsString()
+  KAKAO_REST_API_KEY: string;
+
+  @IsString()
   CLIENT_URL: string;
 }
 

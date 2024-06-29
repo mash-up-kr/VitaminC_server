@@ -66,6 +66,7 @@ export class SearchService {
 }
 
 // (async () => {
+//   const axios = new HttpService().axiosRef;
 //   const queryParams = {
 //     query: '카페',
 //     category_group_code: CategoryGroupCode['카페'],
@@ -77,7 +78,7 @@ export class SearchService {
 //       params: queryParams,
 //       responseType: 'json',
 //       headers: {
-//         Authorization: `KakaoAK ${API_KEY}`,
+//         Authorization: `KakaoAK ${process.env.KAKAO_REST_API_KEY}`,
 //       },
 //     },
 //   );
