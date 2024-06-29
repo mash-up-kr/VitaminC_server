@@ -2,13 +2,14 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { IsNotEmpty, IsOptional } from 'class-validator';
 
-import { User } from '../entities/user.entity';
 import {
+  User,
   UserProvider,
   UserProviderValueType,
   UserRole,
   UserRoleValueType,
-} from '../entities/user.type';
+} from 'src/entities';
+
 import { UserMapResponseDto } from './user-map-response.dto';
 
 // TODO: userMap 할거 맞나?

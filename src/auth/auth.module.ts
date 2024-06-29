@@ -1,11 +1,12 @@
 import { HttpModule } from '@nestjs/axios';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 
 import { UserModule } from 'src/user/user.module';
 
 import { AuthController } from './auth.controller';
+import { AuthMiddleware } from './auth.middleware';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { KakaoStrategy } from './strategies/kakao.strategy';
@@ -34,4 +35,8 @@ import { KakaoStrategy } from './strategies/kakao.strategy';
   controllers: [AuthController],
   exports: [],
 })
-export class AuthModule {}
+export class AuthModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthMiddleware).forRoutes('*');
+  }
+}

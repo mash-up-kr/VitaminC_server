@@ -1,0 +1,170 @@
+[
+  {
+    "scope": "https://m.map.kakao.com:443",
+    "method": "GET",
+    "path": "/actions/topSuggestV2Json?q=%EA%B3%B1%EC%B0%BD",
+    "body": "",
+    "status": 200,
+    "response": {
+      "q": "곱창",
+      "rq": "곱창",
+      "items": [
+        {
+          "category": "place",
+          "highlighted": [[0, 2]],
+          "item": "곱창전골|place",
+          "key": "곱창전골",
+          "score": 205.53566862626099
+        },
+        {
+          "category": "place",
+          "highlighted": [[0, 2]],
+          "item": "곱창집|place",
+          "key": "곱창집",
+          "score": 188.05446693446845
+        },
+        {
+          "category": "place",
+          "highlighted": [[0, 2]],
+          "item": "곱창맛집|place",
+          "key": "곱창맛집",
+          "score": 187.20548426318587
+        },
+        {
+          "category": "place",
+          "highlighted": [[0, 2]],
+          "item": "곱창고|place",
+          "key": "곱창고",
+          "score": 177.7693456159605
+        },
+        {
+          "category": "place",
+          "highlighted": [[0, 2]],
+          "item": "곱창이야기|place",
+          "key": "곱창이야기",
+          "score": 175.4641633711495
+        },
+        {
+          "category": "place",
+          "highlighted": [[0, 2]],
+          "item": "곱창볶음|place",
+          "key": "곱창볶음",
+          "score": 174.47027860114386
+        },
+        {
+          "category": "place",
+          "highlighted": [[0, 2]],
+          "item": "곱창폭식|place",
+          "key": "곱창폭식",
+          "score": 173.9772509479613
+        },
+        {
+          "category": "place",
+          "highlighted": [[0, 2]],
+          "item": "곱창의전설|place",
+          "key": "곱창의전설",
+          "score": 173.011751714487
+        },
+        {
+          "category": "place",
+          "highlighted": [[0, 2]],
+          "item": "곱창구이|place",
+          "key": "곱창구이",
+          "score": 172.63051232821823
+        },
+        {
+          "category": "place",
+          "highlighted": [[0, 2]],
+          "item": "곱창전골맛집|place",
+          "key": "곱창전골맛집",
+          "score": 171.64443962743806
+        },
+        {
+          "category": "place",
+          "highlighted": [[0, 2]],
+          "item": "곱창정비소|place",
+          "key": "곱창정비소",
+          "score": 169.5483065183115
+        },
+        {
+          "category": "place",
+          "highlighted": [[0, 2]],
+          "item": "곱창파는고깃집|place",
+          "key": "곱창파는고깃집",
+          "score": 168.73967615372476
+        },
+        {
+          "category": "place",
+          "highlighted": [[0, 2]],
+          "item": "곱창가|place",
+          "key": "곱창가",
+          "score": 167.4168741919948
+        },
+        {
+          "category": "place",
+          "highlighted": [[0, 2]],
+          "item": "곱창왕김형제|place",
+          "key": "곱창왕김형제",
+          "score": 167.2548433301668
+        },
+        {
+          "category": "place",
+          "highlighted": [[0, 2]],
+          "item": "곱창마을|place",
+          "key": "곱창마을",
+          "score": 166.55224354053973
+        },
+        {
+          "category": "place",
+          "highlighted": [[0, 2]],
+          "item": "곱창나라|place",
+          "key": "곱창나라",
+          "score": 166.22590587972797
+        },
+        {
+          "category": "place",
+          "highlighted": [[0, 2]],
+          "item": "곱창대장|place",
+          "key": "곱창대장",
+          "score": 166.09255893492133
+        },
+        {
+          "category": "place",
+          "highlighted": [[0, 2]],
+          "item": "곱창팩토리|place",
+          "key": "곱창팩토리",
+          "score": 166.03831590679385
+        },
+        {
+          "category": "place",
+          "highlighted": [[0, 2]],
+          "item": "곱창국수|place",
+          "key": "곱창국수",
+          "score": 164.5045396989028
+        },
+        {
+          "category": "place",
+          "highlighted": [[0, 2]],
+          "item": "곱창지존|place",
+          "key": "곱창지존",
+          "score": 163.88699427428617
+        }
+      ]
+    },
+    "rawHeaders": [
+      "Date",
+      "Sat, 29 Jun 2024 07:48:32 GMT",
+      "Content-Type",
+      "application/json;charset=UTF-8",
+      "Content-Length",
+      "2457",
+      "Connection",
+      "keep-alive",
+      "Content-Language",
+      "ko-KR",
+      "Strict-Transport-Security",
+      "max-age=15724800; includeSubDomains"
+    ],
+    "responseIsBinary": false
+  }
+]
