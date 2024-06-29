@@ -31,10 +31,6 @@ describe('UserService', () => {
         {
           provide: repositoryToken,
           useFactory: MockRepositoryFactory.getMockRepository(UserRepository),
-          useValue: {
-            findOne: jest.fn(),
-            persistAndFlush: jest.fn(),
-          },
         },
       ],
     }).compile();
