@@ -1,21 +1,20 @@
 import { Controller, Get } from '@nestjs/common';
 
-import { AppService } from './app.service';
 import { UseAuthGuard } from './common/decorators/auth-guard.decorator';
 import { CurrentUser } from './common/decorators/user.decorator';
 import { User } from './user/entities/user.entity';
 import { UserRole } from './user/entities/user.type';
 
-@Controller()
+@Controller('api/v1')
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor() {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Get('health')
+  health(): string {
+    return 'ok';
   }
 
-  @Get('/me')
+  @Get('me')
   @UseAuthGuard([UserRole.USER])
   getMe(@CurrentUser() user: User): User {
     return user;

@@ -21,11 +21,11 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-docs', app, document);
+  SwaggerModule.setup('api/docs', app, document);
 
   const configService = app.select(AppModule).get(ConfigService);
   const port = configService.get('PORT');
   await app.listen(port);
-  console.log(`Application is running: http://localhost:${port}/api-docs`);
+  console.log(`Application is running: http://localhost:${port}/api/docs`);
 }
 bootstrap();

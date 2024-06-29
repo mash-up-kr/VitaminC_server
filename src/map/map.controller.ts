@@ -15,7 +15,7 @@ import { UpdateMapDto } from './dtos/update-map.dto';
 import { MapService } from './map.service';
 
 @ApiTags('maps')
-@Controller('maps')
+@Controller('api/v1/maps')
 export class MapController {
   constructor(private readonly mapService: MapService) {}
 

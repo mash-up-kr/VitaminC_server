@@ -8,7 +8,7 @@ import { UserProvider } from 'src/user/entities/user.type';
 import { AuthService } from './auth.service';
 
 @ApiTags('auth')
-@Controller('auth')
+@Controller('api/v1/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
