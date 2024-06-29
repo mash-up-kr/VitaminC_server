@@ -48,6 +48,7 @@
     "class-validator": "^0.14.1",
     "joi": "^17.13.3",
     "moment-timezone": "^0.5.45",
+    "openai": "^4.52.2",
     "passport-custom": "^1.1.1",
     "passport-jwt": "^4.0.1",
     "passport-kakao": "^1.0.1",
