@@ -14,6 +14,8 @@ declare namespace NodeJS {
     CLIENT_URL: string;
     GPT_KEY: string;
 
+    DISCORD_WEBHOOK_URL: string;
+
     // for test
     TEST_USER_ID?: number;
   }

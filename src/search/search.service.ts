@@ -3,8 +3,9 @@ import { Injectable } from '@nestjs/common';
 
 import { InjectRepository } from '@mikro-orm/nestjs';
 
+import { UtilService } from 'src/util/util.service';
+
 import { KakaoPlace, KakaoPlaceRepository } from '../entities';
-import { uniqueBy } from '../utils';
 import { KAKAO_SCRAPING_HEADERS, KakaoMapHelper } from './kakao-map.helper';
 import {
   KakaoCategoryGroupCode,
@@ -18,13 +19,16 @@ export class SearchService {
   constructor(
     private readonly httpService: HttpService,
     private readonly kakaoMapHelper: KakaoMapHelper,
+    private readonly utilService: UtilService,
     @InjectRepository(KakaoPlace)
     private readonly kakaoPlaceRepository: KakaoPlaceRepository,
   ) {}
 
   async suggest(keyword: string): Promise<string[]> {
     const response = await this.httpService.axiosRef.get<{ items: any[] }>(
-      `https://m.map.kakao.com/actions/topSuggestV2Json?q=${encodeURIComponent(keyword)}`,
+      `https://m.map.kakao.com/actions/topSuggestV2Json?q=${encodeURIComponent(
+        keyword,
+      )}`,
       {
         responseType: 'json',
         headers: KAKAO_SCRAPING_HEADERS,
@@ -46,7 +50,7 @@ export class SearchService {
       this.searchPlace(query, rect, KakaoCategoryGroupCode['카페']),
       this.searchPlace(query, rect, KakaoCategoryGroupCode['음식점']),
     ]);
-    return uniqueBy([...list1, ...list2], (item) => item.id);
+    return this.utilService.uniqueBy([...list1, ...list2], (item) => item.id);
   }
 
   async searchPlaceDetail(

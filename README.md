@@ -45,4 +45,8 @@ $ pnpm migrate:up:dev
 $ pnpm start:dev
 ```
 
+## Error catch
+
+### [sentry url](https://vitaminc.sentry.io/projects/node-nestjs/?project=4507516570697728)
+
 ## Todo

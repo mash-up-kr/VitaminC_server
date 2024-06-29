@@ -9,10 +9,12 @@ import {
 } from '@mikro-orm/postgresql';
 import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
 
-import { IS_DEV } from 'src/common/constants';
 import { entities } from 'src/entities';
 
+import { UtilService } from './util/util.service';
+
 const configService = new ConfigService();
+const utilService = new UtilService(configService);
 const logger = new Logger('MikroORM');
 
 const MikroOrmConfig: Options = {
@@ -27,7 +29,7 @@ const MikroOrmConfig: Options = {
   dbName: configService.get('DB_NAME'),
   entities: entities,
   metadataProvider: ReflectMetadataProvider,
-  debug: IS_DEV,
+  debug: utilService.isDev(),
 };
 
 export default MikroOrmConfig;

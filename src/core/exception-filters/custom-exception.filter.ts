@@ -7,9 +7,11 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import * as Sentry from '@sentry/nestjs';
 import { Response } from 'express';
 
-import { IS_DEV } from 'src/common/constants';
+import { EnvType } from 'src/common/helper/env.validation';
+import { UtilService } from 'src/util/util.service';
 
 type ResponseBody = {
   statusCode: number;
@@ -20,7 +22,10 @@ type ResponseBody = {
 @Catch()
 export class CustomExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger();
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly utilService: UtilService,
+  ) {}
 
   async catch(exception: Error, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -47,18 +52,23 @@ export class CustomExceptionFilter implements ExceptionFilter {
       this.logger.error(
         `api : ${request.method} ${request.url} message : ${exception.message}`,
       );
-      if (!IS_DEV) {
-        await this.handle(request, exception);
+      if (!this.utilService.isDev()) {
+        this.sendErrorToSentry(exception);
+        await this.sendErrorInfoToDiscord(request, exception);
       }
     }
 
     response.status(responseBody.statusCode).json(responseBody);
   }
 
-  private async handle(request: Request, error: Error) {
-    //TODO: DISCORD_WEBHOOK_URL 추가 예정
+  private sendErrorToSentry(exception: Error) {
+    Sentry.captureException(exception);
+  }
+
+  private async sendErrorInfoToDiscord(request: Request, error: Error) {
     const discordWebhook = this.configService.get('DISCORD_WEBHOOK_URL');
-    const content = this.parseError(request, error);
+    const NODE_ENV = this.configService.get('NODE_ENV');
+    const content = this.parseError(request, error, NODE_ENV);
 
     await fetch(discordWebhook, {
       method: 'post',
@@ -67,7 +77,7 @@ export class CustomExceptionFilter implements ExceptionFilter {
     });
   }
 
-  private parseError(request: Request, error: Error): string {
+  private parseError(request: Request, error: Error, env: EnvType): string {
     return `노드팀 채찍 맞아라~~ 🦹🏿‍♀️👹🦹🏿
 에러 발생 API : ${request.method} ${request.url}
 
@@ -78,6 +88,8 @@ export class CustomExceptionFilter implements ExceptionFilter {
       .slice(0, 2)
       .map((message) => message.trim())
       .join('\n')}
+
+에러 환경 : ${env}
 
 당장 고쳐서 올렷!
     `;

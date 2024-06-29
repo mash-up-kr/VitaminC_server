@@ -11,7 +11,7 @@
   "type": "commonjs",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "nest build",
+    "build": "nest build && pnpm sentry:sourcemaps",
     "migrate:create:dev": "dotenv -e .development.env -- npx mikro-orm migration:create",
     "migrate:up:dev": "dotenv -e .development.env -- npx mikro-orm migration:up",
     "show:database:schema": "dotenv -e .development.env -- npx mikro-orm schema:create --dump",
@@ -29,7 +29,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prepare": "husky",
-    "postgres:local:up": "docker compose --env-file .development.env up -d && pnpm migrate:up:dev"
+    "postgres:local:up": "docker compose --env-file .development.env up -d && pnpm migrate:up:dev",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org vitaminc --project node-nestjs ./dist && sentry-cli sourcemaps upload --org vitaminc --project node-nestjs ./dist"
   },
   "dependencies": {
     "@mikro-orm/core": "^6.2.9",
@@ -46,6 +47,8 @@
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.3.9",
     "@nestjs/swagger": "^7.3.1",
+    "@sentry/cli": "^2.32.1",
+    "@sentry/nestjs": "^8.13.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "cookie-parser": "^1.4.6",
@@ -66,6 +69,8 @@
     "@nestjs/cli": "^10.3.2",
     "@nestjs/schematics": "^10.1.1",
     "@nestjs/testing": "^10.3.9",
+    "@sentry/node": "^8.13.0",
+    "@sentry/profiling-node": "^8.13.0",
     "@swc/cli": "^0.3.12",
     "@swc/core": "^1.6.1",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
