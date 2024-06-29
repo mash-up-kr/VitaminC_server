@@ -2,6 +2,7 @@ import { plainToInstance } from 'class-transformer';
 import {
   IsEnum,
   IsNumber,
+  IsOptional,
   IsString,
   Max,
   Min,
@@ -60,6 +61,10 @@ export class EnvironmentVariables {
 
   @IsString()
   KAKAO_REST_API_KEY: string;
+
+  @IsNumber()
+  @IsOptional()
+  TEST_USER_ID?: number;
 
   @IsString()
   CLIENT_URL: string;

@@ -12,5 +12,8 @@ declare namespace NodeJS {
     KAKAO_REDIRECT_URL: string;
     KAKAO_REST_API_KEY: string;
     CLIENT_URL: string;
+
+    // for test
+    TEST_USER_ID?: number;
   }
 }
