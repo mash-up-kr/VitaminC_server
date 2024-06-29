@@ -43,6 +43,6 @@ export class AuthController {
       domain: 'api-dev.korrk.kr',
     });
 
-    // return res.redirect(302, this.configService.get('CLIENT_URL'));
+    return res.redirect(302, this.configService.get('CLIENT_URL'));
   }
 }
