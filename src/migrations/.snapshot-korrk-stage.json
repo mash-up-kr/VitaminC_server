@@ -67,11 +67,6 @@
           "name": "user_role",
           "schema": "public",
           "items": ["USER", "ADMIN"]
-        },
-        "user-map-role": {
-          "name": "user-map-role",
-          "schema": "public",
-          "items": ["ADMIN", "READ", "WRITE"]
         }
       }
     },
@@ -207,11 +202,6 @@
           "name": "user_role",
           "schema": "public",
           "items": ["USER", "ADMIN"]
-        },
-        "user-map-role": {
-          "name": "user-map-role",
-          "schema": "public",
-          "items": ["ADMIN", "READ", "WRITE"]
         }
       }
     },
@@ -237,15 +227,13 @@
         },
         "role": {
           "name": "role",
-          "type": "user-map-role[]",
+          "type": "text",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "nativeEnumName": "user-map-role",
-          "default": "'{READ,WRITE}'",
           "enumItems": ["ADMIN", "READ", "WRITE"],
-          "mappedType": "array"
+          "mappedType": "enum"
         },
         "created_at": {
           "name": "created_at",
@@ -309,11 +297,6 @@
           "name": "user_role",
           "schema": "public",
           "items": ["USER", "ADMIN"]
-        },
-        "user-map-role": {
-          "name": "user-map-role",
-          "schema": "public",
-          "items": ["ADMIN", "READ", "WRITE"]
         }
       }
     }
@@ -328,11 +311,6 @@
       "name": "user_role",
       "schema": "public",
       "items": ["USER", "ADMIN"]
-    },
-    "user-map-role": {
-      "name": "user-map-role",
-      "schema": "public",
-      "items": ["ADMIN", "READ", "WRITE"]
     }
   }
 }
