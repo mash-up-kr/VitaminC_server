@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import * as Sentry from '@sentry/nestjs';
 import { Response } from 'express';
 
 import { IS_DEV } from 'src/common/constants';
@@ -48,14 +49,19 @@ export class CustomExceptionFilter implements ExceptionFilter {
         `api : ${request.method} ${request.url} message : ${exception.message}`,
       );
       if (!IS_DEV) {
-        await this.handle(request, exception);
+        await this.sendErrorInfoToDiscord(request, exception);
       }
+      this.sendErrorToSentry(exception);
     }
 
     response.status(responseBody.statusCode).json(responseBody);
   }
 
-  private async handle(request: Request, error: Error) {
+  private sendErrorToSentry(exception: Error) {
+    Sentry.captureException(exception);
+  }
+
+  private async sendErrorInfoToDiscord(request: Request, error: Error) {
     //TODO: DISCORD_WEBHOOK_URL 추가 예정
     const discordWebhook = this.configService.get('DISCORD_WEBHOOK_URL');
     const content = this.parseError(request, error);
