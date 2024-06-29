@@ -10,8 +10,8 @@ import { ConfigService } from '@nestjs/config';
 import * as Sentry from '@sentry/nestjs';
 import { Response } from 'express';
 
-import { IS_DEV } from 'src/common/constants';
 import { NODE_ENVIRONMENT } from 'src/common/helper/env.validation';
+import { UtilService } from 'src/util/util.service';
 
 type ResponseBody = {
   statusCode: number;
@@ -22,7 +22,10 @@ type ResponseBody = {
 @Catch()
 export class CustomExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger();
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly utilService: UtilService,
+  ) {}
 
   async catch(exception: Error, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -49,7 +52,7 @@ export class CustomExceptionFilter implements ExceptionFilter {
       this.logger.error(
         `api : ${request.method} ${request.url} message : ${exception.message}`,
       );
-      if (!IS_DEV) {
+      if (!this.utilService.isDev()) {
         this.sendErrorToSentry(exception);
         await this.sendErrorInfoToDiscord(request, exception);
       }

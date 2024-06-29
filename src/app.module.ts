@@ -14,6 +14,7 @@ import { MapModule } from './map/map.module';
 import { SearchModule } from './search/search.module';
 import { UserMapModule } from './user-map/user-map.module';
 import { UserModule } from './user/user.module';
+import { UtilModule } from './util/util.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { UserModule } from './user/user.module';
     MapModule,
     UserMapModule,
     SearchModule,
+    UtilModule,
   ],
   controllers: [AppController],
   providers: [AppService],

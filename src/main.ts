@@ -12,6 +12,7 @@ import { ResponseInterceptor } from 'src/core/intercepters/response.intercepter'
 
 import { AppModule } from './app.module';
 import { CustomExceptionFilter } from './core/exception-filters/custom-exception.filter';
+import { UtilService } from './util/util.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -26,6 +27,7 @@ async function bootstrap() {
   });
 
   const configService = app.select(AppModule).get(ConfigService);
+  const utilService = new UtilService(configService);
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -33,7 +35,7 @@ async function bootstrap() {
     }),
   );
   app.useGlobalInterceptors(new ResponseInterceptor());
-  app.useGlobalFilters(new CustomExceptionFilter(configService));
+  app.useGlobalFilters(new CustomExceptionFilter(configService, utilService));
 
   const config = new DocumentBuilder()
     .setTitle('Korrk API')
