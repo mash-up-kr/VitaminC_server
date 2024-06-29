@@ -7,9 +7,8 @@ import {
   MockRepository,
   MockRepositoryFactory,
 } from 'src/common/helper/mock.helper';
+import { UserMap, UserMapRepository } from 'src/entities';
 
-import { UserMap } from './entities/user-map.entity';
-import { UserMapRepository } from './user-map.repository';
 import { UserMapService } from './user-map.service';
 
 type UserMapMockRepositoryType = MockRepository<

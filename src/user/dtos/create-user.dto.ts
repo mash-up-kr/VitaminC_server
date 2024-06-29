@@ -2,8 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { IsNotEmpty, IsOptional } from 'class-validator';
 
-import { User } from '../entities/user.entity';
-import { UserProvider, UserProviderValueType } from '../entities/user.type';
+import { User, UserProvider, UserProviderValueType } from 'src/entities';
 
 export class CreateUserDto implements Partial<User> {
   @ApiProperty({ required: false })

@@ -6,7 +6,7 @@ import { Response } from 'express';
 
 import { KakaoInfo } from 'src/common/decorators/kakao-info.decorator';
 import { KakaoGuard } from 'src/common/guards/kakao.guard';
-import { UserProvider } from 'src/user/entities/user.type';
+import { UserProvider } from 'src/entities';
 
 import { AuthService } from './auth.service';
 import { KakaoPayload } from './strategies/kakao.strategy';
