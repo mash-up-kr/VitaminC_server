@@ -10,6 +10,7 @@ declare namespace NodeJS {
     DB_PASSWORD: string;
     KAKAO_CLIENT_ID: string;
     KAKAO_REDIRECT_URL: string;
+    KAKAO_REST_API_KEY: string;
     CLIENT_URL: string;
   }
 }
