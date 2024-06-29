@@ -1,7 +1,8 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 
-import { uniqueBy } from '../utils';
+import { UtilService } from 'src/util/util.service';
+
 import { KAKAO_SCRAPING_HEADERS, KakaoMapHelper } from './kakao-map.helper';
 import {
   KakaoCategoryGroupCode,
@@ -15,6 +16,7 @@ export class SearchService {
   constructor(
     private readonly httpService: HttpService,
     private readonly kakaoMapHelper: KakaoMapHelper,
+    private readonly utilService: UtilService,
   ) {}
 
   async suggest(keyword: string): Promise<string[]> {
@@ -41,7 +43,7 @@ export class SearchService {
       this.searchPlace(query, rect, KakaoCategoryGroupCode['카페']),
       this.searchPlace(query, rect, KakaoCategoryGroupCode['음식점']),
     ]);
-    return uniqueBy([...list1, ...list2], (item) => item.id);
+    return this.utilService.uniqueBy([...list1, ...list2], (item) => item.id);
   }
 
   async searchPlaceDetail(id: string): Promise<KakaoPlaceDetailRaw> {

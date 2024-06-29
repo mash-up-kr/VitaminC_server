@@ -16,4 +16,16 @@ export class UtilService {
   isProd() {
     return this.configService.get('NODE_ENV') === 'production';
   }
+
+  uniqueBy<T>(arr: T[], toKey: (item: T) => string): T[] {
+    return Object.values(
+      arr.reduce(
+        (acc, item) => {
+          acc[toKey(item)] = item;
+          return acc;
+        },
+        {} as Record<string, T>,
+      ),
+    );
+  }
 }
