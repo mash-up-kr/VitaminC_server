@@ -2,8 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-import { User } from '../entities/user.entity';
-import { UserRoleValueType } from '../entities/user.type';
+import { User, UserProviderValueType, UserRoleValueType } from 'src/entities';
 
 export class UpdateUserDto implements Partial<User> {
   @IsOptional()

@@ -4,8 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 
 import { firstValueFrom } from 'rxjs';
 
-import { User } from 'src/user/entities/user.entity';
-import { UserProviderValueType } from 'src/user/entities/user.type';
+import { User, UserProviderValueType } from 'src/entities';
 import { UserService } from 'src/user/user.service';
 
 @Injectable()
@@ -15,6 +14,12 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
   ) {}
+
+  async signInForTestUser(userId: number) {
+    const user = new User();
+    user.id = userId;
+    return this.signIn(user);
+  }
 
   private signIn(user: User) {
     const accessToken = this.jwtService.sign({ id: user.id });

@@ -1,3 +1,3 @@
-import { UserMap } from '../entities/user-map.entity';
+import { UserMap } from 'src/entities';
 
 export class UpdateUserMapDto implements Partial<UserMap> {}

@@ -1,4 +1,4 @@
-import { Controller, Get, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Redirect, Res, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -6,7 +6,8 @@ import { Response } from 'express';
 
 import { KakaoInfo } from 'src/common/decorators/kakao-info.decorator';
 import { KakaoGuard } from 'src/common/guards/kakao.guard';
-import { UserProvider } from 'src/user/entities/user.type';
+import { NODE_ENVIRONMENT } from 'src/common/helper/env.validation';
+import { UserProvider } from 'src/entities';
 
 import { AuthService } from './auth.service';
 import { KakaoPayload } from './strategies/kakao.strategy';
@@ -21,6 +22,7 @@ export class AuthController {
 
   @Get('kakao')
   @UseGuards(KakaoGuard)
+  @Redirect(process.env.CLIENT_URL)
   async signInToKakao(
     @KakaoInfo() { id, accessToken, refreshToken }: KakaoPayload,
     @Res() res: Response,
@@ -33,7 +35,12 @@ export class AuthController {
     });
 
     res.cookie('Authorization', 'Bearer ' + user.accessToken, {
-      httpOnly: true,
+      // httpOnly: true,
+      // sameSite: 'none',
+      // secure:
+      //   this.configService.get('NODE_ENV') === NODE_ENVIRONMENT['production']
+      //     ? true
+      //     : false,
     });
 
     return res.redirect(302, this.configService.get('CLIENT_URL'));

@@ -9,6 +9,7 @@ import cookieParser from 'cookie-parser';
 import { ResponseInterceptor } from 'src/core/intercepters/response.intercepter';
 
 import { AppModule } from './app.module';
+import { NODE_ENVIRONMENT } from './common/helper/env.validation';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -32,10 +33,14 @@ async function bootstrap() {
   const port = configService.get('PORT');
   await app.listen(port);
 
-  app.enableCors({
-    origin: '*',
-    credentials: true,
-  });
+  // app.enableCors({
+  //   origin:
+  //     configService.get('NOE_ENV') === NODE_ENVIRONMENT['production']
+  //       ? 'https://korrk.kr'
+  //       : 'http://localhost:3000',
+  //   credentials: true,
+  // });
+  app.enableCors({ origin: '*', credentials: true });
   app.use(cookieParser());
 
   console.log(`Application is running: http://localhost:${port}/api-docs`);
