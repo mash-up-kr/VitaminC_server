@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 
-import { UserMap } from './entities/user-map.entity';
+import { UserMap } from 'src/entities';
+
 import { UserMapService } from './user-map.service';
 
 @Module({

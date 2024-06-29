@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { InjectRepository } from '@mikro-orm/nestjs';
 
-import { UserMap } from './entities/user-map.entity';
-import { UserMapRepository } from './user-map.repository';
+import { UserMap, UserMapRepository } from 'src/entities';
 
 @Injectable()
 export class UserMapService {

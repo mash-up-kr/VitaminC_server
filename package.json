@@ -14,6 +14,8 @@
     "build": "nest build",
     "migrate:create:dev": "dotenv -e .development.env -- npx mikro-orm migration:create",
     "migrate:up:dev": "dotenv -e .development.env -- npx mikro-orm migration:up",
+    "show:database:schema": "dotenv -e .development.env -- npx mikro-orm schema:create --dump",
+    "show:database:schema:update": "dotenv -e .development.env -- npx mikro-orm schema:update --no-drop-tables --dump",
     "migrate:up": "npx mikro-orm migration:up",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start:dev": "export NODE_ENV=development&& nest start --watch",

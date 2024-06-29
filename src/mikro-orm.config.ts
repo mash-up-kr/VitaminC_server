@@ -10,6 +10,7 @@ import {
 import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
 
 import { IS_DEV } from 'src/common/constants';
+import { entities } from 'src/entities';
 
 const configService = new ConfigService();
 const logger = new Logger('MikroORM');
@@ -22,10 +23,11 @@ const MikroOrmConfig: Options = {
   host: configService.get('DB_HOST'),
   user: configService.get('DB_USER'),
   password: configService.get('DB_PASSWORD'),
+  port: configService.get('DB_PORT') ?? 5432,
   dbName: configService.get('DB_NAME'),
-  entities: ['dist/**/*.entity.js'],
-  entitiesTs: ['src/**/*.entity.{ts,js}'],
+  entities: entities,
   metadataProvider: ReflectMetadataProvider,
   debug: IS_DEV,
 };
+
 export default MikroOrmConfig;

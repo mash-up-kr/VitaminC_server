@@ -39,6 +39,11 @@ export class EnvironmentVariables {
   @IsNumber()
   @Min(0)
   @Max(65535)
+  DB_PORT: number;
+
+  @IsNumber()
+  @Min(0)
+  @Max(65535)
   PORT: number;
 
   @IsString()

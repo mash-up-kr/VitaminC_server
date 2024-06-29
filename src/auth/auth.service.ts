@@ -4,8 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 
 import { firstValueFrom } from 'rxjs';
 
-import { User } from 'src/user/entities/user.entity';
-import { UserProviderValueType } from 'src/user/entities/user.type';
+import { User, UserProviderValueType } from 'src/entities';
 import { UserService } from 'src/user/user.service';
 
 @Injectable()

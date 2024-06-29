@@ -3,8 +3,7 @@ import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 import { UseAuthGuard } from './common/decorators/auth-guard.decorator';
 import { CurrentUser } from './common/decorators/user.decorator';
-import { User } from './user/entities/user.entity';
-import { UserRole } from './user/entities/user.type';
+import { User, UserRole } from './entities';
 
 @Controller()
 export class AppController {

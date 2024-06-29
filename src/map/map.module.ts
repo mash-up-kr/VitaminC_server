@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 
-import { GroupMap } from './entities/map.entity';
+import { GroupMap } from 'src/entities';
+
 import { MapController } from './map.controller';
 import { MapService } from './map.service';
 
