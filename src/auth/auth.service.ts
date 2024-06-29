@@ -15,6 +15,12 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+  async signInForTestUser(userId: number) {
+    const user = new User();
+    user.id = userId;
+    return this.signIn(user);
+  }
+
   private signIn(user: User) {
     const accessToken = this.jwtService.sign({ id: user.id });
 
