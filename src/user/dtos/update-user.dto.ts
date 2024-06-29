@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 
-import { User, UserProviderValueType, UserRoleValueType } from 'src/entities';
+import { User, UserRoleValueType } from 'src/entities';
 
 export class UpdateUserDto implements Partial<User> {
   @IsOptional()
@@ -22,5 +22,6 @@ export class UpdateUserRequestDto implements Partial<User> {
   @ApiProperty({ required: true })
   @IsNotEmpty()
   @IsString()
+  @MaxLength(6, { message: '닉네임은 최대 6글자까지 입력할 수 있어요.' })
   nickname: string;
 }
