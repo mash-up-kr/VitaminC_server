@@ -1,6 +1,7 @@
 import {
   Collection,
   Entity,
+  EntityRepositoryType,
   Enum,
   Index,
   OneToMany,
@@ -10,6 +11,7 @@ import {
 } from '@mikro-orm/core';
 
 import { UserMap } from './user-map.entity';
+import { UserRepository } from './user.repository';
 
 const uniqueIndexKeyName = ['provider', 'providerId'];
 
@@ -28,7 +30,7 @@ export type UserRoleValueType = (typeof UserRole)[keyof typeof UserRole];
 
 @Unique({ properties: uniqueIndexKeyName })
 @Index({ properties: uniqueIndexKeyName })
-@Entity()
+@Entity({ repository: () => UserRepository })
 export class User {
   @PrimaryKey({ autoincrement: true })
   id: number;
@@ -63,4 +65,6 @@ export class User {
 
   @Property({ onUpdate: () => new Date() })
   updatedAt: Date = new Date();
+
+  [EntityRepositoryType]?: UserRepository;
 }

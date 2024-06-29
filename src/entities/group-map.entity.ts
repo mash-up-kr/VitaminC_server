@@ -1,14 +1,15 @@
 import {
   Collection,
   Entity,
+  EntityRepositoryType,
   OneToMany,
   PrimaryKey,
   Property,
 } from '@mikro-orm/core';
 
-import { UserMap } from 'src/entities';
+import { GroupMapRepository, UserMap } from 'src/entities';
 
-@Entity({ tableName: 'map' })
+@Entity({ tableName: 'map', repository: () => GroupMapRepository })
 export class GroupMap {
   @PrimaryKey()
   id: string;
@@ -24,4 +25,6 @@ export class GroupMap {
 
   @Property({ onUpdate: () => new Date() })
   updatedAt: Date = new Date();
+
+  [EntityRepositoryType]: GroupMapRepository;
 }

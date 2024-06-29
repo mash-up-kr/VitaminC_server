@@ -1,5 +1,6 @@
 import {
   Entity,
+  EntityRepositoryType,
   Enum,
   ManyToOne,
   PrimaryKeyProp,
@@ -8,6 +9,7 @@ import {
 } from '@mikro-orm/core';
 
 import { GroupMap } from './group-map.entity';
+import { UserMapRepository } from './user-map.repository';
 import { User } from './user.entity';
 
 export const UserMapRole = {
@@ -19,7 +21,7 @@ export const UserMapRole = {
 export type UserMapRoleValueType =
   (typeof UserMapRole)[keyof typeof UserMapRole];
 
-@Entity()
+@Entity({ repository: () => UserMapRepository })
 export class UserMap {
   @ManyToOne(() => User, { primary: true })
   user: Rel<User>;
@@ -42,4 +44,6 @@ export class UserMap {
   updatedAt: Date = new Date();
 
   [PrimaryKeyProp]: ['user', 'map'];
+
+  [EntityRepositoryType]?: UserMapRepository;
 }
