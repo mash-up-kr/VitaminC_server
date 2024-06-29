@@ -30,7 +30,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prepare": "husky",
     "postgres:local:up": "docker compose --env-file .development.env up -d && pnpm migrate:up:dev",
-    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org vitaminc --project node-nestjs ./dist && sentry-cli sourcemaps upload --org vitaminc --project node-nestjs ./dist"
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org vitaminc --project korrk-back ./dist && sentry-cli sourcemaps upload --org vitaminc --project korrk-back ./dist"
   },
   "dependencies": {
     "@mikro-orm/core": "^6.2.9",
