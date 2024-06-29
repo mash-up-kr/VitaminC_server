@@ -4,6 +4,8 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+import { ResponseInterceptor } from 'src/core/intercepters/response.intercepter';
+
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -14,6 +16,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
+  app.useGlobalInterceptors(new ResponseInterceptor());
 
   const config = new DocumentBuilder()
     .setTitle('Korrk API')

@@ -19,6 +19,9 @@ importers:
       '@mikro-orm/postgresql':
         specifier: ^6.2.9
         version: 6.2.9(@mikro-orm/core@6.2.9)
+      '@mikro-orm/reflection':
+        specifier: ^6.2.9
+        version: 6.2.9(@mikro-orm/core@6.2.9)
       '@mikro-orm/sql-highlighter':
         specifier: ^1.0.1
         version: 1.0.1
@@ -58,6 +61,12 @@ importers:
       joi:
         specifier: ^17.13.3
         version: 17.13.3
+      moment-timezone:
+        specifier: ^0.5.45
+        version: 0.5.45
+      passport-custom:
+        specifier: ^1.1.1
+        version: 1.1.1
       passport-jwt:
         specifier: ^4.0.1
         version: 4.0.1
@@ -874,6 +883,15 @@ packages:
     peerDependencies:
       '@mikro-orm/core': ^6.0.0
 
+  '@mikro-orm/reflection@6.2.9':
+    resolution:
+      {
+        integrity: sha512-JkdQnEohwngC1LiNNB+tt0ReDiCMlTAJA4/n5N4+tdSv8aspgrIX8ARgB2a6IjgWwes7xIkJJ1nb5tWdFwPSmA==,
+      }
+    engines: { node: '>= 18.12.0' }
+    peerDependencies:
+      '@mikro-orm/core': ^6.0.0
+
   '@mikro-orm/sql-highlighter@1.0.1':
     resolution:
       {
@@ -1321,6 +1339,12 @@ packages:
     peerDependenciesMeta:
       '@vue/compiler-sfc':
         optional: true
+
+  '@ts-morph/common@0.23.0':
+    resolution:
+      {
+        integrity: sha512-m7Lllj9n/S6sOkCkRftpM7L24uvmfXQFedlW/4hENcuJH1HHm9u5EgxZb9uVjQSCGrbBWBkOGgcTxNg36r6ywA==,
+      }
 
   '@tsconfig/node10@1.0.11':
     resolution:
@@ -2356,6 +2380,12 @@ packages:
         integrity: sha512-QVb0dM5HvG+uaxitm8wONl7jltx8dqhfU33DcqtOZcLSVIKSDDLDi7+0LbAKiyI8hD9u42m2YxXSkMGWThaecQ==,
       }
     engines: { iojs: '>= 1.0.0', node: '>= 0.12.0' }
+
+  code-block-writer@13.0.1:
+    resolution:
+      {
+        integrity: sha512-c5or4P6erEA69TxaxTNcHUNcIn+oyxSRTOWV+pSYF+z4epXqNvwvJ70XPGjPNgue83oAFAPBRQYwpAJ/Hpe/Sg==,
+      }
 
   collect-v8-coverage@1.0.2:
     resolution:
@@ -4517,6 +4547,26 @@ packages:
       }
     hasBin: true
 
+  mkdirp@3.0.1:
+    resolution:
+      {
+        integrity: sha512-+NsyUUAZDmo6YVHzL/stxSu3t9YS1iljliy3BSDrXJ/dkn1KYdmtZODGGjLcc9XLgVVpH4KshHB8XmZgMhaBXg==,
+      }
+    engines: { node: '>=10' }
+    hasBin: true
+
+  moment-timezone@0.5.45:
+    resolution:
+      {
+        integrity: sha512-HIWmqA86KcmCAhnMAN0wuDOARV/525R2+lOLotuGFzn4HO+FH+/645z2wx0Dt3iDv6/p61SIvKnDstISainhLQ==,
+      }
+
+  moment@2.30.1:
+    resolution:
+      {
+        integrity: sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==,
+      }
+
   ms@2.0.0:
     resolution:
       {
@@ -4809,6 +4859,13 @@ packages:
       }
     engines: { node: '>= 0.8' }
 
+  passport-custom@1.1.1:
+    resolution:
+      {
+        integrity: sha512-/2m7jUGxmCYvoqenLB9UrmkCgPt64h8ZtV+UtuQklZ/Tn1NpKBeOorCYkB/8lMRoiZ5hUrCoMmDtxCS/d38mlg==,
+      }
+    engines: { node: '>= 0.10.0' }
+
   passport-jwt@4.0.1:
     resolution:
       {
@@ -4841,6 +4898,12 @@ packages:
         integrity: sha512-cPLl+qZpSc+ireUvt+IzqbED1cHHkDoVYMo30jbJIdOOjQ1MQYZBPiNvmi8UM6lJuOpTPXJGZQk0DtC4y61MYQ==,
       }
     engines: { node: '>= 0.4.0' }
+
+  path-browserify@1.0.1:
+    resolution:
+      {
+        integrity: sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==,
+      }
 
   path-exists@4.0.0:
     resolution:
@@ -5988,6 +6051,12 @@ packages:
       typescript: '*'
       webpack: ^5.0.0
 
+  ts-morph@22.0.0:
+    resolution:
+      {
+        integrity: sha512-M9MqFGZREyeb5fTl6gNHKZLqBQA0TjA1lea+CR48R8EBTDuWrNqW6ccC5QvjNR4s6wDumD3LTCjOFSp9iwlzaw==,
+      }
+
   ts-node@10.9.2:
     resolution:
       {
@@ -7005,6 +7074,12 @@ snapshots:
       - supports-color
       - tedious
 
+  '@mikro-orm/reflection@6.2.9(@mikro-orm/core@6.2.9)':
+    dependencies:
+      '@mikro-orm/core': 6.2.9
+      globby: 11.1.0
+      ts-morph: 22.0.0
+
   '@mikro-orm/sql-highlighter@1.0.1':
     dependencies:
       ansi-colors: 4.1.3
@@ -7334,6 +7409,13 @@ snapshots:
       prettier: 3.3.2
     transitivePeerDependencies:
       - supports-color
+
+  '@ts-morph/common@0.23.0':
+    dependencies:
+      fast-glob: 3.3.2
+      minimatch: 9.0.4
+      mkdirp: 3.0.1
+      path-browserify: 1.0.1
 
   '@tsconfig/node10@1.0.11': {}
 
@@ -8028,6 +8110,8 @@ snapshots:
   clone@1.0.4: {}
 
   co@4.6.0: {}
+
+  code-block-writer@13.0.1: {}
 
   collect-v8-coverage@1.0.2: {}
 
@@ -9461,6 +9545,14 @@ snapshots:
     dependencies:
       minimist: 1.2.8
 
+  mkdirp@3.0.1: {}
+
+  moment-timezone@0.5.45:
+    dependencies:
+      moment: 2.30.1
+
+  moment@2.30.1: {}
+
   ms@2.0.0: {}
 
   ms@2.1.2: {}
@@ -9609,6 +9701,10 @@ snapshots:
 
   parseurl@1.3.3: {}
 
+  passport-custom@1.1.1:
+    dependencies:
+      passport-strategy: 1.0.0
+
   passport-jwt@4.0.1:
     dependencies:
       jsonwebtoken: 9.0.2
@@ -9632,6 +9728,8 @@ snapshots:
       passport-strategy: 1.0.0
       pause: 0.0.1
       utils-merge: 1.0.1
+
+  path-browserify@1.0.1: {}
 
   path-exists@4.0.0: {}
 
@@ -10217,6 +10315,11 @@ snapshots:
       source-map: 0.7.4
       typescript: 5.4.5
       webpack: 5.90.1(@swc/core@1.6.1)
+
+  ts-morph@22.0.0:
+    dependencies:
+      '@ts-morph/common': 0.23.0
+      code-block-writer: 13.0.1
 
   ts-node@10.9.2(@swc/core@1.6.1)(@types/node@20.14.2)(typescript@5.4.5):
     dependencies:

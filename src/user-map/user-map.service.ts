@@ -1,11 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
-import { FilterQuery } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
-import { wrap } from '@mikro-orm/postgresql';
 
-import { CreateUserMapDto } from './dtos/create-user-map.dto';
-import { UpdateUserMapDto } from './dtos/update-user-map.dto';
 import { UserMap } from './entities/user-map.entity';
 import { UserMapRepository } from './user-map.repository';
 

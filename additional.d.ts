@@ -4,6 +4,7 @@ declare namespace NodeJS {
     NODE_ENV: string;
     JWT_PRIVATE_KEY: string;
     JWT_PUBLIC_KEY: string;
+    DB_HOST: string;
     DB_USER: string;
     DB_NAME: string;
     DB_PASSWORD: string;

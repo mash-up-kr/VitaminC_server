@@ -1,7 +1,9 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 import { MikroOrmModule } from '@mikro-orm/nestjs';
+
+import { LoggerMiddleware } from 'src/core/intercepters/logging.interceptor';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -30,4 +32,8 @@ import { UserModule } from './user/user.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(LoggerMiddleware).forRoutes('/*');
+  }
+}

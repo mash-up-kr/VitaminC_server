@@ -5,9 +5,7 @@ on:
       - main
       - stage
   pull_request:
-    branches:
-      - main
-      - stage
+    types: [opened, synchronize]
 
 jobs:
   test:
@@ -78,7 +76,7 @@ jobs:
       - name: update yaml with yq
         uses: mikefarah/yq@master
         with:
-          cmd: yq '( select(di == 1) | .spec.template.spec.containers[0].image ) = "${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ needs.ci.outputs.app_name }}:${{ needs.ci.outputs.version }}"' -i   'korrk/${{ needs.ci.outputs.app_name }}/${{ needs.ci.outputs.app_name }}.yaml'
+          cmd: yq '( select(di == 0) | .spec.template.spec.containers[0].image ) = "${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ needs.ci.outputs.app_name }}:${{ needs.ci.outputs.version }}"' -i   'korrk/${{ needs.ci.outputs.app_name }}/${{ needs.ci.outputs.app_name }}.yaml'
 
       - name: Update tag
         run: |
