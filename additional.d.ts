@@ -12,6 +12,7 @@ declare namespace NodeJS {
     KAKAO_REDIRECT_URL: string;
     KAKAO_REST_API_KEY: string;
     CLIENT_URL: string;
+    GPT_KEY: string;
 
     DISCORD_WEBHOOK_URL: string;
 

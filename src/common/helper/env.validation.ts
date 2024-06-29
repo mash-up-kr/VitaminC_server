@@ -74,6 +74,9 @@ export class EnvironmentVariables {
 
   @IsString()
   DISCORD_WEBHOOK_URL: string;
+  
+  @IsString()
+  GPT_KEY: string;
 }
 
 export function envValidation(config: Record<string, unknown>) {
