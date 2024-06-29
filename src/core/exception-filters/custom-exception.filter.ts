@@ -50,9 +50,9 @@ export class CustomExceptionFilter implements ExceptionFilter {
         `api : ${request.method} ${request.url} message : ${exception.message}`,
       );
       if (!IS_DEV) {
+        this.sendErrorToSentry(exception);
         await this.sendErrorInfoToDiscord(request, exception);
       }
-      this.sendErrorToSentry(exception);
     }
 
     response.status(responseBody.statusCode).json(responseBody);
