@@ -22,7 +22,6 @@ export class AuthController {
 
   @Get('kakao')
   @UseGuards(KakaoGuard)
-  @Redirect(process.env.CLIENT_URL)
   async signInToKakao(
     @KakaoInfo() { id, accessToken, refreshToken }: KakaoPayload,
     @Res() res: Response,
@@ -35,12 +34,12 @@ export class AuthController {
     });
 
     res.cookie('Authorization', 'Bearer ' + user.accessToken, {
-      // httpOnly: true,
+      httpOnly: true,
       sameSite: 'none',
-      secure: true,
-      //   this.configService.get('NODE_ENV') === NODE_ENVIRONMENT['development']
-      //     ? false
-      //     : true,
+      secure:
+        this.configService.get('NODE_ENV') === NODE_ENVIRONMENT['development']
+          ? false
+          : true,
     });
 
     return res.redirect(302, this.configService.get('CLIENT_URL'));
