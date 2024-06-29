@@ -6,6 +6,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import cookieParser from 'cookie-parser';
 
+import { CustomExceptionFilter } from 'src/core/exception-filters/custom-exception.filter';
 import { ResponseInterceptor } from 'src/core/intercepters/response.intercepter';
 
 import { AppModule } from './app.module';
@@ -30,6 +31,7 @@ async function bootstrap() {
   SwaggerModule.setup('api-docs', app, document);
 
   const configService = app.select(AppModule).get(ConfigService);
+  app.useGlobalFilters(new CustomExceptionFilter(configService));
   const port = configService.get('PORT');
   await app.listen(port);
 
