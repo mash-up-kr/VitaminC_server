@@ -12,7 +12,7 @@ export class GptService {
     });
   }
 
-  async checkIfIsBadwordWithGpt(text: string) {
+  async checkIfIsBadwordWithGpt(text: string): Promise<boolean> {
     const systemPrompt = `
       You are an AI assistant that check if a word user provide is badword in Korean.
 
