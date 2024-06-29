@@ -28,10 +28,6 @@ export class GptService {
       temperature: 0.2,
     });
 
-    console.log(`Prompt tokens: ${response.usage.prompt_tokens}`);
-    console.log(`Completion tokens: ${response.usage.completion_tokens}`);
-    console.log(`Total tokens: ${response.usage.total_tokens}`);
-
     const res = response.choices[0].message?.content;
 
     if (!['true', 'false'].includes(res)) {
