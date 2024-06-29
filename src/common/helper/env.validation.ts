@@ -68,6 +68,9 @@ export class EnvironmentVariables {
 
   @IsString()
   CLIENT_URL: string;
+
+  @IsString()
+  DISCORD_WEBHOOK_URL: string;
 }
 
 export function envValidation(config: Record<string, unknown>) {

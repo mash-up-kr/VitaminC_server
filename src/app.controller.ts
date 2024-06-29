@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, InternalServerErrorException } from '@nestjs/common';
 
 import { AppService } from './app.service';
 import { UseAuthGuard } from './common/decorators/auth-guard.decorator';
@@ -11,6 +11,8 @@ export class AppController {
 
   @Get()
   getHello(): string {
+    throw new InternalServerErrorException('First issue');
+
     return this.appService.getHello();
   }
 

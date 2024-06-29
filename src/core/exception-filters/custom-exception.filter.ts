@@ -11,6 +11,7 @@ import * as Sentry from '@sentry/nestjs';
 import { Response } from 'express';
 
 import { IS_DEV } from 'src/common/constants';
+import { NODE_ENVIRONMENT } from 'src/common/helper/env.validation';
 
 type ResponseBody = {
   statusCode: number;
@@ -62,9 +63,9 @@ export class CustomExceptionFilter implements ExceptionFilter {
   }
 
   private async sendErrorInfoToDiscord(request: Request, error: Error) {
-    //TODO: DISCORD_WEBHOOK_URL 추가 예정
     const discordWebhook = this.configService.get('DISCORD_WEBHOOK_URL');
-    const content = this.parseError(request, error);
+    const NODE_ENV = this.configService.get('NODE_ENV');
+    const content = this.parseError(request, error, NODE_ENV);
 
     await fetch(discordWebhook, {
       method: 'post',
@@ -73,7 +74,11 @@ export class CustomExceptionFilter implements ExceptionFilter {
     });
   }
 
-  private parseError(request: Request, error: Error): string {
+  private parseError(
+    request: Request,
+    error: Error,
+    env: keyof typeof NODE_ENVIRONMENT,
+  ): string {
     return `노드팀 채찍 맞아라~~ 🦹🏿‍♀️👹🦹🏿
 에러 발생 API : ${request.method} ${request.url}
 
@@ -84,6 +89,8 @@ export class CustomExceptionFilter implements ExceptionFilter {
       .slice(0, 2)
       .map((message) => message.trim())
       .join('\n')}
+
+에러 환경 : ${env}
 
 당장 고쳐서 올렷!
     `;

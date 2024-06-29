@@ -13,6 +13,8 @@ declare namespace NodeJS {
     KAKAO_REST_API_KEY: string;
     CLIENT_URL: string;
 
+    DISCORD_WEBHOOK_URL: string;
+
     // for test
     TEST_USER_ID?: number;
   }
