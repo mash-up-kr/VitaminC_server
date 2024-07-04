@@ -8,7 +8,12 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { UseAuthGuard } from '../common/decorators/auth-guard.decorator';
 import { CurrentUser } from '../common/decorators/user.decorator';
@@ -49,6 +54,7 @@ export class MapController {
 
   @Get(':id')
   @ApiOkResponse({ type: MapResponseDto })
+  @ApiBearerAuth()
   findOne(@Param('id') id: string) {
     // TODO: findOne For user로 만들어서 (ADMIN, READ, WRITE)권한없으면 403을 반환하는 라우트를 만들어야 합니다.
     return this.mapService.findOne({ id });
@@ -56,12 +62,14 @@ export class MapController {
 
   @Patch(':id')
   @ApiOkResponse({ type: MapResponseDto })
+  @ApiBearerAuth()
   update(@Param('id') id: string, @Body() updateMapDto: UpdateMapDto) {
     return this.mapService.update(id, updateMapDto);
   }
 
   @Delete(':id')
   @ApiOkResponse({ type: Number })
+  @ApiBearerAuth()
   remove(@Param('id') id: string) {
     return this.mapService.remove(id);
   }

@@ -7,7 +7,7 @@ import {
   Patch,
   Query,
 } from '@nestjs/common';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
@@ -25,6 +25,7 @@ export class UserController {
   @Get(':id')
   @UseAuthGuard([UserRole.USER])
   @ApiOkResponse({ type: UserResponseDto })
+  @ApiBearerAuth()
   async findOne(@Param('id') id: string) {
     const user = await this.userService.findOne({ id: +id });
     return user;
@@ -33,6 +34,7 @@ export class UserController {
   @Patch()
   @UseAuthGuard([UserRole.USER])
   @ApiOkResponse({ type: UserResponseDto })
+  @ApiBearerAuth()
   async update(
     @Body() updateUserDto: UpdateUserRequestDto,
     @CurrentUser() user: User,
@@ -42,6 +44,7 @@ export class UserController {
 
   @Delete(':id')
   @ApiOkResponse({ type: Number })
+  @ApiBearerAuth()
   async remove(@Param('id') id: string) {
     return this.userService.remove(+id);
   }
