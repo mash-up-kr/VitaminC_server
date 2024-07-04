@@ -6,13 +6,10 @@ import { UserMapService } from 'src/user-map/user-map.service';
 
 @Injectable()
 export class MapRoleGuard implements CanActivate {
-  private readonly mapId: string;
   constructor(
     private reflector: Reflector,
     private readonly userMapService: UserMapService,
-  ) {
-    this.mapId = '';
-  }
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const mapRoles = this.reflector.get<string[]>(

@@ -114,13 +114,19 @@ export class MapService {
   }
 
   async update(id: string, updateMapDto: UpdateMapDto) {
-    const map = await this.mapRepository.findOneOrFail(id);
-    // TODO: 이거 다시 구현
+    const map = await this.mapRepository.findOne(id);
+    if (!map) {
+      throw new NotFoundException(`존재하지 않는 지도입니다.`);
+    }
+
+    Object.assign(map, updateMapDto);
+
     await this.mapRepository.persistAndFlush(map);
     return map;
   }
 
-  remove(id: string) {
-    return this.mapRepository.nativeDelete({ id });
-  }
+  // TODO : hard delete vs soft delete
+  // remove(id: string) {
+  //   return this.mapRepository.nativeDelete({ id });
+  // }
 }

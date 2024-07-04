@@ -37,10 +37,10 @@ export class MapController {
   ) {}
 
   @Post()
-  @UseAuthGuard([UserRole.USER])
   @ApiOkResponse({ type: MapItemForUserDto })
   @ApiOperation({ summary: '새 지도를 생성합니다' })
   @ApiBearerAuth()
+  @UseAuthGuard([UserRole.USER])
   create(@Body() createMapDto: CreateMapDto, @CurrentUser() user: User) {
     // ensure alpha numeric
     if (!/[A-Za-z0-9-_]/.test(createMapDto.id)) {
@@ -53,9 +53,10 @@ export class MapController {
   }
 
   @Get()
-  @UseAuthGuard([UserRole.USER])
   @ApiOperation({ summary: '사용자가 속해있는 지도를 가져옵니다' })
   @ApiOkResponse({ type: [MapItemForUserDto] })
+  @ApiBearerAuth()
+  @UseAuthGuard([UserRole.USER])
   findAll(@CurrentUser() user: User) {
     return this.mapService.findAll(user);
   }
@@ -72,22 +73,27 @@ export class MapController {
   @Patch(':id')
   @ApiOkResponse({ type: MapResponseDto })
   @ApiBearerAuth()
+  @UseMapRoleGuard([UserMapRole.ADMIN])
+  @UseAuthGuard([UserRole.USER])
   update(@Param('id') id: string, @Body() updateMapDto: UpdateMapDto) {
     return this.mapService.update(id, updateMapDto);
   }
 
-  @Delete(':id')
-  @ApiOkResponse({ type: Number })
-  @ApiBearerAuth()
-  remove(@Param('id') id: string) {
-    return this.mapService.remove(id);
-  }
+  // TODO
+  // @Delete(':id')
+  // @ApiOkResponse({ type: Number })
+  // @ApiBearerAuth()
+  // @UseMapRoleGuard([UserMapRole.ADMIN])
+  // @UseAuthGuard([UserRole.USER])
+  // remove(@Param('id') id: string) {
+  //   return this.mapService.remove(id);
+  // }
 
   @Post(':id/invite-link')
   @ApiResponse({ type: InviteLinkResponseDto })
+  @ApiBearerAuth()
   @UseMapRoleGuard([UserMapRole.ADMIN])
   @UseAuthGuard([UserRole.USER])
-  @ApiBearerAuth()
   async createInviteLink(
     @CurrentUser() user: User,
     @Param('id') id: string,
