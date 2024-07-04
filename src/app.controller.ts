@@ -1,4 +1,5 @@
 import { Controller, Get, InternalServerErrorException } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 import { AppService } from './app.service';
 import { UseAuthGuard } from './common/decorators/auth-guard.decorator';
@@ -18,6 +19,7 @@ export class AppController {
 
   @Get('/me')
   @UseAuthGuard([UserRole.USER])
+  @ApiBearerAuth()
   getMe(@CurrentUser() user: User): User {
     return user;
   }

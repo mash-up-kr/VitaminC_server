@@ -40,6 +40,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Korrk API')
     .setDescription('Mashup의 VitaminC팀 API 서버입니다')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
