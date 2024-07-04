@@ -11,7 +11,7 @@
   "type": "commonjs",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "nest build && pnpm sentry:sourcemaps",
+    "build": "nest build # && pnpm sentry:sourcemaps",
     "migrate:create:dev": "dotenv -e .development.env -- npx mikro-orm migration:create",
     "migrate:up:dev": "dotenv -e .development.env -- npx mikro-orm migration:up",
     "show:database:schema": "dotenv -e .development.env -- npx mikro-orm schema:create --dump",
