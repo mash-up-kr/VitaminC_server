@@ -7,7 +7,13 @@ import {
   MockRepository,
   MockRepositoryFactory,
 } from 'src/common/helper/mock.helper';
-import { UserMap, UserMapRepository } from 'src/entities';
+import {
+  GroupMap,
+  User,
+  UserMap,
+  UserMapRepository,
+  UserMapRole,
+} from 'src/entities';
 
 import { UserMapService } from './user-map.service';
 
@@ -40,5 +46,24 @@ describe('UserMapService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
     expect(mockedRepository).toBeDefined();
+  });
+
+  it('should get the user-map by user_id, map_id', async () => {
+    const userId = 1;
+    const mapId = 'test-map';
+
+    const existUserMap = new UserMap();
+    existUserMap.user = new User();
+    existUserMap.user.id = userId;
+    existUserMap.map = new GroupMap();
+    existUserMap.map.id = mapId;
+    existUserMap.role = UserMapRole.ADMIN;
+
+    jest.spyOn(mockedRepository, 'findOne').mockResolvedValue(existUserMap);
+
+    const userMap = await service.findOneByUserAndMap(userId, mapId);
+
+    expect(userMap).toBeDefined();
+    expect(userMap).toEqual(existUserMap);
   });
 });

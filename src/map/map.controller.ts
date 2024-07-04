@@ -12,13 +12,17 @@ import {
   ApiBearerAuth,
   ApiOkResponse,
   ApiOperation,
+  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 
 import { UseAuthGuard } from '../common/decorators/auth-guard.decorator';
+import { UseMapRoleGuard } from '../common/decorators/map-role-guard.decorator';
 import { CurrentUser } from '../common/decorators/user.decorator';
-import { User, UserRole } from '../entities';
+import { User, UserMapRole, UserRole } from '../entities';
+import { InviteLinkService } from '../invite-link/invite-link.service';
 import { CreateMapDto } from './dtos/create-map.dto';
+import { InviteLinkResponseDto } from './dtos/invite-link-response.dto';
 import { MapItemForUserDto } from './dtos/map-item-for-user.dto';
 import { MapResponseDto } from './dtos/map-response.dto';
 import { UpdateMapDto } from './dtos/update-map.dto';
@@ -27,12 +31,16 @@ import { MapService } from './map.service';
 @ApiTags('maps')
 @Controller('maps')
 export class MapController {
-  constructor(private readonly mapService: MapService) {}
+  constructor(
+    private readonly mapService: MapService,
+    private readonly inviteLinkService: InviteLinkService,
+  ) {}
 
   @Post()
   @UseAuthGuard([UserRole.USER])
   @ApiOkResponse({ type: MapItemForUserDto })
   @ApiOperation({ summary: '새 지도를 생성합니다' })
+  @ApiBearerAuth()
   create(@Body() createMapDto: CreateMapDto, @CurrentUser() user: User) {
     // ensure alpha numeric
     if (!/[A-Za-z0-9-_]/.test(createMapDto.id)) {
@@ -55,8 +63,9 @@ export class MapController {
   @Get(':id')
   @ApiOkResponse({ type: MapResponseDto })
   @ApiBearerAuth()
+  @UseMapRoleGuard()
+  @UseAuthGuard([UserRole.USER])
   findOne(@Param('id') id: string) {
-    // TODO: findOne For user로 만들어서 (ADMIN, READ, WRITE)권한없으면 403을 반환하는 라우트를 만들어야 합니다.
     return this.mapService.findOne({ id });
   }
 
@@ -72,5 +81,17 @@ export class MapController {
   @ApiBearerAuth()
   remove(@Param('id') id: string) {
     return this.mapService.remove(id);
+  }
+
+  @Post(':id/invite-link')
+  @ApiResponse({ type: InviteLinkResponseDto })
+  @UseMapRoleGuard([UserMapRole.ADMIN])
+  @UseAuthGuard([UserRole.USER])
+  @ApiBearerAuth()
+  async createInviteLink(
+    @CurrentUser() user: User,
+    @Param('id') id: string,
+  ): Promise<InviteLinkResponseDto> {
+    return this.inviteLinkService.create(id, user);
   }
 }

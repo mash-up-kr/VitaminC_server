@@ -1,4 +1,4 @@
-import { Controller, Get, Redirect, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Res, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -6,7 +6,6 @@ import { Response } from 'express';
 
 import { KakaoInfo } from 'src/common/decorators/kakao-info.decorator';
 import { KakaoGuard } from 'src/common/guards/kakao.guard';
-import { NODE_ENVIRONMENT } from 'src/common/helper/env.validation';
 import { UserProvider } from 'src/entities';
 
 import { AuthService } from './auth.service';

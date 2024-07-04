@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { MockService, MockServiceFactory } from 'src/common/helper/mock.helper';
-
+import { MockService, MockServiceFactory } from '../common/helper/mock.helper';
 import { MapController } from './map.controller';
 import { MapService } from './map.service';
 
