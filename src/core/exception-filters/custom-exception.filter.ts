@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-// import * as Sentry from '@sentry/nestjs';
 import { Response } from 'express';
 
 import { EnvType } from 'src/common/helper/env.validation';

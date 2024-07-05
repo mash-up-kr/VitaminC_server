@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import * as crypto from 'node:crypto';
+
 @Injectable()
 export class UtilService {
   constructor(private readonly configService: ConfigService) {}
@@ -27,5 +29,13 @@ export class UtilService {
         {} as Record<string, T>,
       ),
     );
+  }
+
+  generateMD5TokenWithSalt(input: string, saltSize: number): string {
+    const saltBytes = crypto.randomBytes(saltSize);
+    return crypto
+      .createHash('md5')
+      .update(input + saltBytes)
+      .digest('hex');
   }
 }

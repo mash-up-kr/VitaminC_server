@@ -54,7 +54,6 @@ export class UserService {
   async checkDuplicateNickname(nickname: string) {
     const user = await this.userRepository.findOne({ nickname });
     if (user != undefined) {
-      console.log('afdfs');
       throw new DuplicateNicknameException();
     }
   }

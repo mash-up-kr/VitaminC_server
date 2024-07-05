@@ -1,4 +1,5 @@
 import { GroupMap } from './group-map.entity';
+import { InviteLink } from './invite-link.entity';
 import { KakaoPlace } from './kakao-place.entity';
 import { PlaceForMap } from './place-for-map.entity';
 import { Place } from './place.entity';
@@ -23,6 +24,9 @@ export * from './place-for-map.repository';
 export * from './place.entity';
 export * from './place.repository';
 
+export * from './invite-link.entity';
+export * from './invite-link.repository';
+
 export const entities = [
   User,
   GroupMap,
@@ -30,4 +34,5 @@ export const entities = [
   KakaoPlace,
   Place,
   PlaceForMap,
+  InviteLink,
 ];

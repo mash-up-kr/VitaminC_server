@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 
 import { LoggerMiddleware } from 'src/core/intercepters/logging.interceptor';
+import { InviteLinkModule } from 'src/invite-link/invite-link.module';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -36,6 +37,7 @@ import { UtilModule } from './util/util.module';
     SearchModule,
     UtilModule,
     PlaceModule,
+    InviteLinkModule,
   ],
   controllers: [AppController],
   providers: [AppService],

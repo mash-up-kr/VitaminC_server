@@ -7,10 +7,9 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
 import cookieParser from 'cookie-parser';
 
-import { CustomExceptionFilter } from 'src/core/exception-filters/custom-exception.filter';
-import { ResponseInterceptor } from 'src/core/intercepters/response.intercepter';
-
 import { AppModule } from './app.module';
+import { CustomExceptionFilter } from './core/exception-filters/custom-exception.filter';
+import { ResponseInterceptor } from './core/intercepters/response.intercepter';
 import { UtilService } from './util/util.service';
 
 async function bootstrap() {
