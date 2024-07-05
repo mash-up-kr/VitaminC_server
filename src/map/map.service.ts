@@ -1,24 +1,13 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
-import {
-  FilterQuery,
-  UniqueConstraintViolationException,
-} from '@mikro-orm/core';
-import { InjectEntityManager, InjectRepository } from '@mikro-orm/nestjs';
-import { EntityManager } from '@mikro-orm/postgresql';
-import { v4 as uuidv4 } from 'uuid';
+import { FilterQuery } from '@mikro-orm/core';
+import { InjectRepository } from '@mikro-orm/nestjs';
 
 import {
   GroupMap,
   GroupMapRepository,
-  Place,
   PlaceForMap,
   PlaceForMapRepository,
-  PlaceRepository,
   User,
   UserMap,
   UserMapRepository,
@@ -45,33 +34,25 @@ export class MapService {
     createMapDto: CreateMapDto,
     by: User,
   ): Promise<MapItemForUserDto> {
-    try {
-      const map = this.mapRepository.create(createMapDto);
-      const userMap = this.userMapRepository.create({
-        user: by,
-        role: UserMapRole.ADMIN,
-        map,
-      });
-      this.mapRepository.persist(map);
-      this.userMapRepository.persist(userMap);
+    const map = this.mapRepository.create(createMapDto);
+    const userMap = this.userMapRepository.create({
+      user: by,
+      role: UserMapRole.ADMIN,
+      map,
+    });
+    this.mapRepository.persist(map);
+    this.userMapRepository.persist(userMap);
 
-      await this.mapRepository.flush();
-      // await this.userMapRepository.flush(); // 이거 왜 안하지?
+    await this.mapRepository.flush();
 
-      const mapItemForUser = new MapItemForUserDto();
-      mapItemForUser.id = map.id;
-      mapItemForUser.name = map.name;
-      mapItemForUser.createdAt = map.createdAt;
-      mapItemForUser.updatedAt = map.updatedAt;
-      mapItemForUser.role = userMap.role;
+    const mapItemForUser = new MapItemForUserDto();
+    mapItemForUser.id = map.id;
+    mapItemForUser.name = map.name;
+    mapItemForUser.createdAt = map.createdAt;
+    mapItemForUser.updatedAt = map.updatedAt;
+    mapItemForUser.role = userMap.role;
 
-      return mapItemForUser;
-    } catch (error) {
-      if (error instanceof UniqueConstraintViolationException) {
-        throw new BadRequestException('이미 존재하는 지도 이름입니다');
-      }
-      throw error;
-    }
+    return mapItemForUser;
   }
 
   /**

@@ -4,8 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-// import * as Sentry from '@sentry/nestjs';
-// import { nodeProfilingIntegration } from '@sentry/profiling-node';
+import { useContainer } from 'class-validator';
 import cookieParser from 'cookie-parser';
 
 import { CustomExceptionFilter } from 'src/core/exception-filters/custom-exception.filter';
@@ -28,7 +27,7 @@ async function bootstrap() {
 
   const configService = app.select(AppModule).get(ConfigService);
   const utilService = new UtilService(configService);
-
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
