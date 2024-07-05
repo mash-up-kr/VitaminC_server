@@ -24,7 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       id: payload.id,
     });
     if (!user) {
-      throw new UserNotFoundException();
+      throw new UnauthorizedException('존재하지 않는 유저입니다.');
     }
     done(null, user);
   }
