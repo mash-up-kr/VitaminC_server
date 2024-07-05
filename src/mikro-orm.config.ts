@@ -34,6 +34,9 @@ const MikroOrmConfig: Options = {
     disableForeignKeys: true,
     createForeignKeyConstraints: true,
   },
+  migrations: {
+    disableForeignKeys: true,
+  },
 };
 
 export default MikroOrmConfig;
