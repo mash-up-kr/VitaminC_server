@@ -2,13 +2,13 @@ import { Module } from '@nestjs/common';
 
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 
-import { GroupMap, UserMap } from 'src/entities';
+import { GroupMap, PlaceForMap, UserMap } from 'src/entities';
 
 import { MapController } from './map.controller';
 import { MapService } from './map.service';
 
 @Module({
-  imports: [MikroOrmModule.forFeature([GroupMap, UserMap])],
+  imports: [MikroOrmModule.forFeature([GroupMap, UserMap, PlaceForMap])],
   controllers: [MapController],
   providers: [MapService],
   exports: [MapService],

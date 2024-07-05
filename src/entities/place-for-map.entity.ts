@@ -38,7 +38,7 @@ export class PlaceForMap {
   })
   likedUserIds: number[];
 
-  @OneToOne(() => User)
+  @ManyToOne(() => User)
   createdBy: User;
 
   @Property()

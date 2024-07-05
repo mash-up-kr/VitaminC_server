@@ -60,6 +60,13 @@ export class User {
   @OneToMany({ entity: () => UserMap, mappedBy: (userMap) => userMap.user })
   userMap = new Collection<UserMap>(this);
 
+  @Property({
+    type: 'json',
+    comment: '최근 검색어 배열',
+    default: '[]',
+  })
+  recentSearchKeywords: string[];
+
   @Property()
   createdAt: Date = new Date();
 
