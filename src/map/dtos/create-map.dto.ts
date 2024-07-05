@@ -7,9 +7,5 @@ import { GroupMap } from 'src/entities';
 export class CreateMapDto implements Partial<GroupMap> {
   @ApiProperty()
   @IsNotEmpty()
-  id: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
   name: string;
 }

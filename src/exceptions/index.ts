@@ -14,6 +14,11 @@ export class UserNotFoundException extends ExceptionOf.USER(
   '존재하지 않는 유저입니다.' as const,
 ) {}
 
+export class PlaceNotFoundException extends ExceptionOf.USER(
+  HttpStatus.NOT_FOUND,
+  '지도에 등록되지 않은 장소 입니다.' as const,
+) {}
+
 export class DuplicateNicknameException extends ExceptionOf.USER(
   HttpStatus.CONFLICT,
   '이미 사용중인 닉네임입니다.' as const,

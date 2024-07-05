@@ -6,15 +6,16 @@ import {
   PrimaryKey,
   Property,
 } from '@mikro-orm/core';
+import { v4 as uuid } from 'uuid';
 
 import { GroupMapRepository, UserMap } from 'src/entities';
 
 @Entity({ tableName: 'map', repository: () => GroupMapRepository })
 export class GroupMap {
-  @PrimaryKey()
-  id: string;
+  @PrimaryKey({ type: 'uuid' })
+  id: string = uuid();
 
-  @Property({ type: 'string' })
+  @Property({ type: 'string', unique: true })
   name: string;
 
   @OneToMany({ entity: () => UserMap, mappedBy: (userMap) => userMap.map })

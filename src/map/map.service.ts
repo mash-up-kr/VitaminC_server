@@ -8,11 +8,17 @@ import {
   FilterQuery,
   UniqueConstraintViolationException,
 } from '@mikro-orm/core';
-import { InjectRepository } from '@mikro-orm/nestjs';
+import { InjectEntityManager, InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { v4 as uuidv4 } from 'uuid';
 
 import {
   GroupMap,
   GroupMapRepository,
+  Place,
+  PlaceForMap,
+  PlaceForMapRepository,
+  PlaceRepository,
   User,
   UserMap,
   UserMapRepository,
@@ -31,6 +37,8 @@ export class MapService {
     private readonly mapRepository: GroupMapRepository,
     @InjectRepository(UserMap)
     private readonly userMapRepository: UserMapRepository,
+    @InjectRepository(PlaceForMap)
+    private readonly placeForMapRepository: PlaceForMapRepository,
   ) {}
 
   async create(
@@ -60,9 +68,7 @@ export class MapService {
       return mapItemForUser;
     } catch (error) {
       if (error instanceof UniqueConstraintViolationException) {
-        throw new BadRequestException(
-          '이미 존재하는 지도 아이디입니다: ' + createMapDto.id,
-        );
+        throw new BadRequestException('이미 존재하는 지도 이름입니다');
       }
       throw error;
     }
@@ -96,12 +102,13 @@ export class MapService {
     if (entity === null) {
       throw new NotFoundException('해당 맵을 찾을 수 없습니다');
     }
-
+    const placeForMap = await this.placeForMapRepository.find({ map: where });
     const mapResponse = new MapResponseDto();
     mapResponse.id = entity.id;
     mapResponse.name = entity.name;
     mapResponse.createdAt = entity.createdAt;
     mapResponse.updatedAt = entity.updatedAt;
+    mapResponse.registeredPlaceCount = placeForMap.length;
     mapResponse.users = entity.userMap.getItems().map((userMap) => {
       return {
         id: userMap.user.id,

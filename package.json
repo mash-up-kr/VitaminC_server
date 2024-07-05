@@ -16,6 +16,7 @@
     "migrate:up:dev": "dotenv -e .development.env -- npx mikro-orm migration:up",
     "show:database:schema": "dotenv -e .development.env -- npx mikro-orm schema:create --dump",
     "show:database:schema:update": "dotenv -e .development.env -- npx mikro-orm schema:update --no-drop-tables --dump",
+    "database:schema:update": "dotenv -e .development.env -- npx mikro-orm schema:update --no-drop-tables -r",
     "migrate:up": "npx mikro-orm migration:up",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start:dev": "export NODE_ENV=development&& nest start --watch",
@@ -60,7 +61,8 @@
     "passport-kakao": "^1.0.1",
     "reflect-metadata": "^0.2.2",
     "rimraf": "^5.0.7",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.1.0",
