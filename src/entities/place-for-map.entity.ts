@@ -2,7 +2,6 @@ import {
   Entity,
   EntityRepositoryType,
   ManyToOne,
-  OneToOne,
   PrimaryKeyProp,
   Property,
   Rel,
