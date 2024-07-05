@@ -38,8 +38,4 @@ export class MapRoleGuard implements CanActivate {
 
     return await hasMapRole();
   }
-
-  private isOnlyAdmin(mapRoles: string[]): boolean {
-    return mapRoles.length === 1 && mapRoles[0] === UserMapRole.ADMIN;
-  }
 }

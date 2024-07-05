@@ -29,14 +29,14 @@ export class InviteLinkService {
     await this.inviteLinkRepository.persistAndFlush(inviteLink);
 
     return {
-      invite_link_token: token,
+      inviteLinkToken: token,
     };
   }
 
   private getExpiration(): number {
     const now: Date = new Date();
-    const expirationDate: Date = new Date(
-      now.setDate(now.getDate() + INVITE_LINK_EXPIRATION_DAYS),
+    const expirationDate = new Date(
+      now.getTime() + INVITE_LINK_EXPIRATION_DAYS * 24 * 60 * 60 * 1000,
     );
     return expirationDate.getTime();
   }
