@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Body,
   Controller,
-  Delete,
   Get,
   Param,
   Patch,
@@ -38,7 +37,7 @@ export class MapController {
 
   @Post()
   @ApiOkResponse({ type: MapItemForUserDto })
-  @ApiOperation({ summary: '새 지도를 생성합니다' })
+  @ApiOperation({ summary: '새 지도를 생성합니다.' })
   @ApiBearerAuth()
   @UseAuthGuard([UserRole.USER])
   create(@Body() createMapDto: CreateMapDto, @CurrentUser() user: User) {
@@ -53,7 +52,7 @@ export class MapController {
   }
 
   @Get()
-  @ApiOperation({ summary: '사용자가 속해있는 지도를 가져옵니다' })
+  @ApiOperation({ summary: '사용자가 속해있는 지도를 가져옵니다.' })
   @ApiOkResponse({ type: [MapItemForUserDto] })
   @ApiBearerAuth()
   @UseAuthGuard([UserRole.USER])
@@ -90,6 +89,10 @@ export class MapController {
   // }
 
   @Post(':id/invite-links')
+  @ApiOperation({
+    summary: '지도의 초대링크를 생성합니다.',
+    description: '유효기간은 7일로 설정되어 있습니다.',
+  })
   @ApiResponse({ type: InviteLinkResponseDto })
   @ApiBearerAuth()
   @UseMapRoleGuard([UserMapRole.ADMIN])
