@@ -89,7 +89,7 @@ export class MapController {
   //   return this.mapService.remove(id);
   // }
 
-  @Post(':id/invite-link')
+  @Post(':id/invite-links')
   @ApiResponse({ type: InviteLinkResponseDto })
   @ApiBearerAuth()
   @UseMapRoleGuard([UserMapRole.ADMIN])
