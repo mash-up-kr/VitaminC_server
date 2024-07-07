@@ -32,7 +32,6 @@ export class UserController {
   @ApiOperation({ summary: '내 정보를 조회합니다.' })
   @UseAuthGuard([UserRole.USER])
   @ApiOkResponse({ type: UserResponseDto })
-  @ApiOperation({ summary: '맛집지도 (GroupMap)에 등록된 장소 전부 가져오기' })
   @ApiBearerAuth()
   getMe(@CurrentUser() user: User): UserResponseDto {
     return toUserResponseDto(user);
@@ -75,10 +74,10 @@ export class UserController {
     return this.userService.checkDuplicateNickname(nickname);
   }
 
-  @Get(':id/maps/:mapId')
+  @Delete(':id/maps/:mapId')
   @ApiOperation({ summary: '지도(그룹) 나가기' })
   @ApiOkResponse({})
   async leaveMap(@Param('id') id: string, @Param('mapId') mapId: string) {
-    return this.userService.leaveMap(+id, mapId);
+    return await this.userService.leaveMap(+id, mapId);
   }
 }
