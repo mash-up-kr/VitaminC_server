@@ -1,9 +1,10 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { User, UserRole } from 'src/entities';
+import { PlaceResponseDTO } from 'src/place/dto/place-for-map-response.dto';
 import { UserService } from 'src/user/user.service';
 
 import { SearchService } from './search.service';
@@ -18,10 +19,12 @@ export class SearchController {
 
   @ApiQuery({ type: String, name: 'q', description: '검색을 원하는 질의어' })
   @ApiOperation({ summary: 'q= 에 해당하는 검색어 자동완성 목록' })
+  @ApiResponse({ type: String, isArray: true })
   @UseAuthGuard([UserRole.USER])
   @Get('suggest')
   async searchPlace(@Query('q') q: string, @CurrentUser() user: User) {
-    await this.userService.saveSearchKeyword(user, q);
+    // front에서 최근 검색 키워드 관리한다고 잠시 주석
+    // await this.userService.saveSearchKeyword(user, q);
     return await this.searchService.suggest(q);
   }
 
@@ -66,6 +69,7 @@ export class SearchController {
     required: false,
     description: '장소디테일 캐시를 무효화 할지 여부 (default false)',
   })
+  @ApiResponse({ type: PlaceResponseDTO })
   @Get('places/kakao/:id')
   async searchPlaceDetail(
     @Param('id') id: string,

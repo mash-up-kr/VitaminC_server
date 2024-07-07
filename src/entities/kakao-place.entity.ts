@@ -5,6 +5,8 @@ import {
   Property,
 } from '@mikro-orm/core';
 
+import { MenuItem } from 'src/place/dto/place-for-map-response.dto';
+
 import { KakaoPlaceRepository } from './kakao-place.repository';
 
 @Entity({
@@ -54,7 +56,7 @@ export class KakaoPlace {
     type: 'json',
     comment: '카카오맵 menuInfo.menuList',
   })
-  menuList: { menu: string; price: string }[];
+  menuList: MenuItem[];
 
   @Property({
     type: 'json',
