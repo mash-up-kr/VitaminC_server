@@ -20,7 +20,7 @@ import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { User, UserRole } from 'src/entities';
 
 import { UpdateUserRequestDto } from './dtos/update-user.dto';
-import { UserResponseDto } from './dtos/user-response.dto';
+import { UserResponseDto, toUserResponseDto } from './dtos/user-response.dto';
 import { UserService } from './user.service';
 
 @ApiTags('users')
@@ -28,25 +28,36 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get(':id')
+  @Get('me')
+  @ApiOperation({ summary: '내 정보를 조회합니다.' })
   @UseAuthGuard([UserRole.USER])
   @ApiOkResponse({ type: UserResponseDto })
   @ApiOperation({ summary: '맛집지도 (GroupMap)에 등록된 장소 전부 가져오기' })
   @ApiBearerAuth()
-  async findOne(@Param('id') id: string) {
-    const user = await this.userService.findOne({ id: +id });
-    return user;
+  getMe(@CurrentUser() user: User): UserResponseDto {
+    return toUserResponseDto(user);
   }
 
-  @Patch()
+  @Patch('me')
+  @ApiOperation({ summary: '내 정보를 수정합니다.' })
   @UseAuthGuard([UserRole.USER])
   @ApiOkResponse({ type: UserResponseDto })
   @ApiBearerAuth()
-  async update(
+  async updateMe(
     @Body() updateUserDto: UpdateUserRequestDto,
     @CurrentUser() user: User,
-  ) {
-    return await this.userService.update(+user.id, updateUserDto);
+  ): Promise<UserResponseDto> {
+    const updatedUser = await this.userService.update(user.id, user);
+    return toUserResponseDto(updatedUser);
+  }
+
+  @Get(':id')
+  @UseAuthGuard([UserRole.USER])
+  @ApiOkResponse({ type: UserResponseDto })
+  @ApiBearerAuth()
+  async findOne(@Param('id') id: string): Promise<UserResponseDto> {
+    const user = await this.userService.findOne({ id: +id });
+    return toUserResponseDto(user);
   }
 
   @Delete(':id')
@@ -57,7 +68,7 @@ export class UserController {
   }
 
   @Get('check/nickname')
-  @ApiOperation({ summary: '닉네임이 중복되는지 확인' })
+  @ApiOperation({ summary: '닉네임 중복체크합니다.' })
   @ApiQuery({ type: String, name: 'nickname', description: '사용자 닉네임' })
   @ApiOkResponse({})
   async checkDuplicateNickname(@Query('nickname') nickname: string) {

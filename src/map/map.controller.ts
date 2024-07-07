@@ -37,15 +37,6 @@ export class MapController {
     private readonly inviteLinkService: InviteLinkService,
   ) {}
 
-  @Get()
-  @ApiOperation({ summary: '사용자가 속해있는 지도를 가져옵니다' })
-  @ApiOkResponse({ type: [MapItemForUserDto] })
-  @ApiBearerAuth()
-  @UseAuthGuard([UserRole.USER])
-  findAll(@CurrentUser() user: User) {
-    return this.mapService.findAll(user);
-  }
-
   @Post()
   @ApiOkResponse({ type: MapItemForUserDto })
   @ApiOperation({ summary: '새 지도를 생성합니다' })
@@ -53,6 +44,15 @@ export class MapController {
   @UseAuthGuard([UserRole.USER])
   create(@Body() createMapDto: CreateMapDto, @CurrentUser() user: User) {
     return this.mapService.create(createMapDto, user);
+  }
+
+  @Get()
+  @ApiOperation({ summary: '사용자가 속해있는 지도를 가져옵니다.' })
+  @ApiOkResponse({ type: [MapItemForUserDto] })
+  @ApiBearerAuth()
+  @UseAuthGuard([UserRole.USER])
+  findAll(@CurrentUser() user: User) {
+    return this.mapService.findAll(user);
   }
 
   @Get(':id')
@@ -70,7 +70,6 @@ export class MapController {
   @ApiBearerAuth()
   @UseMapRoleGuard([UserMapRole.ADMIN])
   @UseAuthGuard([UserRole.USER])
-  @ApiExcludeEndpoint()
   update(@Param('id') id: string, @Body() updateMapDto: UpdateMapDto) {
     return this.mapService.update(id, updateMapDto);
   }
@@ -83,7 +82,11 @@ export class MapController {
     return this.mapService.remove(id);
   }
 
-  @Post(':id/invite-link')
+  @Post(':id/invite-links')
+  @ApiOperation({
+    summary: '지도의 초대링크를 생성합니다.',
+    description: '유효기간은 7일로 설정되어 있습니다.',
+  })
   @ApiResponse({ type: InviteLinkResponseDto })
   @ApiBearerAuth()
   @UseMapRoleGuard([UserMapRole.ADMIN])

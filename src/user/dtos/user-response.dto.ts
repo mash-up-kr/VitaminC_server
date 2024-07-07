@@ -30,3 +30,14 @@ export class UserResponseDto implements Partial<Omit<User, 'userMap'>> {
   @IsNotEmpty()
   role: UserRoleValueType;
 }
+
+export function toUserResponseDto(user: User): UserResponseDto {
+  const userResponse = new UserResponseDto();
+  userResponse.id = user.id;
+  userResponse.nickname = user.nickname;
+  userResponse.provider = user.provider;
+  userResponse.providerId = user.providerId;
+  userResponse.role = user.role;
+
+  return userResponse;
+}

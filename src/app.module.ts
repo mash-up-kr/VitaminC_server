@@ -6,8 +6,6 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { LoggerMiddleware } from 'src/core/intercepters/logging.interceptor';
 import { InviteLinkModule } from 'src/invite-link/invite-link.module';
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { getNodeEnv, isIgnoreEnvFile } from './common/helper/env.helper';
 import { envValidation } from './common/helper/env.validation';
@@ -39,8 +37,8 @@ import { UtilModule } from './util/util.module';
     PlaceModule,
     InviteLinkModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {

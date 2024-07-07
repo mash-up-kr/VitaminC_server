@@ -7,13 +7,7 @@ import {
   MockRepository,
   MockRepositoryFactory,
 } from 'src/common/helper/mock.helper';
-import {
-  InviteLink,
-  InviteLinkRepository,
-  User,
-  UserRepository,
-} from 'src/entities/index';
-import { UserService } from 'src/user/user.service';
+import { InviteLink, InviteLinkRepository, User } from 'src/entities';
 
 import { InviteLinkService } from './invite-link.service';
 
