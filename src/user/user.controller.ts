@@ -7,7 +7,13 @@ import {
   Patch,
   Query,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
@@ -25,6 +31,7 @@ export class UserController {
   @Get(':id')
   @UseAuthGuard([UserRole.USER])
   @ApiOkResponse({ type: UserResponseDto })
+  @ApiOperation({ summary: '맛집지도 (GroupMap)에 등록된 장소 전부 가져오기' })
   @ApiBearerAuth()
   async findOne(@Param('id') id: string) {
     const user = await this.userService.findOne({ id: +id });
@@ -50,8 +57,17 @@ export class UserController {
   }
 
   @Get('check/nickname')
+  @ApiOperation({ summary: '닉네임이 중복되는지 확인' })
+  @ApiQuery({ type: String, name: 'nickname', description: '사용자 닉네임' })
   @ApiOkResponse({})
   async checkDuplicateNickname(@Query('nickname') nickname: string) {
     return this.userService.checkDuplicateNickname(nickname);
+  }
+
+  @Get(':id/maps/:mapId')
+  @ApiOperation({ summary: '지도(그룹) 나가기' })
+  @ApiOkResponse({})
+  async leaveMap(@Param('id') id: string, @Param('mapId') mapId: string) {
+    return this.userService.leaveMap(+id, mapId);
   }
 }

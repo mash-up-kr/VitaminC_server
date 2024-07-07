@@ -23,3 +23,8 @@ export class DuplicateNicknameException extends ExceptionOf.USER(
   HttpStatus.CONFLICT,
   '이미 사용중인 닉네임입니다.' as const,
 ) {}
+
+export class UserNotInMapException extends ExceptionOf.USER(
+  HttpStatus.BAD_REQUEST,
+  '지도에 참여하지 않은 사용자입니다.' as const,
+) {}

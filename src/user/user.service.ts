@@ -1,13 +1,23 @@
 import { Injectable } from '@nestjs/common';
 
-import { FilterQuery } from '@mikro-orm/core';
+import { FilterQuery, rel } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 
 import { SEARCH_KEYWORD_MAX_LENGTH } from 'src/common/constants';
-import { User, UserRepository } from 'src/entities';
+import {
+  GroupMap,
+  GroupMapRepository,
+  PlaceForMap,
+  PlaceForMapRepository,
+  User,
+  UserMap,
+  UserMapRepository,
+  UserRepository,
+} from 'src/entities';
 import {
   DuplicateNicknameException,
   UserNotFoundException,
+  UserNotInMapException,
 } from 'src/exceptions';
 
 import { CreateUserDto } from './dtos/create-user.dto';
@@ -17,6 +27,12 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: UserRepository,
+    @InjectRepository(UserMap)
+    private readonly userMapRepository: UserMapRepository,
+    @InjectRepository(GroupMap)
+    private readonly groupMapRepository: GroupMapRepository,
+    @InjectRepository(PlaceForMap)
+    private readonly placeForMapRepository: PlaceForMapRepository,
   ) {}
   async create(createUserDto: CreateUserDto) {
     const user: User = this.userRepository.create(createUserDto);
@@ -68,5 +84,28 @@ export class UserService {
     }
     user.recentSearchKeywords = updatedKeywords;
     await this.userRepository.flush();
+  }
+
+  async leaveMap(id: number, mapId: string): Promise<void> {
+    const userJoinedUserMap = await this.userMapRepository.findOne(
+      {
+        map: rel(GroupMap, mapId),
+        user: rel(User, id),
+      },
+      { populate: ['user', 'map'] },
+    );
+    if (!userJoinedUserMap) {
+      throw new UserNotInMapException();
+    }
+    this.userMapRepository.remove(userJoinedUserMap);
+
+    const userMaps = await this.userMapRepository.find({
+      map: rel(GroupMap, mapId),
+    });
+    if (userMaps.length === 0) {
+      this.placeForMapRepository.nativeDelete({ map: rel(GroupMap, mapId) });
+      this.groupMapRepository.nativeDelete({ id: mapId });
+    }
+    await this.userMapRepository.flush();
   }
 }
