@@ -30,6 +30,7 @@ export class PlaceController {
     @Param('kakaoPlaceId') kakaoPlaceId: number,
     @CurrentUser() user: User,
   ) {
+    // TODO: tag 추가하기
     return await this.placeService.registerPlaceByKakaoId({
       mapId,
       kakaoPlaceId,
@@ -47,8 +48,11 @@ export class PlaceController {
     @Param('placeId') placeId: number,
     @CurrentUser() user: User,
   ) {
-    // TODO:
-    throw new Error('Not implemented');
+    return await this.placeService.remove({
+      mapId,
+      placeId,
+      user,
+    });
   }
 
   @ApiOperation({ summary: '맛집 좋아요' })

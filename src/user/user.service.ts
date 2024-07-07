@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { FilterQuery } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 
+import { SEARCH_KEYWORD_MAX_LENGTH } from 'src/common/constants';
 import { User, UserRepository } from 'src/entities';
 import {
   DuplicateNicknameException,
@@ -55,5 +56,17 @@ export class UserService {
     if (user != undefined) {
       throw new DuplicateNicknameException();
     }
+  }
+
+  async saveSearchKeyword(user: User, q: string): Promise<void> {
+    let updatedKeywords = user.recentSearchKeywords.filter(
+      (keyword) => keyword !== q,
+    );
+    updatedKeywords = [q, ...updatedKeywords];
+    if (updatedKeywords.length > SEARCH_KEYWORD_MAX_LENGTH) {
+      updatedKeywords.pop();
+    }
+    user.recentSearchKeywords = updatedKeywords;
+    await this.userRepository.flush();
   }
 }

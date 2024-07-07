@@ -1,7 +1,7 @@
 import {
-  BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiExcludeEndpoint,
   ApiOkResponse,
   ApiOperation,
   ApiResponse,
@@ -28,6 +29,7 @@ import { UpdateMapDto } from './dtos/update-map.dto';
 import { MapService } from './map.service';
 
 @ApiTags('maps')
+@ApiBearerAuth()
 @Controller('maps')
 export class MapController {
   constructor(
@@ -37,17 +39,10 @@ export class MapController {
 
   @Post()
   @ApiOkResponse({ type: MapItemForUserDto })
-  @ApiOperation({ summary: '새 지도를 생성합니다.' })
+  @ApiOperation({ summary: '새 지도를 생성합니다' })
   @ApiBearerAuth()
   @UseAuthGuard([UserRole.USER])
   create(@Body() createMapDto: CreateMapDto, @CurrentUser() user: User) {
-    // ensure alpha numeric
-    if (!/[A-Za-z0-9-_]/.test(createMapDto.id)) {
-      throw new BadRequestException(
-        '지도 아이디는 영문, 숫자, 하이픈만 가능합니다',
-      );
-    }
-
     return this.mapService.create(createMapDto, user);
   }
 
@@ -61,6 +56,7 @@ export class MapController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: '지도 정보 조회 (포함된 유저 정보, 맛집 개수...)' })
   @ApiOkResponse({ type: MapResponseDto })
   @ApiBearerAuth()
   @UseMapRoleGuard()
@@ -78,15 +74,13 @@ export class MapController {
     return this.mapService.update(id, updateMapDto);
   }
 
-  // TODO
-  // @Delete(':id')
-  // @ApiOkResponse({ type: Number })
-  // @ApiBearerAuth()
-  // @UseMapRoleGuard([UserMapRole.ADMIN])
-  // @UseAuthGuard([UserRole.USER])
-  // remove(@Param('id') id: string) {
-  //   return this.mapService.remove(id);
-  // }
+  @Delete(':id')
+  @ApiOkResponse({ type: Number })
+  @ApiBearerAuth()
+  @ApiExcludeEndpoint()
+  remove(@Param('id') id: string) {
+    return this.mapService.remove(id);
+  }
 
   @Post(':id/invite-links')
   @ApiOperation({

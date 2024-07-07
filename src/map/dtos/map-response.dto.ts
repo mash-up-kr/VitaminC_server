@@ -26,6 +26,9 @@ export class MapResponseDto implements Partial<GroupMap> {
   users: MapUser[];
 
   @ApiProperty()
+  registeredPlaceCount: number;
+
+  @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()

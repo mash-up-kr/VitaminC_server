@@ -2,7 +2,6 @@ import {
   Entity,
   EntityRepositoryType,
   ManyToOne,
-  OneToOne,
   PrimaryKeyProp,
   Property,
   Rel,
@@ -38,7 +37,7 @@ export class PlaceForMap {
   })
   likedUserIds: number[];
 
-  @OneToOne(() => User)
+  @ManyToOne(() => User)
   createdBy: User;
 
   @Property()

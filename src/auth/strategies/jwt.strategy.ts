@@ -19,14 +19,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: { id: number }, done: VerifiedCallback) {
-    try {
-      const userData = await this.userService.findOne({
-        id: payload.id,
-      });
-
-      done(null, userData);
-    } catch (err) {
-      throw new UnauthorizedException('Error', err.message);
+    const user = await this.userService.findOne({
+      id: payload.id,
+    });
+    if (!user) {
+      throw new UnauthorizedException('존재하지 않는 유저입니다.');
     }
+    done(null, user);
   }
 }

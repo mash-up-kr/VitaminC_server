@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { rel } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 
+import { PlaceNotFoundException } from 'src/exceptions';
+
 import {
   GroupMap,
   KakaoPlace,
@@ -114,5 +116,24 @@ export class PlaceService {
 
     await this.placeForMapRepository.persistAndFlush(placeForMap);
     return placeForMap;
+  }
+
+  async remove({
+    mapId,
+    placeId,
+  }: {
+    mapId: string;
+    placeId: number;
+    user: User;
+  }) {
+    const placeForMap = await this.placeForMapRepository.findOne({
+      place: rel(Place, placeId),
+      map: rel(GroupMap, mapId),
+    });
+    if (!placeForMap) {
+      throw new PlaceNotFoundException();
+    }
+    await this.placeForMapRepository.removeAndFlush(placeForMap);
+    return placeId;
   }
 }

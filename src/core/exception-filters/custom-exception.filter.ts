@@ -7,10 +7,10 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-// import * as Sentry from '@sentry/nestjs';
 import { Response } from 'express';
 
 import { EnvType } from 'src/common/helper/env.validation';
+import { BaseException } from 'src/exceptions/exception.abstract';
 import { UtilService } from 'src/util/util.service';
 
 type ResponseBody = {
@@ -27,7 +27,7 @@ export class CustomExceptionFilter implements ExceptionFilter {
     private readonly utilService: UtilService,
   ) {}
 
-  async catch(exception: Error, host: ArgumentsHost) {
+  async catch(exception: BaseException | Error, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const request = ctx.getRequest<Request>();
     const response = ctx.getResponse<Response>();
@@ -37,7 +37,10 @@ export class CustomExceptionFilter implements ExceptionFilter {
       message: '예상치 못한 에러가 발생했습니다. 노드팀을 채찍질 해주세요',
     };
 
-    if (exception instanceof HttpException) {
+    if (exception instanceof BaseException) {
+      responseBody.statusCode = exception.statusCode;
+      responseBody.message = exception.composedMessage ?? exception.message;
+    } else if (exception instanceof HttpException) {
       const httpExceptionResponse = exception.getResponse() as
         | string
         | ResponseBody;

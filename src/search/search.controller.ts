@@ -1,17 +1,27 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 
+import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
+import { CurrentUser } from 'src/common/decorators/user.decorator';
+import { User, UserRole } from 'src/entities';
+import { UserService } from 'src/user/user.service';
+
 import { SearchService } from './search.service';
 
 @ApiTags('search')
 @Controller('search')
 export class SearchController {
-  constructor(private readonly searchService: SearchService) {}
+  constructor(
+    private readonly searchService: SearchService,
+    private readonly userService: UserService,
+  ) {}
 
   @ApiQuery({ type: String, name: 'q', description: '검색을 원하는 질의어' })
   @ApiOperation({ summary: 'q= 에 해당하는 검색어 자동완성 목록' })
+  @UseAuthGuard([UserRole.USER])
   @Get('suggest')
-  async searchPlace(@Query('q') q: string) {
+  async searchPlace(@Query('q') q: string, @CurrentUser() user: User) {
+    await this.userService.saveSearchKeyword(user, q);
     return await this.searchService.suggest(q);
   }
 

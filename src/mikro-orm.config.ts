@@ -30,6 +30,13 @@ const MikroOrmConfig: Options = {
   entities: entities,
   metadataProvider: ReflectMetadataProvider,
   debug: utilService.isDev(),
+  schemaGenerator: {
+    disableForeignKeys: true,
+    createForeignKeyConstraints: true,
+  },
+  migrations: {
+    disableForeignKeys: true,
+  },
 };
 
 export default MikroOrmConfig;

@@ -1,10 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import {
-  UserMapRepository,
-  UserMapRole,
-  UserMapRoleValueType,
-} from '../../entities';
+import { UserMapRole, UserMapRoleValueType } from '../../entities';
 
 export class MapItemForUserDto {
   @ApiProperty()
