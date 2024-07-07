@@ -117,7 +117,7 @@ export class PlaceService {
         place: rel(Place, placeId),
         map: rel(GroupMap, mapId),
       },
-      { populate: ['place', 'place.kakaoPlace', 'createdBy'] },
+      { populate: ['place', 'place.kakaoPlace', 'createdBy', 'tags'] },
     );
 
     if (like && !placeForMap.likedUserIds.includes(user.id)) {
