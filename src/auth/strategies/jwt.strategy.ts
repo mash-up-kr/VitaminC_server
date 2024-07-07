@@ -4,7 +4,6 @@ import { PassportStrategy } from '@nestjs/passport';
 
 import { ExtractJwt, Strategy, VerifiedCallback } from 'passport-jwt';
 
-import { UserNotFoundException } from 'src/exceptions';
 import { UserService } from 'src/user/user.service';
 
 @Injectable()

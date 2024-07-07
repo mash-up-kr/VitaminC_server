@@ -1,7 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
-import { UserMapRole } from 'src/entities';
 import { UserMapService } from 'src/user-map/user-map.service';
 
 @Injectable()
