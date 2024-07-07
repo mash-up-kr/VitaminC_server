@@ -1,5 +1,10 @@
 import { Controller, Delete, Get, Param, Put } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { UseAuthGuard } from '../common/decorators/auth-guard.decorator';
 import { CurrentUser } from '../common/decorators/user.decorator';
@@ -7,6 +12,7 @@ import { User, UserRole } from '../entities';
 import { PlaceService } from './place.service';
 
 @ApiTags('place')
+@ApiBearerAuth()
 @Controller('place')
 export class PlaceController {
   constructor(private readonly placeService: PlaceService) {}

@@ -1,5 +1,10 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
@@ -9,6 +14,7 @@ import { UserService } from 'src/user/user.service';
 import { SearchService } from './search.service';
 
 @ApiTags('search')
+@ApiBearerAuth()
 @Controller('search')
 export class SearchController {
   constructor(
