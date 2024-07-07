@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { GoneException, Injectable } from '@nestjs/common';
 
 import { InjectRepository } from '@mikro-orm/nestjs';
 
 import { INVITE_LINK_EXPIRATION_DAYS } from 'src/common/constants';
 import { InviteLink, InviteLinkRepository, User } from 'src/entities';
+import { InviteLinkGoneException } from 'src/exceptions/index';
 import { InviteLinkResponseDto } from 'src/map/dtos/invite-link-response.dto';
 import { UtilService } from 'src/util/util.service';
 
@@ -31,6 +32,18 @@ export class InviteLinkService {
     return {
       inviteLinkToken: token,
     };
+  }
+
+  async validate(inviteLinkToken: string): Promise<InviteLink> {
+    const inviteLink = await this.inviteLinkRepository.findOne({
+      token: inviteLinkToken,
+    });
+
+    if (new Date(inviteLink.expires_at) < new Date()) {
+      throw new InviteLinkGoneException();
+    }
+
+    return inviteLink;
   }
 
   private getExpiration(): number {
