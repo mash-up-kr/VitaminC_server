@@ -78,7 +78,7 @@ export class MapService {
 
   async findOne(where: FilterQuery<GroupMap>): Promise<MapResponseDto> {
     const entity = await this.mapRepository.findOne(where, {
-      populate: ['userMap'],
+      populate: ['userMap.map'],
     });
     if (entity === null) {
       throw new NotFoundException('해당 맵을 찾을 수 없습니다');

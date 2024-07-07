@@ -1,5 +1,7 @@
 import { Controller, Delete, Get, Param, Put } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+
+import { PlaceForMapResponseDto } from 'src/place/dto/place-for-map-response.dto';
 
 import { UseAuthGuard } from '../common/decorators/auth-guard.decorator';
 import { CurrentUser } from '../common/decorators/user.decorator';
@@ -13,6 +15,7 @@ export class PlaceController {
 
   @ApiOperation({ summary: '맛집지도 (GroupMap)에 등록된 장소 전부 가져오기' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
+  @ApiResponse({ type: PlaceForMapResponseDto })
   @Get(':mapId')
   async getAllPlaceForMap(@Param('mapId') mapId: string) {
     return await this.placeService.getAllPlacesForMap({

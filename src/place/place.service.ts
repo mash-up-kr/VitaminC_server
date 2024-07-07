@@ -4,6 +4,7 @@ import { rel } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 
 import { PlaceNotFoundException } from 'src/exceptions';
+import { PlaceForMapResponseDto } from 'src/place/dto/place-for-map-response.dto';
 
 import {
   GroupMap,
@@ -37,7 +38,7 @@ export class PlaceService {
       },
       { populate: ['place', 'place.kakaoPlace', 'createdBy'] },
     );
-
+    const placeForMapResponse = new PlaceForMapResponseDto();
     return placesForMapList;
   }
 
