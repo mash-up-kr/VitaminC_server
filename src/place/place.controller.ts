@@ -1,5 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { RegisterPlaceDto } from 'src/place/dto/create-tag.dto';
 import { PlaceForMapResponseDto } from 'src/place/dto/place-for-map-response.dto';
@@ -10,6 +16,7 @@ import { User, UserRole } from '../entities';
 import { PlaceService } from './place.service';
 
 @ApiTags('place')
+@ApiBearerAuth()
 @Controller('place')
 export class PlaceController {
   constructor(private readonly placeService: PlaceService) {}
