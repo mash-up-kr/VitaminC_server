@@ -16,6 +16,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
+import { CreateTagDto } from 'src/map/dtos/create-tag.dto';
+import { TagResponseDto } from 'src/map/dtos/tag-response.dto';
+
 import { UseAuthGuard } from '../common/decorators/auth-guard.decorator';
 import { UseMapRoleGuard } from '../common/decorators/map-role-guard.decorator';
 import { CurrentUser } from '../common/decorators/user.decorator';
@@ -96,5 +99,37 @@ export class MapController {
     @Param('id') id: string,
   ): Promise<InviteLinkResponseDto> {
     return this.inviteLinkService.create(id, user);
+  }
+
+  @Get(':id/tag')
+  @ApiOperation({
+    summary: '기본 태그와 지도에 저장된 태그를 조회합니다.',
+  })
+  @ApiResponse({ type: TagResponseDto, isArray: true })
+  @ApiBearerAuth()
+  @UseAuthGuard([UserRole.USER])
+  findTagByMapId(@Param('id') id: string) {
+    return this.mapService.findTagByMapId(id);
+  }
+
+  @Post(':id/tag')
+  @ApiOperation({
+    summary: '맛집 저장시 사용할 태그를 생성합니다.',
+  })
+  @ApiResponse({ type: TagResponseDto })
+  @ApiBearerAuth()
+  @UseAuthGuard([UserRole.USER])
+  createTag(@Param('id') id: string, @Body() createTagDTO: CreateTagDto) {
+    return this.mapService.createTag(id, createTagDTO);
+  }
+
+  @Delete(':id/tag/:tagId')
+  @ApiOperation({
+    summary: '맛집 저장시 사용할 태그를 삭제합니다.',
+  })
+  @ApiBearerAuth()
+  @UseAuthGuard([UserRole.USER])
+  removeTag(@Param('id') id: string, @Param('tagId') tagId: string) {
+    return this.mapService.removeTag(id, +tagId);
   }
 }
