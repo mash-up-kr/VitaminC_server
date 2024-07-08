@@ -1,13 +1,13 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
-import { UserMapService } from 'src/user-map/user-map.service';
+import { MapService } from 'src/map/map.service';
 
 @Injectable()
 export class MapRoleGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
-    private readonly userMapService: UserMapService,
+    private readonly mapService: MapService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -25,10 +25,7 @@ export class MapRoleGuard implements CanActivate {
 
     const hasMapRole = async () => {
       try {
-        const userMap = await this.userMapService.findOneByUserAndMap(
-          user.id,
-          mapId,
-        );
+        const userMap = await this.mapService.findUserMap(user.id, mapId);
         return mapRoles.some((role) => userMap.role?.includes(role));
       } catch (e) {
         return false;
