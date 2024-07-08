@@ -124,22 +124,21 @@ export class MapService {
     return await this.mapRepository.nativeDelete({ id });
   }
 
-  async createUserMap(user: User, mapId: string, role?: UserMapRoleValueType) {
+  async createUserMap(user: User, map: GroupMap, role?: UserMapRoleValueType) {
     const existUserMap = await this.userMapRepository.findOne({
       user: user,
-      map: { id: mapId },
+      map: map,
     });
     if (existUserMap != null) {
       throw new UserMapConflictException();
     }
 
-    const map = await this.mapRepository.findOne({ id: mapId });
-    const userMap = this.userMapRepository.create({
+    this.userMapRepository.create({
       user: user,
       map: map,
       role: role || UserMapRole.WRITE,
     });
-    await this.userMapRepository.persistAndFlush(userMap);
+    await this.userMapRepository.flush();
   }
 
   async findUserMap(userId: number, mapId: string): Promise<UserMap> {
@@ -155,11 +154,9 @@ export class MapService {
     return userMap;
   }
 
-  async getPlacesPreview(mapId: string): Promise<string[]> {
+  async getPlacesPreview(map: GroupMap): Promise<string[]> {
     const placesForMapList = await this.placeForMapRepository.find(
-      {
-        map: rel(GroupMap, mapId),
-      },
+      { map },
       {
         populate: ['place', 'place.kakaoPlace', 'createdBy'],
         orderBy: { createdAt: 'desc' },

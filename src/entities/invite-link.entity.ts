@@ -1,5 +1,6 @@
 import { Entity, Enum, ManyToOne, PrimaryKey, Property } from '@mikro-orm/core';
 
+import { GroupMap } from 'src/entities/group-map.entity';
 import {
   UserMapRole,
   UserMapRoleValueType,
@@ -16,15 +17,15 @@ export class InviteLink {
   @ManyToOne(() => User)
   createdBy: User;
 
-  @Property({ type: 'string' })
-  map_id: string;
+  @ManyToOne(() => GroupMap)
+  map: GroupMap;
 
   @Property({ type: 'string', default: UserMapRole.WRITE })
   @Enum({ items: [UserMapRole.ADMIN, UserMapRole.READ, UserMapRole.WRITE] })
-  map_role: UserMapRoleValueType;
+  mapRole: UserMapRoleValueType;
 
   @Property({ type: 'timestamp' })
-  expires_at: Date;
+  expiresAt: Date;
 
   @Property()
   createdAt: Date = new Date();

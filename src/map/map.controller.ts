@@ -104,10 +104,8 @@ export class MapController {
     const inviteLink: InviteLink =
       await this.inviteLinkService.validate(inviteLinkToken);
 
-    const map = await this.mapService.findOne({ id: inviteLink.map_id });
-    const previewList = await this.mapService.getPlacesPreview(
-      inviteLink.map_id,
-    );
+    const map = await this.mapService.findOne(inviteLink.map);
+    const previewList = await this.mapService.getPlacesPreview(inviteLink.map);
 
     return {
       inviteLink: inviteLink,
@@ -130,8 +128,8 @@ export class MapController {
       await this.inviteLinkService.validate(inviteLinkToken);
     await this.mapService.createUserMap(
       user,
-      inviteLink.map_id,
-      inviteLink.map_role,
+      inviteLink.map,
+      inviteLink.mapRole,
     );
   }
 }
