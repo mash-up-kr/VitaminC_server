@@ -1,6 +1,7 @@
 import { GroupMap } from './group-map.entity';
 import { InviteLink } from './invite-link.entity';
 import { KakaoPlace } from './kakao-place.entity';
+import { PlaceCategory } from './place-category.entity';
 import { PlaceForMap } from './place-for-map.entity';
 import { Place } from './place.entity';
 import { UserMap } from './user-map.entity';
@@ -35,4 +36,5 @@ export const entities = [
   Place,
   PlaceForMap,
   InviteLink,
+  PlaceCategory,
 ];

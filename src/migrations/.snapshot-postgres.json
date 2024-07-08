@@ -319,6 +319,54 @@
     },
     {
       "columns": {
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "image_url": {
+          "name": "image_url",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        }
+      },
+      "name": "place_category",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "place_category_pkey",
+          "columnNames": ["name"],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {
+        "user_provider": {
+          "name": "user_provider",
+          "schema": "public",
+          "items": ["KAKAO"]
+        },
+        "user_role": {
+          "name": "user_role",
+          "schema": "public",
+          "items": ["USER", "ADMIN"]
+        }
+      }
+    },
+    {
+      "columns": {
         "id": {
           "name": "id",
           "type": "serial",
@@ -585,6 +633,112 @@
         }
       },
       "comment": "GroupMap에 속한 Place"
+    },
+    {
+      "columns": {
+        "token": {
+          "name": "token",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "created_by_id": {
+          "name": "created_by_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "map_id": {
+          "name": "map_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "map_role": {
+          "name": "map_role",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "'WRITE'",
+          "mappedType": "string"
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "invite_link",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "invite_link_pkey",
+          "columnNames": ["token"],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "invite_link_created_by_id_foreign": {
+          "constraintName": "invite_link_created_by_id_foreign",
+          "columnNames": ["created_by_id"],
+          "localTableName": "public.invite_link",
+          "referencedColumnNames": ["id"],
+          "referencedTableName": "public.user",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {
+        "user_provider": {
+          "name": "user_provider",
+          "schema": "public",
+          "items": ["KAKAO"]
+        },
+        "user_role": {
+          "name": "user_role",
+          "schema": "public",
+          "items": ["USER", "ADMIN"]
+        }
+      }
     },
     {
       "columns": {
