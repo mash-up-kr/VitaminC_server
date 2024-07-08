@@ -27,5 +27,5 @@
     // This improves issue grouping in Sentry.
     "sourceRoot": "/"
   },
-  "include": ["src/entities"]
+  "include": ["src/**/*.ts", "src/entities"]
 }

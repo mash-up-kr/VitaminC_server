@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import * as Sentry from '@sentry/nestjs';
 import { Response } from 'express';
 
 import { EnvType } from 'src/common/helper/env.validation';
@@ -56,7 +57,7 @@ export class CustomExceptionFilter implements ExceptionFilter {
         `api : ${request.method} ${request.url} message : ${exception.message}`,
       );
       if (!this.utilService.isDev()) {
-        // this.sendErrorToSentry(exception);
+        this.sendErrorToSentry(exception);
         await this.sendErrorInfoToDiscord(request, exception);
       }
     }
@@ -64,9 +65,9 @@ export class CustomExceptionFilter implements ExceptionFilter {
     response.status(responseBody.statusCode).json(responseBody);
   }
 
-  // private sendErrorToSentry(exception: Error) {
-  //   Sentry.captureException(exception);
-  // }
+  private sendErrorToSentry(exception: Error) {
+    Sentry.captureException(exception);
+  }
 
   private async sendErrorInfoToDiscord(request: Request, error: Error) {
     const discordWebhook = this.configService.get('DISCORD_WEBHOOK_URL');
