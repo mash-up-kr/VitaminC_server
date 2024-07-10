@@ -1,14 +1,22 @@
 import { Injectable } from '@nestjs/common';
 
-import { FilterQuery } from '@mikro-orm/core';
+import { EntityManager, FilterQuery, rel } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 
 import { SEARCH_KEYWORD_MAX_LENGTH } from 'src/common/constants';
-import { User, UserRepository } from 'src/entities';
+import {
+  GroupMap,
+  User,
+  UserMap,
+  UserMapRepository,
+  UserRepository,
+} from 'src/entities';
 import {
   DuplicateNicknameException,
   UserNotFoundException,
+  UserNotInMapException,
 } from 'src/exceptions';
+import { MapService } from 'src/map/map.service';
 
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -17,6 +25,10 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: UserRepository,
+    @InjectRepository(UserMap)
+    private readonly userMapRepository: UserMapRepository,
+    private readonly mapService: MapService,
+    private readonly em: EntityManager,
   ) {}
   async create(createUserDto: CreateUserDto) {
     const user: User = this.userRepository.create(createUserDto);
@@ -68,5 +80,26 @@ export class UserService {
     }
     user.recentSearchKeywords = updatedKeywords;
     await this.userRepository.flush();
+  }
+
+  async leaveMap(userId: number, mapId: string): Promise<void> {
+    await this.em.transactional(async (em) => {
+      const userJoinedMap = await this.userMapRepository.findOne({
+        map: rel(GroupMap, mapId),
+        user: rel(User, userId),
+      });
+      if (!userJoinedMap) {
+        throw new UserNotInMapException();
+      }
+      this.userMapRepository.remove(userJoinedMap);
+
+      const userMaps = await this.userMapRepository.find({
+        map: rel(GroupMap, mapId),
+      });
+      if (userMaps.length === 0) {
+        await this.mapService.remove(mapId);
+      }
+      await this.userMapRepository.flush();
+    });
   }
 }

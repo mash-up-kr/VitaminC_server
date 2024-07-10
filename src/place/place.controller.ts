@@ -1,10 +1,14 @@
-import { Controller, Delete, Get, Param, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
   ApiParam,
+  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+
+import { RegisterPlaceDto } from 'src/place/dto/create-tag.dto';
+import { PlaceForMapResponseDto } from 'src/place/dto/place-for-map-response.dto';
 
 import { UseAuthGuard } from '../common/decorators/auth-guard.decorator';
 import { CurrentUser } from '../common/decorators/user.decorator';
@@ -19,6 +23,7 @@ export class PlaceController {
 
   @ApiOperation({ summary: '맛집지도 (GroupMap)에 등록된 장소 전부 가져오기' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
+  @ApiResponse({ type: PlaceForMapResponseDto, isArray: true })
   @Get(':mapId')
   async getAllPlaceForMap(@Param('mapId') mapId: string) {
     return await this.placeService.getAllPlacesForMap({
@@ -29,18 +34,20 @@ export class PlaceController {
   @ApiOperation({ summary: '카카오 place id로 장소 등록' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'kakaoPlaceId', description: '카카오 place id' })
+  @ApiResponse({ type: PlaceForMapResponseDto })
   @UseAuthGuard([UserRole.USER])
   @Put(':mapId/kakao/:kakaoPlaceId')
   async registerPlaceByKakaoId(
     @Param('mapId') mapId: string,
     @Param('kakaoPlaceId') kakaoPlaceId: number,
+    @Body() registerPlaceDTO: RegisterPlaceDto,
     @CurrentUser() user: User,
   ) {
-    // TODO: tag 추가하기
     return await this.placeService.registerPlaceByKakaoId({
       mapId,
       kakaoPlaceId,
       user,
+      registerPlaceDTO,
     });
   }
 
@@ -54,7 +61,7 @@ export class PlaceController {
     @Param('placeId') placeId: number,
     @CurrentUser() user: User,
   ) {
-    return await this.placeService.remove({
+    await this.placeService.remove({
       mapId,
       placeId,
       user,
@@ -89,7 +96,6 @@ export class PlaceController {
     @Param('placeId') placeId: number,
     @CurrentUser() user: User,
   ) {
-    // TODO:
     return await this.placeService.likePlace({
       mapId,
       placeId,

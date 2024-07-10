@@ -15,11 +15,17 @@ import {
   UserMapRole,
   UserMapRoleValueType,
 } from 'src/entities';
+import { Tag } from 'src/entities/tag.entity';
+import { TagRepository } from 'src/entities/tag.repository';
 import {
+  DuplicateTagException,
   MapNotFoundException,
+  TagNotFoundException,
   UserMapConflictException,
   UserMapNotFoundException,
-} from 'src/exceptions/index';
+} from 'src/exceptions';
+import { CreateTagDto } from 'src/map/dtos/create-tag.dto';
+import { TagResponseDto } from 'src/map/dtos/tag-response.dto';
 
 import { CreateMapDto } from './dtos/create-map.dto';
 import { MapItemForUserDto } from './dtos/map-item-for-user.dto';
@@ -35,6 +41,8 @@ export class MapService {
     private readonly userMapRepository: UserMapRepository,
     @InjectRepository(PlaceForMap)
     private readonly placeForMapRepository: PlaceForMapRepository,
+    @InjectRepository(Tag)
+    private readonly tagRepository: TagRepository,
   ) {}
 
   async create(
@@ -71,7 +79,6 @@ export class MapService {
       { populate: ['map'] },
     );
 
-    // populate
     return userMapList.map(({ map, role }) => {
       const mapItemForUser = new MapItemForUserDto();
       mapItemForUser.id = map.id;
@@ -85,7 +92,7 @@ export class MapService {
 
   async findOne(where: FilterQuery<GroupMap>): Promise<MapResponseDto> {
     const entity = await this.mapRepository.findOne(where, {
-      populate: ['userMap'],
+      populate: ['userMap.user'],
     });
     if (entity === null) {
       throw new MapNotFoundException();
@@ -121,7 +128,47 @@ export class MapService {
   }
 
   async remove(id: string) {
-    return await this.mapRepository.nativeDelete({ id });
+    this.placeForMapRepository.nativeDelete({ map: rel(GroupMap, id) });
+    this.mapRepository.nativeDelete({ id: id });
+    this.tagRepository.nativeDelete({ map: rel(GroupMap, id) });
+    await this.mapRepository.flush();
+  }
+  async findTagByMapId(mapId: string): Promise<TagResponseDto[]> {
+    const tags = await this.tagRepository.find({
+      $or: [{ map: rel(GroupMap, mapId) }, { map: null }],
+    });
+    return tags.map((tag) => new TagResponseDto(tag));
+  }
+
+  async createTag(
+    mapId: string,
+    createTagDto: CreateTagDto,
+  ): Promise<TagResponseDto> {
+    const entity = this.tagRepository.findOne({
+      map: rel(GroupMap, mapId),
+      content: createTagDto.content,
+    });
+    if (entity) {
+      throw new DuplicateTagException();
+    }
+    const tag = this.tagRepository.create({
+      map: rel(GroupMap, mapId),
+      ...createTagDto,
+    });
+    await this.tagRepository.persistAndFlush(tag);
+
+    return new TagResponseDto(tag);
+  }
+
+  async removeTag(mapId: string, tagId: number) {
+    const tag = await this.tagRepository.findOne({
+      map: rel(GroupMap, mapId),
+      id: tagId,
+    });
+    if (!tag) {
+      throw new TagNotFoundException();
+    }
+    await this.tagRepository.removeAndFlush(tag);
   }
 
   async createUserMap(user: User, map: GroupMap, role?: UserMapRoleValueType) {
@@ -138,7 +185,7 @@ export class MapService {
       map: map,
       role: role || UserMapRole.WRITE,
     });
-    await this.userMapRepository.persistAndFlush();
+    await this.userMapRepository.flush();
   }
 
   async findUserMap(userId: number, mapId: string): Promise<UserMap> {

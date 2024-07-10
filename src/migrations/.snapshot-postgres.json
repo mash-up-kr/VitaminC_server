@@ -588,6 +588,216 @@
     },
     {
       "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "map_id": {
+          "name": "map_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "uuid"
+        },
+        "place_for_map_map_id": {
+          "name": "place_for_map_map_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "uuid"
+        },
+        "place_for_map_place_id": {
+          "name": "place_for_map_place_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "content": {
+          "name": "content",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "tag",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "tag_pkey",
+          "columnNames": ["id"],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "tag_map_id_foreign": {
+          "constraintName": "tag_map_id_foreign",
+          "columnNames": ["map_id"],
+          "localTableName": "public.tag",
+          "referencedColumnNames": ["id"],
+          "referencedTableName": "public.map",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "tag_place_for_map_map_id_place_for_map_place_id_foreign": {
+          "constraintName": "tag_place_for_map_map_id_place_for_map_place_id_foreign",
+          "columnNames": ["place_for_map_map_id", "place_for_map_place_id"],
+          "localTableName": "public.tag",
+          "referencedColumnNames": ["map_id", "place_id"],
+          "referencedTableName": "public.place_for_map",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {
+        "user_provider": {
+          "name": "user_provider",
+          "schema": "public",
+          "items": ["KAKAO"]
+        },
+        "user_role": {
+          "name": "user_role",
+          "schema": "public",
+          "items": ["USER", "ADMIN"]
+        }
+      }
+    },
+    {
+      "columns": {
+        "token": {
+          "name": "token",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "created_by_id": {
+          "name": "created_by_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "map_id": {
+          "name": "map_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "map_role": {
+          "name": "map_role",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "'WRITE'",
+          "mappedType": "string"
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "invite_link",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "invite_link_pkey",
+          "columnNames": ["token"],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "invite_link_created_by_id_foreign": {
+          "constraintName": "invite_link_created_by_id_foreign",
+          "columnNames": ["created_by_id"],
+          "localTableName": "public.invite_link",
+          "referencedColumnNames": ["id"],
+          "referencedTableName": "public.user",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {
+        "user_provider": {
+          "name": "user_provider",
+          "schema": "public",
+          "items": ["KAKAO"]
+        },
+        "user_role": {
+          "name": "user_role",
+          "schema": "public",
+          "items": ["USER", "ADMIN"]
+        }
+      }
+    },
+    {
+      "columns": {
         "user_id": {
           "name": "user_id",
           "type": "int",
