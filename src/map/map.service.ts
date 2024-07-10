@@ -138,7 +138,7 @@ export class MapService {
       map: map,
       role: role || UserMapRole.WRITE,
     });
-    await this.userMapRepository.flush();
+    await this.userMapRepository.persistAndFlush();
   }
 
   async findUserMap(userId: number, mapId: string): Promise<UserMap> {
