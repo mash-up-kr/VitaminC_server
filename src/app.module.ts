@@ -13,7 +13,6 @@ import { GptModule } from './gpt/gpt.module';
 import { MapModule } from './map/map.module';
 import { PlaceModule } from './place/place.module';
 import { SearchModule } from './search/search.module';
-import { UserMapModule } from './user-map/user-map.module';
 import { UserModule } from './user/user.module';
 import { UtilModule } from './util/util.module';
 
@@ -30,7 +29,6 @@ import { UtilModule } from './util/util.module';
     AuthModule,
     UserModule,
     MapModule,
-    UserMapModule,
     GptModule,
     SearchModule,
     UtilModule,

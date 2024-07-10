@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { FilterQuery, rel } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 
+import { INVITE_LINK_PREVIEW_LENGTH } from 'src/common/constants';
 import {
   GroupMap,
   GroupMapRepository,
@@ -12,10 +13,17 @@ import {
   UserMap,
   UserMapRepository,
   UserMapRole,
+  UserMapRoleValueType,
 } from 'src/entities';
 import { Tag } from 'src/entities/tag.entity';
 import { TagRepository } from 'src/entities/tag.repository';
-import { DuplicateTagException, TagNotFoundException } from 'src/exceptions';
+import {
+  DuplicateTagException,
+  MapNotFoundException,
+  TagNotFoundException,
+  UserMapConflictException,
+  UserMapNotFoundException,
+} from 'src/exceptions';
 import { CreateTagDto } from 'src/map/dtos/create-tag.dto';
 import { TagResponseDto } from 'src/map/dtos/tag-response.dto';
 
@@ -87,7 +95,7 @@ export class MapService {
       populate: ['userMap.user'],
     });
     if (entity === null) {
-      throw new NotFoundException('해당 맵을 찾을 수 없습니다');
+      throw new MapNotFoundException();
     }
     const placeForMap = await this.placeForMapRepository.find({ map: where });
     const mapResponse = new MapResponseDto();
@@ -110,7 +118,7 @@ export class MapService {
   async update(id: string, updateMapDto: UpdateMapDto) {
     const map = await this.mapRepository.findOne(id);
     if (!map) {
-      throw new NotFoundException(`존재하지 않는 지도입니다.`);
+      throw new MapNotFoundException();
     }
 
     Object.assign(map, updateMapDto);
@@ -161,5 +169,52 @@ export class MapService {
       throw new TagNotFoundException();
     }
     await this.tagRepository.removeAndFlush(tag);
+  }
+
+  async createUserMap(user: User, map: GroupMap, role?: UserMapRoleValueType) {
+    const existUserMap = await this.userMapRepository.findOne({
+      user: user,
+      map: map,
+    });
+    if (existUserMap != null) {
+      throw new UserMapConflictException();
+    }
+
+    this.userMapRepository.create({
+      user: user,
+      map: map,
+      role: role || UserMapRole.WRITE,
+    });
+    await this.userMapRepository.flush();
+  }
+
+  async findUserMap(userId: number, mapId: string): Promise<UserMap> {
+    const where: FilterQuery<UserMap> = {
+      user: { id: userId },
+      map: { id: mapId },
+    };
+
+    const userMap = await this.userMapRepository.findOne(where);
+    if (!userMap) {
+      throw new UserMapNotFoundException();
+    }
+    return userMap;
+  }
+
+  async getPlacesPreview(map: GroupMap): Promise<string[]> {
+    const placesForMapList = await this.placeForMapRepository.find(
+      { map },
+      {
+        populate: ['place', 'place.kakaoPlace', 'createdBy'],
+        orderBy: { createdAt: 'desc' },
+      },
+    );
+    const subList = placesForMapList.slice(0, INVITE_LINK_PREVIEW_LENGTH);
+    return subList.map((item) => {
+      const photoList = item.place.kakaoPlace.photoList;
+      if (photoList.length > 0) {
+        return photoList[0];
+      }
+    });
   }
 }

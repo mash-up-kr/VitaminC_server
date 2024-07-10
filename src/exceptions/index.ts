@@ -38,3 +38,23 @@ export class UserNotInMapException extends ExceptionOf.USER(
   HttpStatus.BAD_REQUEST,
   '지도에 참여하지 않은 사용자입니다.' as const,
 ) {}
+
+export class UserMapNotFoundException extends ExceptionOf.USER(
+  HttpStatus.NOT_FOUND,
+  '해당 유저는 해당 지도의 멤버가 아닙니다.' as const,
+) {}
+
+export class MapNotFoundException extends ExceptionOf.USER(
+  HttpStatus.NOT_FOUND,
+  '존재하지 않는 지도입니다.' as const,
+) {}
+
+export class InviteLinkGoneException extends ExceptionOf.USER(
+  HttpStatus.GONE,
+  '만료된 초대링크입니다.' as const,
+) {}
+
+export class UserMapConflictException extends ExceptionOf.USER(
+  HttpStatus.CONFLICT,
+  '이미 지도에 가입된 유저입니다.' as const,
+) {}
