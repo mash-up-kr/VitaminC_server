@@ -15,7 +15,7 @@ import {
 } from 'src/entities';
 import { Tag } from 'src/entities/tag.entity';
 import { TagRepository } from 'src/entities/tag.repository';
-import { TagNotFoundException } from 'src/exceptions';
+import { DuplicateTagException, TagNotFoundException } from 'src/exceptions';
 import { CreateTagDto } from 'src/map/dtos/create-tag.dto';
 import { TagResponseDto } from 'src/map/dtos/tag-response.dto';
 
@@ -136,6 +136,13 @@ export class MapService {
     mapId: string,
     createTagDto: CreateTagDto,
   ): Promise<TagResponseDto> {
+    const entity = this.tagRepository.findOne({
+      map: rel(GroupMap, mapId),
+      content: createTagDto.content,
+    });
+    if (entity) {
+      throw new DuplicateTagException();
+    }
     const tag = this.tagRepository.create({
       map: rel(GroupMap, mapId),
       ...createTagDto,
