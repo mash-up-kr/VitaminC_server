@@ -84,17 +84,14 @@ export class UserService {
 
   async leaveMap(userId: number, mapId: string): Promise<void> {
     await this.em.transactional(async (em) => {
-      const userJoinedUserMap = await this.userMapRepository.findOne(
-        {
-          map: rel(GroupMap, mapId),
-          user: rel(User, userId),
-        },
-        { populate: ['user', 'map'] },
-      );
-      if (!userJoinedUserMap) {
+      const userJoinedMap = await this.userMapRepository.findOne({
+        map: rel(GroupMap, mapId),
+        user: rel(User, userId),
+      });
+      if (!userJoinedMap) {
         throw new UserNotInMapException();
       }
-      this.userMapRepository.remove(userJoinedUserMap);
+      this.userMapRepository.remove(userJoinedMap);
 
       const userMaps = await this.userMapRepository.find({
         map: rel(GroupMap, mapId),
