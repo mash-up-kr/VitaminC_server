@@ -34,11 +34,11 @@ export default [
       },
 
       parser: tsParser,
-      ecmaVersion: 5,
-      sourceType: 'commonjs',
+      ecmaVersion: 2020, // Update to the latest ECMAScript version if needed
+      sourceType: 'module', // Update to 'module' if using ES modules
 
       parserOptions: {
-        project: 'tsconfig.json',
+        project: path.resolve(__dirname, 'tsconfig.json'),
       },
     },
 
@@ -47,6 +47,10 @@ export default [
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
+    },
+
+    linterOptions: {
+      reportUnusedDisableDirectives: true,
     },
   },
 ];

@@ -9,9 +9,9 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
-  ApiExcludeEndpoint,
   ApiOkResponse,
   ApiOperation,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 
@@ -62,15 +62,22 @@ export class UserController {
   @Delete(':id')
   @ApiOkResponse({ type: Number })
   @ApiBearerAuth()
-  @ApiExcludeEndpoint()
   async remove(@Param('id') id: string) {
     return this.userService.remove(+id);
   }
 
   @Get('check/nickname')
   @ApiOperation({ summary: '닉네임 중복체크합니다.' })
+  @ApiQuery({ type: String, name: 'nickname', description: '사용자 닉네임' })
   @ApiOkResponse({})
   async checkDuplicateNickname(@Query('nickname') nickname: string) {
     return this.userService.checkDuplicateNickname(nickname);
+  }
+
+  @Delete(':id/maps/:mapId')
+  @ApiOperation({ summary: '지도(그룹) 나가기' })
+  @ApiOkResponse({})
+  async leaveMap(@Param('id') id: string, @Param('mapId') mapId: string) {
+    return await this.userService.leaveMap(+id, mapId);
   }
 }

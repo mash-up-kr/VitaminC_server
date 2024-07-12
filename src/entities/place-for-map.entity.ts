@@ -1,11 +1,15 @@
 import {
+  Collection,
   Entity,
   EntityRepositoryType,
   ManyToOne,
+  OneToMany,
   PrimaryKeyProp,
   Property,
   Rel,
 } from '@mikro-orm/core';
+
+import { Tag } from 'src/entities/tag.entity';
 
 import { GroupMap } from './group-map.entity';
 import { PlaceForMapRepository } from './place-for-map.repository';
@@ -36,6 +40,9 @@ export class PlaceForMap {
     comment: '좋아요 누른 유저 ID 배열',
   })
   likedUserIds: number[];
+
+  @OneToMany(() => Tag, (tag) => tag.placeForMap)
+  tags = new Collection<Tag>(this);
 
   @ManyToOne(() => User)
   createdBy: User;

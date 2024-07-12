@@ -32,7 +32,7 @@ const MikroOrmConfig: Options = {
   debug: utilService.isDev(),
   schemaGenerator: {
     disableForeignKeys: true,
-    createForeignKeyConstraints: true,
+    createForeignKeyConstraints: false,
   },
   migrations: {
     disableForeignKeys: true,

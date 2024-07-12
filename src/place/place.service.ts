@@ -4,6 +4,8 @@ import { rel } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 
 import { PlaceNotFoundException } from 'src/exceptions';
+import { RegisterPlaceDto } from 'src/place/dto/create-tag.dto';
+import { PlaceForMapResponseDto } from 'src/place/dto/place-for-map-response.dto';
 
 import {
   GroupMap,
@@ -12,6 +14,8 @@ import {
   PlaceForMap,
   PlaceForMapRepository,
   PlaceRepository,
+  Tag,
+  TagRepository,
   User,
 } from '../entities';
 import { SearchService } from '../search/search.service';
@@ -23,6 +27,8 @@ export class PlaceService {
     private readonly placeRepository: PlaceRepository,
     @InjectRepository(PlaceForMap)
     private readonly placeForMapRepository: PlaceForMapRepository,
+    @InjectRepository(Tag)
+    private readonly tagRepository: TagRepository,
     private readonly searchService: SearchService,
   ) {}
 
@@ -30,26 +36,33 @@ export class PlaceService {
    * map id (GroupMap.id)에 속한 장소를 전부 가져옵니다.
    * TODO: 나중에 커지면 geo-query + pagination 해야할듯
    */
-  async getAllPlacesForMap({ mapId }: { mapId: string }) {
+  async getAllPlacesForMap({
+    mapId,
+  }: {
+    mapId: string;
+  }): Promise<PlaceForMapResponseDto[]> {
     const placesForMapList = await this.placeForMapRepository.find(
       {
         map: rel(GroupMap, mapId),
       },
-      { populate: ['place', 'place.kakaoPlace', 'createdBy'] },
+      { populate: ['place', 'place.kakaoPlace', 'createdBy', 'tags'] },
     );
-
-    return placesForMapList;
+    return placesForMapList.map(
+      (placeForMap) => new PlaceForMapResponseDto(placeForMap),
+    );
   }
 
   async registerPlaceByKakaoId({
     kakaoPlaceId,
     mapId,
     user,
+    registerPlaceDTO,
   }: {
     kakaoPlaceId: number;
     mapId: string;
     user: User;
-  }) {
+    registerPlaceDTO: RegisterPlaceDto;
+  }): Promise<PlaceForMapResponseDto> {
     // create place if not exist
     let place = await this.placeRepository.findOne({
       kakaoPlace: rel(KakaoPlace, kakaoPlaceId),
@@ -71,7 +84,9 @@ export class PlaceService {
       place,
       map: rel(GroupMap, mapId),
     });
-
+    const tags = await this.tagRepository.find({
+      id: { $in: registerPlaceDTO.tagIds },
+    });
     if (placeForMap == null) {
       placeForMap = new PlaceForMap();
       placeForMap.place = place;
@@ -79,10 +94,11 @@ export class PlaceService {
       placeForMap.createdBy = user;
       placeForMap.comments = [];
       placeForMap.likedUserIds = [];
+      tags.map((tag) => placeForMap.tags.add(tag));
     }
     await this.placeForMapRepository.persistAndFlush(placeForMap);
 
-    return placeForMap;
+    return new PlaceForMapResponseDto(placeForMap);
   }
 
   async likePlace({
@@ -95,13 +111,13 @@ export class PlaceService {
     placeId: number;
     user: User;
     like: boolean;
-  }) {
+  }): Promise<PlaceForMapResponseDto> {
     const placeForMap = await this.placeForMapRepository.findOneOrFail(
       {
         place: rel(Place, placeId),
         map: rel(GroupMap, mapId),
       },
-      { populate: ['place', 'place.kakaoPlace', 'createdBy'] },
+      { populate: ['place', 'place.kakaoPlace', 'createdBy', 'tags'] },
     );
 
     if (like && !placeForMap.likedUserIds.includes(user.id)) {
@@ -115,7 +131,7 @@ export class PlaceService {
     }
 
     await this.placeForMapRepository.persistAndFlush(placeForMap);
-    return placeForMap;
+    return new PlaceForMapResponseDto(placeForMap);
   }
 
   async remove({
@@ -125,7 +141,7 @@ export class PlaceService {
     mapId: string;
     placeId: number;
     user: User;
-  }) {
+  }): Promise<void> {
     const placeForMap = await this.placeForMapRepository.findOne({
       place: rel(Place, placeId),
       map: rel(GroupMap, mapId),
@@ -134,6 +150,5 @@ export class PlaceService {
       throw new PlaceNotFoundException();
     }
     await this.placeForMapRepository.removeAndFlush(placeForMap);
-    return placeId;
   }
 }

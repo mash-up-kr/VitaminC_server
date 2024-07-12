@@ -1,3 +1,5 @@
+import { Tag } from 'src/entities/tag.entity';
+
 import { GroupMap } from './group-map.entity';
 import { InviteLink } from './invite-link.entity';
 import { KakaoPlace } from './kakao-place.entity';
@@ -28,6 +30,9 @@ export * from './place.repository';
 export * from './invite-link.entity';
 export * from './invite-link.repository';
 
+export * from './tag.entity';
+export * from './tag.repository';
+
 export const entities = [
   User,
   GroupMap,
@@ -37,4 +42,5 @@ export const entities = [
   PlaceForMap,
   InviteLink,
   PlaceCategory,
+  Tag,
 ];

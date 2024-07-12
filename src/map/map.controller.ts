@@ -16,10 +16,14 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
+import { CheckInviteLinkResponseDto } from 'src/map/dtos/check-invite-link-response.dto';
+import { CreateTagDto } from 'src/map/dtos/create-tag.dto';
+import { TagResponseDto } from 'src/map/dtos/tag-response.dto';
+
 import { UseAuthGuard } from '../common/decorators/auth-guard.decorator';
 import { UseMapRoleGuard } from '../common/decorators/map-role-guard.decorator';
 import { CurrentUser } from '../common/decorators/user.decorator';
-import { User, UserMapRole, UserRole } from '../entities';
+import { InviteLink, User, UserMapRole, UserRole } from '../entities';
 import { InviteLinkService } from '../invite-link/invite-link.service';
 import { CreateMapDto } from './dtos/create-map.dto';
 import { InviteLinkResponseDto } from './dtos/invite-link-response.dto';
@@ -79,7 +83,7 @@ export class MapController {
 
   @Post(':id/invite-links')
   @ApiOperation({
-    summary: '지도의 초대링크를 생성합니다.',
+    summary: '지도의 초대링크 생성',
     description: '유효기간은 7일로 설정되어 있습니다.',
   })
   @ApiResponse({ type: InviteLinkResponseDto })
@@ -90,5 +94,76 @@ export class MapController {
     @Param('id') id: string,
   ): Promise<InviteLinkResponseDto> {
     return this.inviteLinkService.create(id, user);
+  }
+
+  @Get(':id/tag')
+  @ApiOperation({
+    summary: '기본 태그와 지도에 저장된 태그를 조회합니다.',
+  })
+  @ApiResponse({ type: TagResponseDto, isArray: true })
+  @ApiBearerAuth()
+  @UseAuthGuard([UserRole.USER])
+  findTagByMapId(@Param('id') id: string) {
+    return this.mapService.findTagByMapId(id);
+  }
+
+  @Post(':id/tag')
+  @ApiOperation({
+    summary: '맛집 저장시 사용할 태그를 생성합니다.',
+  })
+  @ApiResponse({ type: TagResponseDto })
+  @ApiBearerAuth()
+  @UseAuthGuard([UserRole.USER])
+  createTag(@Param('id') id: string, @Body() createTagDTO: CreateTagDto) {
+    return this.mapService.createTag(id, createTagDTO);
+  }
+
+  @Delete(':id/tag/:tagId')
+  @ApiOperation({
+    summary: '맛집 저장시 사용할 태그를 삭제합니다.',
+  })
+  @ApiBearerAuth()
+  @UseAuthGuard([UserRole.USER])
+  removeTag(@Param('id') id: string, @Param('tagId') tagId: string) {
+    return this.mapService.removeTag(id, +tagId);
+  }
+
+  @Get('invite-links/:token')
+  @ApiOperation({
+    summary: '초대링크 만료 검사 + 지도정보 response',
+  })
+  async checkInviteLink(
+    @Param('token') inviteLinkToken: string,
+  ): Promise<CheckInviteLinkResponseDto> {
+    const inviteLink: InviteLink =
+      await this.inviteLinkService.validate(inviteLinkToken);
+
+    const map = await this.mapService.findOne(inviteLink.map);
+    const previewList = await this.mapService.getPlacesPreview(inviteLink.map);
+
+    return {
+      inviteLink: inviteLink,
+      map: map,
+      placePreviewList: previewList,
+    };
+  }
+
+  @Post('invite-links/:token')
+  @ApiOperation({
+    summary: '초대링크로 지도에 승선',
+    description: '초대장 화면에서 "승선하기" 버튼 클릭 시 호출',
+  })
+  @UseAuthGuard([UserRole.USER])
+  async joinInviteLink(
+    @Param('token') inviteLinkToken: string,
+    @CurrentUser() user: User,
+  ) {
+    const inviteLink: InviteLink =
+      await this.inviteLinkService.validate(inviteLinkToken);
+    await this.mapService.createUserMap(
+      user,
+      inviteLink.map,
+      inviteLink.mapRole,
+    );
   }
 }
