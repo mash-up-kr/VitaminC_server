@@ -4,6 +4,8 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+import * as Sentry from '@sentry/nestjs';
+import { nodeProfilingIntegration } from '@sentry/profiling-node';
 import { useContainer } from 'class-validator';
 import cookieParser from 'cookie-parser';
 
@@ -15,14 +17,14 @@ import { UtilService } from './util/util.service';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  // Sentry.init({
-  //   dsn: 'https://d3012af412384e4e0387dc84839e5eee@o4507516567945216.ingest.us.sentry.io/4507516570697728',
-  //   integrations: [nodeProfilingIntegration()],
-  //
-  //   tracesSampleRate: 1.0,
-  //
-  //   profilesSampleRate: 1.0,
-  // });
+  Sentry.init({
+    dsn: 'https://d3012af412384e4e0387dc84839e5eee@o4507516567945216.ingest.us.sentry.io/4507516570697728',
+    integrations: [nodeProfilingIntegration()],
+
+    tracesSampleRate: 1.0,
+
+    profilesSampleRate: 1.0,
+  });
 
   const configService = app.select(AppModule).get(ConfigService);
   const utilService = new UtilService(configService);

@@ -319,6 +319,54 @@
     },
     {
       "columns": {
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "image_url": {
+          "name": "image_url",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        }
+      },
+      "name": "place_category",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "place_category_pkey",
+          "columnNames": ["name"],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {
+        "user_provider": {
+          "name": "user_provider",
+          "schema": "public",
+          "items": ["KAKAO"]
+        },
+        "user_role": {
+          "name": "user_role",
+          "schema": "public",
+          "items": ["USER", "ADMIN"]
+        }
+      }
+    },
+    {
+      "columns": {
         "id": {
           "name": "id",
           "type": "serial",
@@ -588,6 +636,7 @@
     },
     {
       "columns": {
+
         "id": {
           "name": "id",
           "type": "serial",
@@ -692,6 +741,7 @@
     },
     {
       "columns": {
+
         "token": {
           "name": "token",
           "type": "varchar(255)",
