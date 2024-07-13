@@ -98,21 +98,7 @@ export class MapService {
       throw new MapNotFoundException();
     }
     const placeForMap = await this.placeForMapRepository.find({ map: where });
-    const mapResponse = new MapResponseDto();
-    mapResponse.id = entity.id;
-    mapResponse.name = entity.name;
-    mapResponse.createdAt = entity.createdAt;
-    mapResponse.updatedAt = entity.updatedAt;
-    mapResponse.registeredPlaceCount = placeForMap.length;
-    mapResponse.users = entity.userMap.getItems().map((userMap) => {
-      return {
-        id: userMap.user.id,
-        role: userMap.role,
-        nickname: userMap.user.nickname,
-      };
-    });
-
-    return mapResponse;
+    return new MapResponseDto(entity, placeForMap);
   }
 
   async update(id: string, updateMapDto: UpdateMapDto) {
