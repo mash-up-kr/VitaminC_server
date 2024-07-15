@@ -28,7 +28,7 @@ export class InviteLinkService {
     private readonly utilService: UtilService,
   ) {}
 
-  async create(mapId: string, by: User): Promise<InviteLinkResponseDto> {
+  async create(mapId: string, by: User): Promise<InviteLink> {
     const map = await this.mapRepository.findOne({ id: mapId });
     if (map == null) {
       throw new MapNotFoundException();
@@ -46,9 +46,7 @@ export class InviteLinkService {
 
     await this.inviteLinkRepository.persistAndFlush(inviteLink);
 
-    return {
-      inviteLinkToken: token,
-    };
+    return inviteLink;
   }
 
   async validate(inviteLinkToken: string): Promise<InviteLink> {

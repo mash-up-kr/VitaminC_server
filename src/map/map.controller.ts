@@ -93,7 +93,8 @@ export class MapController {
     @CurrentUser() user: User,
     @Param('id') id: string,
   ): Promise<InviteLinkResponseDto> {
-    return this.inviteLinkService.create(id, user);
+    const entity = await this.inviteLinkService.create(id, user);
+    return new InviteLinkResponseDto(entity);
   }
 
   @Get(':id/tag')
@@ -141,11 +142,12 @@ export class MapController {
     const map = await this.mapService.findOne(inviteLink.map);
     const previewList = await this.mapService.getPlacesPreview(inviteLink.map);
 
-    return {
-      inviteLink: inviteLink,
-      map: map,
-      placePreviewList: previewList,
-    };
+    const inviteLinkResponseDto = new InviteLinkResponseDto(inviteLink);
+    return new CheckInviteLinkResponseDto(
+      map,
+      inviteLinkResponseDto,
+      previewList,
+    );
   }
 
   @Post('invite-links/:token')

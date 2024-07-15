@@ -1,6 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GroupMap, UserMapRole, UserMapRoleValueType } from 'src/entities';
+import {
+  GroupMap,
+  PlaceForMap,
+  UserMapRole,
+  UserMapRoleValueType,
+} from 'src/entities';
 
 export class MapUser {
   @ApiProperty()
@@ -33,4 +38,19 @@ export class MapResponseDto implements Partial<GroupMap> {
 
   @ApiProperty()
   updatedAt: Date;
+
+  constructor(map: GroupMap, placeForMap: PlaceForMap[]) {
+    this.id = map.id;
+    this.name = map.name;
+    this.createdAt = map.createdAt;
+    this.updatedAt = map.updatedAt;
+    this.registeredPlaceCount = placeForMap?.length;
+    this.users = map.userMap.getItems().map((userMap) => {
+      return {
+        id: userMap.user.id,
+        role: userMap.role,
+        nickname: userMap.user.nickname,
+      };
+    });
+  }
 }
