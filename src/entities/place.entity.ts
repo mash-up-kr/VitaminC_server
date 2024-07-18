@@ -25,14 +25,16 @@ export class Place {
   kakaoPlace: KakaoPlace;
 
   @Property({
-    type: 'integer',
+    type: 'double precision',
     comment: '경도',
+    default: 0,
   })
   x: number;
 
   @Property({
-    type: 'integer',
+    type: 'double precision',
     comment: '위도',
+    default: 0,
   })
   y: number;
 
