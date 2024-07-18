@@ -130,6 +130,7 @@ export class MapController {
   }
 
   @Get('invite-links/:token')
+  @ApiResponse({ type: CheckInviteLinkResponseDto })
   @ApiOperation({
     summary: '초대링크 만료 검사 + 지도정보 response',
   })
