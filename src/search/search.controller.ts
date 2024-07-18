@@ -40,7 +40,7 @@ export class SearchController {
   @ApiQuery({
     type: String,
     name: 'rect',
-    description: '위도경도 "x1,y1,x2,y2"',
+    description: '경도위도 "x1,y1,x2,y2"',
   })
   @ApiOperation({ summary: '위도 경도 좌표계 쿼리' })
   @Get('places')
