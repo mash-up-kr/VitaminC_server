@@ -51,6 +51,22 @@ export class PlaceController {
     });
   }
 
+  @ApiOperation({ summary: '카카오 place id로 장소 조회' })
+  @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
+  @ApiParam({ name: 'placeId', description: '등록된 place id' })
+  @ApiResponse({ type: PlaceForMapResponseDto })
+  @UseAuthGuard([UserRole.USER])
+  @Get(':mapId/place/:placeId')
+  async getPlaceByKakaoId(
+    @Param('mapId') mapId: string,
+    @Param('placeId') placeId: number,
+  ) {
+    return await this.placeService.findOne({
+      mapId,
+      placeId,
+    });
+  }
+
   @ApiOperation({ summary: '맛집 장소 삭제' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'placeId', description: 'place id' })
