@@ -5,7 +5,11 @@ import {
   Property,
 } from '@mikro-orm/core';
 
-import { MenuItem } from 'src/place/dto/place-for-map-response.dto';
+import {
+  MenuItem,
+  OffDay,
+  OpenTime,
+} from 'src/place/dto/place-for-map-response.dto';
 
 import { KakaoPlaceRepository } from './kakao-place.repository';
 
@@ -39,14 +43,15 @@ export class KakaoPlace {
   address: string;
 
   @Property({
-    type: 'number',
+    type: 'double precision',
     comment: '카카오맵 경도',
+
     default: 0,
   })
   x: number;
 
   @Property({
-    type: 'number',
+    type: 'double precision',
     comment: '카카오맵 위도',
     default: 0,
   })
@@ -59,10 +64,53 @@ export class KakaoPlace {
   menuList: MenuItem[];
 
   @Property({
+    type: 'string',
+    comment: '카카오맵 ',
+    default: '',
+  })
+  mainPhotoUrl: string;
+
+  @Property({
     type: 'json',
     comment: '카카오맵 basicInfo.photo.photoList',
   })
   photoList: string[];
+
+  @Property({
+    type: 'decimal',
+    comment: '후기 점수',
+    scale: 1,
+    default: 0,
+  })
+  score: number;
+
+  @Property({
+    type: 'number',
+    comment: '리뷰 수',
+    default: 0,
+  })
+  commentCnt: number;
+
+  @Property({
+    type: 'number',
+    comment: '블로그 리뷰 수',
+    default: 0,
+  })
+  blogReviewCnt: number;
+
+  @Property({
+    type: 'json',
+    comment: '영업 시간 정보',
+    default: '[]',
+  })
+  openTimeList: OpenTime[];
+
+  @Property({
+    type: 'json',
+    comment: '휴무일 정보',
+    default: '[]',
+  })
+  offDayList: OffDay[];
 
   @Property()
   createdAt: Date = new Date();

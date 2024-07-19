@@ -10,7 +10,7 @@ import {
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { User, UserRole } from 'src/entities';
-import { PlaceResponseDTO } from 'src/place/dto/place-for-map-response.dto';
+import { PlaceResponseDto } from 'src/place/dto/place-for-map-response.dto';
 import { UserService } from 'src/user/user.service';
 
 import { SearchService } from './search.service';
@@ -40,7 +40,7 @@ export class SearchController {
   @ApiQuery({
     type: String,
     name: 'rect',
-    description: '위도경도 "x1,y1,x2,y2"',
+    description: '경도위도 "x1,y1,x2,y2"',
   })
   @ApiOperation({ summary: '위도 경도 좌표계 쿼리' })
   @Get('places')
@@ -76,7 +76,7 @@ export class SearchController {
     required: false,
     description: '장소디테일 캐시를 무효화 할지 여부 (default false)',
   })
-  @ApiResponse({ type: PlaceResponseDTO })
+  @ApiResponse({ type: PlaceResponseDto })
   @Get('places/kakao/:id')
   async searchPlaceDetail(
     @Param('id') id: string,

@@ -115,8 +115,8 @@ export class MapController {
   @ApiResponse({ type: TagResponseDto })
   @ApiBearerAuth()
   @UseAuthGuard([UserRole.USER])
-  createTag(@Param('id') id: string, @Body() createTagDTO: CreateTagDto) {
-    return this.mapService.createTag(id, createTagDTO);
+  createTag(@Param('id') id: string, @Body() createTagDto: CreateTagDto) {
+    return this.mapService.createTag(id, createTagDto);
   }
 
   @Delete(':id/tag/:tagId')

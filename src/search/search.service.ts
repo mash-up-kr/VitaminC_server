@@ -1,5 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 import { InjectRepository } from '@mikro-orm/nestjs';
 
@@ -12,6 +13,7 @@ import {
   KakaoKeywordSearchParams,
   KakaoPlaceDetailRaw,
   KakaoPlaceItem,
+  KakaoPlaceMenuRaw,
 } from './kakao-map.types';
 
 @Injectable()
@@ -22,6 +24,7 @@ export class SearchService {
     private readonly utilService: UtilService,
     @InjectRepository(KakaoPlace)
     private readonly kakaoPlaceRepository: KakaoPlaceRepository,
+    private readonly configService: ConfigService,
   ) {}
 
   async suggest(keyword: string): Promise<string[]> {
@@ -59,21 +62,44 @@ export class SearchService {
   ): Promise<KakaoPlace> {
     let kakaoPlace = await this.kakaoPlaceRepository.findOne({
       id: Number(id),
-    }); //
+    });
 
     if (
       invalidate ||
       kakaoPlace == null ||
       this.isKakaoPlaceNeedUpdate(kakaoPlace)
     ) {
-      const kakaoPlaceRaw = await this.searchPlaceDetailFromKakao(id);
-      kakaoPlace ??= new KakaoPlace();
-      kakaoPlace.id = kakaoPlaceRaw.basicInfo.cid;
-      kakaoPlace.name = kakaoPlaceRaw.basicInfo.placenamefull;
-      kakaoPlace.address = kakaoPlaceRaw.basicInfo.placenamefull;
-      kakaoPlace.category = kakaoPlaceRaw.basicInfo.category.cate1name;
+      const [kakaoPlaceRaw, kakaoPlaceMenuRaw] = await Promise.all([
+        this.searchPlaceDetailFromKakao(id),
+        this.searchPlaceMenuFromKakao(id),
+      ]);
+
+      kakaoPlace = new KakaoPlace();
+      const basicInfo = kakaoPlaceRaw.basicInfo;
+      const feedback = basicInfo.feedback;
+
+      kakaoPlace.id = basicInfo.cid;
+      kakaoPlace.name = basicInfo.placenamefull;
+      kakaoPlace.address = basicInfo.placenamefull;
+      kakaoPlace.category = basicInfo.category.cate1name;
+      kakaoPlace.blogReviewCnt = feedback.blogrvwcnt;
+      kakaoPlace.commentCnt = feedback.comntcnt;
+      kakaoPlace.mainPhotoUrl = basicInfo.mainphotourl;
+      kakaoPlace.score = feedback.scoresum / feedback.scorecnt;
+      kakaoPlace.openTimeList = basicInfo.openHour.periodList.flatMap(
+        (period) => period.timeList,
+      );
+      kakaoPlace.offDayList = basicInfo.openHour.offdayList;
+
+      const menuPhotoMap = (kakaoPlaceMenuRaw.photoViewer?.list || []).reduce(
+        (map, { summary, url }) => {
+          map[summary] = url;
+          return map;
+        },
+        {},
+      );
       kakaoPlace.menuList = kakaoPlaceRaw.menuInfo.menuList.map(
-        ({ menu, price }) => ({ menu, price }),
+        ({ menu, price }) => ({ menu, price, photo: menuPhotoMap[menu] || '' }),
       );
 
       // set coordinate
@@ -89,12 +115,10 @@ export class SearchService {
         .flatMap((photo) => photo.list)
         .map((photo) => photo.orgurl)
         .slice(0, 10);
-
-      await this.kakaoPlaceRepository.persistAndFlush(kakaoPlace);
+      await this.kakaoPlaceRepository.upsert(kakaoPlace);
     } else {
       console.log(`kakao-place detail cache hit: ${kakaoPlace.name}}`);
     }
-
     return kakaoPlace;
   }
 
@@ -103,6 +127,19 @@ export class SearchService {
   ): Promise<KakaoPlaceDetailRaw> {
     const response = await this.httpService.axiosRef.get<KakaoPlaceDetailRaw>(
       `https://place.map.kakao.com/main/v/${id}`,
+      {
+        responseType: 'json',
+        headers: KAKAO_SCRAPING_HEADERS,
+      },
+    );
+    return response.data;
+  }
+
+  private async searchPlaceMenuFromKakao(
+    id: string,
+  ): Promise<KakaoPlaceMenuRaw> {
+    const response = await this.httpService.axiosRef.get<KakaoPlaceMenuRaw>(
+      `https://place.map.kakao.com/photolist/v/${id}?type=menu`,
       {
         responseType: 'json',
         headers: KAKAO_SCRAPING_HEADERS,
@@ -133,11 +170,10 @@ export class SearchService {
         params: queryParams,
         responseType: 'json',
         headers: {
-          Authorization: `KakaoAK ${process.env.KAKAO_REST_API_KEY}`,
+          Authorization: `KakaoAK ${this.configService.get('KAKAO_REST_API_KEY')}`,
         },
       },
     );
-
     return response.data;
   }
 }

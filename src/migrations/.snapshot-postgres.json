@@ -122,25 +122,25 @@
         },
         "x": {
           "name": "x",
-          "type": "int",
+          "type": "double precision",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
           "default": "0",
           "comment": "카카오맵 경도",
-          "mappedType": "integer"
+          "mappedType": "double"
         },
         "y": {
           "name": "y",
-          "type": "int",
+          "type": "double precision",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
           "default": "0",
           "comment": "카카오맵 위도",
-          "mappedType": "integer"
+          "mappedType": "double"
         },
         "menu_list": {
           "name": "menu_list",
@@ -152,6 +152,17 @@
           "comment": "카카오맵 menuInfo.menuList",
           "mappedType": "json"
         },
+        "main_photo_url": {
+          "name": "main_photo_url",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "''",
+          "comment": "카카오맵 ",
+          "mappedType": "string"
+        },
         "photo_list": {
           "name": "photo_list",
           "type": "jsonb",
@@ -160,6 +171,63 @@
           "primary": false,
           "nullable": false,
           "comment": "카카오맵 basicInfo.photo.photoList",
+          "mappedType": "json"
+        },
+        "score": {
+          "name": "score",
+          "type": "numeric(10,1)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "precision": 10,
+          "scale": 1,
+          "default": "0",
+          "comment": "후기 점수",
+          "mappedType": "decimal"
+        },
+        "comment_cnt": {
+          "name": "comment_cnt",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "0",
+          "comment": "리뷰 수",
+          "mappedType": "integer"
+        },
+        "blog_review_cnt": {
+          "name": "blog_review_cnt",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "0",
+          "comment": "블로그 리뷰 수",
+          "mappedType": "integer"
+        },
+        "open_time_list": {
+          "name": "open_time_list",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "'[]'",
+          "comment": "영업 시간 정보",
+          "mappedType": "json"
+        },
+        "off_day_list": {
+          "name": "off_day_list",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "'[]'",
+          "comment": "휴무일 정보",
           "mappedType": "json"
         },
         "created_at": {
@@ -233,23 +301,25 @@
         },
         "x": {
           "name": "x",
-          "type": "int",
+          "type": "double precision",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
+          "default": "0",
           "comment": "경도",
-          "mappedType": "integer"
+          "mappedType": "double"
         },
         "y": {
           "name": "y",
-          "type": "int",
+          "type": "double precision",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
+          "default": "0",
           "comment": "위도",
-          "mappedType": "integer"
+          "mappedType": "double"
         },
         "created_at": {
           "name": "created_at",
@@ -636,7 +706,6 @@
     },
     {
       "columns": {
-
         "id": {
           "name": "id",
           "type": "serial",
@@ -741,7 +810,6 @@
     },
     {
       "columns": {
-
         "token": {
           "name": "token",
           "type": "varchar(255)",
@@ -762,12 +830,12 @@
         },
         "map_id": {
           "name": "map_id",
-          "type": "varchar(255)",
+          "type": "uuid",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "mappedType": "string"
+          "mappedType": "uuid"
         },
         "map_role": {
           "name": "map_role",
@@ -830,6 +898,14 @@
           "localTableName": "public.invite_link",
           "referencedColumnNames": ["id"],
           "referencedTableName": "public.user",
+          "updateRule": "cascade"
+        },
+        "invite_link_map_id_foreign": {
+          "constraintName": "invite_link_map_id_foreign",
+          "columnNames": ["map_id"],
+          "localTableName": "public.invite_link",
+          "referencedColumnNames": ["id"],
+          "referencedTableName": "public.map",
           "updateRule": "cascade"
         }
       },

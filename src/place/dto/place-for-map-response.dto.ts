@@ -24,7 +24,30 @@ export class MenuItem {
   @ApiProperty()
   price: string;
 }
-export class KakaoPlaceResponseDTO implements Partial<KakaoPlace> {
+
+export class OpenTime {
+  @ApiProperty()
+  dayOfWeek: string;
+
+  @ApiProperty()
+  timeName: string;
+
+  @ApiProperty()
+  timeSE: string;
+}
+
+export class OffDay {
+  @ApiProperty()
+  holidayName: string;
+
+  @ApiProperty()
+  weekAndDay: string;
+
+  @ApiProperty()
+  temporaryHolidays: string;
+}
+
+export class KakaoPlaceResponseDto implements Partial<KakaoPlace> {
   @ApiProperty({
     description: '카카오맵에서 제공하는 장소의 ID (basicInfo.cid)',
   })
@@ -56,11 +79,11 @@ export class KakaoPlaceResponseDTO implements Partial<KakaoPlace> {
   photoList: string[];
 }
 
-export class PlaceResponseDTO implements Partial<Place> {
+export class PlaceResponseDto implements Partial<Place> {
   @ApiProperty()
   id: number;
 
-  @ApiProperty({ type: KakaoPlaceResponseDTO, isArray: true })
+  @ApiProperty({ type: KakaoPlaceResponseDto })
   kakaoPlace: KakaoPlace;
 
   @ApiProperty()
@@ -71,8 +94,8 @@ export class PlaceResponseDTO implements Partial<Place> {
 }
 
 export class PlaceForMapResponseDto {
-  @ApiProperty({ type: PlaceResponseDTO })
-  place: PlaceResponseDTO;
+  @ApiProperty({ type: PlaceResponseDto })
+  place: PlaceResponseDto;
 
   @ApiProperty({ type: TagResponseDto, isArray: true })
   tags: TagResponseDto[];

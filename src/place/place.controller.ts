@@ -40,14 +40,30 @@ export class PlaceController {
   async registerPlaceByKakaoId(
     @Param('mapId') mapId: string,
     @Param('kakaoPlaceId') kakaoPlaceId: number,
-    @Body() registerPlaceDTO: RegisterPlaceDto,
+    @Body() registerPlaceDto: RegisterPlaceDto,
     @CurrentUser() user: User,
   ) {
     return await this.placeService.registerPlaceByKakaoId({
       mapId,
       kakaoPlaceId,
       user,
-      registerPlaceDTO,
+      registerPlaceDto: registerPlaceDto,
+    });
+  }
+
+  @ApiOperation({ summary: '저장된 place id로 장소 조회' })
+  @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
+  @ApiParam({ name: 'placeId', description: '등록된 place id' })
+  @ApiResponse({ type: PlaceForMapResponseDto })
+  @UseAuthGuard([UserRole.USER])
+  @Get(':mapId/:placeId')
+  async getPlaceByKakaoId(
+    @Param('mapId') mapId: string,
+    @Param('placeId') placeId: number,
+  ) {
+    return await this.placeService.findOne({
+      mapId,
+      placeId,
     });
   }
 

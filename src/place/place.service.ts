@@ -56,13 +56,13 @@ export class PlaceService {
     kakaoPlaceId,
     mapId,
     user,
-    registerPlaceDTO,
+    registerPlaceDto,
   }: {
     kakaoPlaceId: number;
     mapId: string;
     user: User;
-    registerPlaceDTO: RegisterPlaceDto;
-  }): Promise<PlaceForMapResponseDto> {
+    registerPlaceDto: RegisterPlaceDto;
+  }) {
     // create place if not exist
     let place = await this.placeRepository.findOne({
       kakaoPlace: rel(KakaoPlace, kakaoPlaceId),
@@ -80,25 +80,40 @@ export class PlaceService {
     await this.placeRepository.persistAndFlush(place);
 
     // create place for map if not exist
-    let placeForMap = await this.placeForMapRepository.findOne({
+    const placeForMap = await this.placeForMapRepository.findOne({
       place,
       map: rel(GroupMap, mapId),
     });
-    const tags = await this.tagRepository.find({
-      id: { $in: registerPlaceDTO.tagIds },
-    });
     if (placeForMap == null) {
-      placeForMap = new PlaceForMap();
-      placeForMap.place = place;
-      placeForMap.map = rel(GroupMap, mapId);
-      placeForMap.createdBy = user;
-      placeForMap.comments = [];
-      placeForMap.likedUserIds = [];
-      tags.map((tag) => placeForMap.tags.add(tag));
+      const tags = await this.tagRepository.find({
+        id: { $in: registerPlaceDto.tagIds },
+      });
+      this.placeForMapRepository.create({
+        place,
+        tags,
+        map: rel(GroupMap, mapId),
+        createdBy: user,
+        comments: [],
+        likedUserIds: [],
+      });
+      await this.placeForMapRepository.flush();
     }
-    await this.placeForMapRepository.persistAndFlush(placeForMap);
+    return { placeId: place.id };
+  }
 
-    return new PlaceForMapResponseDto(placeForMap);
+  async findOne({ mapId, placeId }: { mapId: string; placeId: number }) {
+    const place = await this.placeForMapRepository.findOne(
+      {
+        map: rel(GroupMap, mapId),
+        place: rel(Place, placeId),
+      },
+      { populate: ['place.kakaoPlace', 'tags'] },
+    );
+    if (!place) {
+      throw new PlaceNotFoundException();
+    }
+
+    return place;
   }
 
   async likePlace({

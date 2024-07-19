@@ -113,19 +113,21 @@ export type KakaoPlaceDetailRaw = {
       scorecnt: number; // 14
       reviewphotocnt: number; // 1
     };
+
     openHour: {
+      offdayList: {
+        holidayName: string; // "휴무일"
+        weekAndDay: string; //"월요일"
+        temporaryHolidays: string; //"N"
+      }[];
       periodList: {
-        '0': {
-          periodName: string; // "영업기간"
-          timeList: {
-            '0': {
-              timeName: string; // "영업시간"
-              timeSE: string; // "16:00 ~ 05:00"
-              dayOfWeek: string; // "매일"
-            };
-          };
-        };
-      };
+        periodName: string; // "영업기간"
+        timeList: {
+          timeName: string; // "영업시간"
+          timeSE: string; // "16:00 ~ 05:00"
+          dayOfWeek: string; // "매일"
+        }[];
+      }[];
       realtime: {
         holiday: string; // "N"
         breaktime: string; // "N"
@@ -179,5 +181,17 @@ export type KakaoPlaceDetailRaw = {
   placeSubscribeInfo: {
     cnt: number; // 0
     isSubscriber: boolean; // false
+  };
+};
+
+export type KakaoPlaceMenuRaw = {
+  photoViewer: {
+    placenamefull: string; // "스타벅스 영등포시장교차로점"
+    type: string; // "menu"
+    photoCnt: number; // 23
+    list: {
+      summary: string; // "아이스 런던 포그 티 라떼"
+      url: string; // "http://t1.daumcdn.net/place/24F78901B9BB41288406749A042BE7FA"
+    }[];
   };
 };
