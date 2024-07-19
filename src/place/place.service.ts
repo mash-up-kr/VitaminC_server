@@ -56,12 +56,12 @@ export class PlaceService {
     kakaoPlaceId,
     mapId,
     user,
-    registerPlaceDTO,
+    registerPlaceDto,
   }: {
     kakaoPlaceId: number;
     mapId: string;
     user: User;
-    registerPlaceDTO: RegisterPlaceDto;
+    registerPlaceDto: RegisterPlaceDto;
   }) {
     // create place if not exist
     let place = await this.placeRepository.findOne({
@@ -86,7 +86,7 @@ export class PlaceService {
     });
     if (placeForMap == null) {
       const tags = await this.tagRepository.find({
-        id: { $in: registerPlaceDTO.tagIds },
+        id: { $in: registerPlaceDto.tagIds },
       });
       this.placeForMapRepository.create({
         place,

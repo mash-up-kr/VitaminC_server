@@ -40,14 +40,14 @@ export class PlaceController {
   async registerPlaceByKakaoId(
     @Param('mapId') mapId: string,
     @Param('kakaoPlaceId') kakaoPlaceId: number,
-    @Body() registerPlaceDTO: RegisterPlaceDto,
+    @Body() registerPlaceDto: RegisterPlaceDto,
     @CurrentUser() user: User,
   ) {
     return await this.placeService.registerPlaceByKakaoId({
       mapId,
       kakaoPlaceId,
       user,
-      registerPlaceDTO,
+      registerPlaceDto: registerPlaceDto,
     });
   }
 
