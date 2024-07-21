@@ -22,8 +22,8 @@ export class GroupMap {
   @OneToMany({ entity: () => UserMap, mappedBy: (userMap) => userMap.map })
   userMap = new Collection<UserMap>(this);
 
-  @ManyToOne(() => User, { nullable: true })
-  createBy?: User;
+  @ManyToOne(() => User)
+  createBy: User;
 
   @Property()
   createdAt: Date = new Date();

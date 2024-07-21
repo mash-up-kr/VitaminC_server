@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   GroupMap,
   PlaceForMap,
+  UserMap,
   UserMapRole,
   UserMapRoleValueType,
 } from 'src/entities';
@@ -49,7 +50,7 @@ export class MapResponseDto {
     this.createdAt = map.createdAt;
     this.updatedAt = map.updatedAt;
     this.registeredPlaceCount = placeForMap?.length;
-    this.users = map.userMap.getItems().map((userMap) => {
+    this.users = map.userMap.getItems().map((userMap: UserMap) => {
       return {
         id: userMap.user.id,
         role: userMap.role,
