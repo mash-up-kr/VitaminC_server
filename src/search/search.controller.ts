@@ -1,6 +1,7 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiExcludeEndpoint,
   ApiOperation,
   ApiQuery,
   ApiResponse,
@@ -11,6 +12,7 @@ import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { User, UserRole } from 'src/entities';
 import { PlaceResponseDto } from 'src/place/dto/place-for-map-response.dto';
+import { SearchedPlaceResponseDto } from 'src/search/dtos/searched-place-response.dto';
 import { UserService } from 'src/user/user.service';
 
 import { SearchService } from './search.service';
@@ -35,7 +37,7 @@ export class SearchController {
     return await this.searchService.suggest(q);
   }
 
-  // 위도 경도 좌표계 쿼리
+  @ApiExcludeEndpoint()
   @ApiQuery({ type: String, name: 'q', description: '검색을 원하는 질의어' })
   @ApiQuery({
     type: String,
@@ -43,12 +45,33 @@ export class SearchController {
     description: '경도위도 "x1,y1,x2,y2"',
   })
   @ApiOperation({ summary: '위도 경도 좌표계 쿼리' })
+  @ApiResponse({ type: SearchedPlaceResponseDto, isArray: true })
   @Get('places')
   async searchPlacesByCoord(
     @Query('q') q: string,
     @Query('rect') rect: string,
   ) {
     return await this.searchService.searchPlaceList(q, rect);
+  }
+
+  @ApiQuery({ type: String, name: 'q', description: '검색을 원하는 질의어' })
+  @ApiQuery({
+    type: String,
+    name: 'rect',
+    description: '경도위도 "x1,y1,x2,y2"',
+  })
+  @ApiOperation({
+    summary:
+      '위도 경도 좌표계 쿼리, 맵에 등록된 place가 있으면 화면에 표시될 정보도 같이 전달됩니다.',
+  })
+  @ApiResponse({ type: SearchedPlaceResponseDto, isArray: true })
+  @Get('places')
+  async test(
+    @Query('q') q: string,
+    @Query('rect') rect: string,
+    @Query('mapId') mapId: string,
+  ) {
+    return await this.searchService.searchPlacesWithMap(q, rect, mapId);
   }
 
   // 카카오 좌표계(wcongnamul) 쿼리
