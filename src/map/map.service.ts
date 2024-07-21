@@ -130,10 +130,11 @@ export class MapService {
     mapId: string,
     createTagDto: CreateTagDto,
   ): Promise<TagResponseDto> {
-    const entity = this.tagRepository.findOne({
+    const entity = await this.tagRepository.findOne({
       map: rel(GroupMap, mapId),
       content: createTagDto.content,
     });
+
     if (entity) {
       throw new DuplicateTagException();
     }
