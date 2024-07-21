@@ -74,10 +74,10 @@ export class UserController {
     return this.userService.checkDuplicateNickname(nickname);
   }
 
-  @Delete(':id/maps/:mapId')
+  @Delete('maps/:mapId')
   @ApiOperation({ summary: '지도(그룹) 나가기' })
   @ApiOkResponse({})
-  async leaveMap(@Param('id') id: string, @Param('mapId') mapId: string) {
-    return await this.userService.leaveMap(+id, mapId);
+  async leaveMap(@CurrentUser() user: User, @Param('mapId') mapId: string) {
+    return await this.userService.leaveMap(user.id, mapId);
   }
 }
