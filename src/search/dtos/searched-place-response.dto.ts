@@ -11,10 +11,7 @@ export class SearchedPlaceResponseDto {
   kakaoId: number;
 
   @ApiProperty()
-  categoryGroupName: string;
-
-  @ApiProperty()
-  categoryName: string;
+  category: string;
 
   @ApiProperty()
   x: number;
@@ -26,10 +23,7 @@ export class SearchedPlaceResponseDto {
   placeName: string;
 
   @ApiProperty()
-  addressName: string;
-
-  @ApiProperty()
-  roadAddressName: string;
+  address: string;
 
   @ApiProperty()
   placeId: number;
@@ -56,11 +50,11 @@ export class SearchedPlaceResponseDto {
       const { kakaoPlace } = place;
 
       this.kakaoId = kakaoPlace.id;
-      this.categoryName = kakaoPlace.category;
+      this.category = kakaoPlace.category;
       this.x = kakaoPlace.x;
       this.y = kakaoPlace.y;
       this.placeName = kakaoPlace.name;
-      this.addressName = kakaoPlace.address;
+      this.address = kakaoPlace.address;
       this.placeId = place.id;
       this.tags = searchedPlace.tags.map((tag) => `#${tag.content}`);
       this.createdBy = new CreatedUser(searchedPlace.createdBy);
@@ -68,13 +62,11 @@ export class SearchedPlaceResponseDto {
       this.likedUserCount = searchedPlace.likedUserIds.length;
     } else {
       this.kakaoId = Number(searchedPlace.id);
-      this.categoryGroupName = searchedPlace.category_group_name;
-      this.categoryName = searchedPlace.category_name;
+      this.category = searchedPlace.category_name;
       this.x = Number(searchedPlace.x);
       this.y = Number(searchedPlace.y);
       this.placeName = searchedPlace.place_name;
-      this.addressName = searchedPlace.address_name;
-      this.roadAddressName = searchedPlace.road_address_name;
+      this.address = searchedPlace.road_address_name;
     }
   }
 }
