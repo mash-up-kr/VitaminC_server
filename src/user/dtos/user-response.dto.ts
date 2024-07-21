@@ -29,15 +29,12 @@ export class UserResponseDto implements Partial<Omit<User, 'userMap'>> {
   @ApiProperty({ enum: UserRole })
   @IsNotEmpty()
   role: UserRoleValueType;
-}
 
-export function toUserResponseDto(user: User): UserResponseDto {
-  const userResponse = new UserResponseDto();
-  userResponse.id = user.id;
-  userResponse.nickname = user.nickname;
-  userResponse.provider = user.provider;
-  userResponse.providerId = user.providerId;
-  userResponse.role = user.role;
-
-  return userResponse;
+  constructor(user: User) {
+    this.id = user.id;
+    this.nickname = user.nickname;
+    this.provider = user.provider;
+    this.providerId = user.providerId;
+    this.role = user.role;
+  }
 }

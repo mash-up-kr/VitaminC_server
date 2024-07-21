@@ -20,7 +20,7 @@ import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { User, UserRole } from 'src/entities';
 
 import { UpdateUserRequestDto } from './dtos/update-user.dto';
-import { UserResponseDto, toUserResponseDto } from './dtos/user-response.dto';
+import { UserResponseDto } from './dtos/user-response.dto';
 import { UserService } from './user.service';
 
 @ApiTags('users')
@@ -34,7 +34,7 @@ export class UserController {
   @ApiOkResponse({ type: UserResponseDto })
   @ApiBearerAuth()
   getMe(@CurrentUser() user: User): UserResponseDto {
-    return toUserResponseDto(user);
+    return new UserResponseDto(user);
   }
 
   @Patch('me')
@@ -46,8 +46,9 @@ export class UserController {
     @Body() updateUserDto: UpdateUserRequestDto,
     @CurrentUser() user: User,
   ): Promise<UserResponseDto> {
-    const updatedUser = await this.userService.update(user.id, user);
-    return toUserResponseDto(updatedUser);
+    const updatedUser = await this.userService.update(user.id, updateUserDto);
+
+    return new UserResponseDto(updatedUser);
   }
 
   @Get(':id')
@@ -56,7 +57,7 @@ export class UserController {
   @ApiBearerAuth()
   async findOne(@Param('id') id: string): Promise<UserResponseDto> {
     const user = await this.userService.findOne({ id: +id });
-    return toUserResponseDto(user);
+    return new UserResponseDto(user);
   }
 
   @Delete(':id')
