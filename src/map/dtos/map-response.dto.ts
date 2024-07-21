@@ -6,6 +6,7 @@ import {
   UserMapRole,
   UserMapRoleValueType,
 } from 'src/entities';
+import { UserResponseDto } from 'src/user/dtos/user-response.dto';
 
 export class MapUser {
   @ApiProperty()
@@ -20,7 +21,7 @@ export class MapUser {
   role: UserMapRoleValueType;
 }
 
-export class MapResponseDto implements Partial<GroupMap> {
+export class MapResponseDto {
   @ApiProperty()
   id: string;
 
@@ -39,6 +40,9 @@ export class MapResponseDto implements Partial<GroupMap> {
   @ApiProperty()
   updatedAt: Date;
 
+  @ApiProperty({ type: UserResponseDto })
+  createBy: UserResponseDto;
+
   constructor(map: GroupMap, placeForMap: PlaceForMap[]) {
     this.id = map.id;
     this.name = map.name;
@@ -52,5 +56,6 @@ export class MapResponseDto implements Partial<GroupMap> {
         nickname: userMap.user.nickname,
       };
     });
+    if (map.createBy) this.createBy = new UserResponseDto(map.createBy);
   }
 }
