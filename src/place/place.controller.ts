@@ -57,7 +57,7 @@ export class PlaceController {
   @ApiResponse({ type: PlaceForMapResponseDto })
   @UseAuthGuard([UserRole.USER])
   @Get(':mapId/:placeId')
-  async getPlaceByKakaoId(
+  async getPlaceInMap(
     @Param('mapId') mapId: string,
     @Param('placeId') placeId: number,
   ) {
