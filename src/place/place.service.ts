@@ -149,14 +149,7 @@ export class PlaceService {
     return new PlaceForMapResponseDto(placeForMap);
   }
 
-  async remove({
-    mapId,
-    placeId,
-  }: {
-    mapId: string;
-    placeId: number;
-    user: User;
-  }): Promise<void> {
+  async remove(mapId: string, placeId: number): Promise<void> {
     const placeForMap = await this.placeForMapRepository.findOne({
       place: rel(Place, placeId),
       map: rel(GroupMap, mapId),

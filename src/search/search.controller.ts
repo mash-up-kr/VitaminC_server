@@ -46,7 +46,7 @@ export class SearchController {
   })
   @ApiOperation({ summary: '위도 경도 좌표계 쿼리' })
   @ApiResponse({ type: SearchedPlaceResponseDto, isArray: true })
-  @Get('places')
+  @Get('places/kakao')
   async searchPlacesByCoord(
     @Query('q') q: string,
     @Query('rect') rect: string,
@@ -59,6 +59,11 @@ export class SearchController {
     type: String,
     name: 'rect',
     description: '경도위도 "x1,y1,x2,y2"',
+  })
+  @ApiQuery({
+    type: String,
+    name: 'mapId',
+    description: '해당 map id',
   })
   @ApiOperation({
     summary:

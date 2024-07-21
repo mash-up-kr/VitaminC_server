@@ -143,7 +143,6 @@ export class SearchService {
       kakaoPlace = new KakaoPlace();
       const basicInfo = kakaoPlaceRaw.basicInfo;
       const feedback = basicInfo.feedback;
-      console.log(basicInfo);
       kakaoPlace.id = basicInfo.cid;
       kakaoPlace.name = basicInfo.placenamefull;
       kakaoPlace.address = basicInfo.address.newaddr.newaddrfull;

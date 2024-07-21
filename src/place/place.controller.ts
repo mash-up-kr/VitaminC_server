@@ -74,14 +74,9 @@ export class PlaceController {
   @Delete(':mapId/:placeId')
   async deletePlaceByKakaoId(
     @Param('mapId') mapId: string,
-    @Param('placeId') placeId: number,
-    @CurrentUser() user: User,
+    @Param('placeId') placeId: string,
   ) {
-    await this.placeService.remove({
-      mapId,
-      placeId,
-      user,
-    });
+    await this.placeService.remove(mapId, +placeId);
   }
 
   @ApiOperation({ summary: '맛집 좋아요' })
