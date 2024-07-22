@@ -49,8 +49,11 @@ export class MapService {
     createMapDto: CreateMapDto,
     by: User,
   ): Promise<MapItemForUserDto> {
-    const map = this.mapRepository.create(createMapDto);
-    const userMap = this.userMapRepository.create({
+    const map: GroupMap = this.mapRepository.create({
+      ...createMapDto,
+      createBy: by,
+    });
+    const userMap: UserMap = this.userMapRepository.create({
       user: by,
       role: UserMapRole.ADMIN,
       map,
@@ -92,7 +95,7 @@ export class MapService {
 
   async findOne(where: FilterQuery<GroupMap>): Promise<MapResponseDto> {
     const entity = await this.mapRepository.findOne(where, {
-      populate: ['userMap.user'],
+      populate: ['userMap.user', 'createBy'],
     });
     if (entity === null) {
       throw new MapNotFoundException();
@@ -114,9 +117,9 @@ export class MapService {
   }
 
   async remove(id: string) {
-    this.placeForMapRepository.nativeDelete({ map: rel(GroupMap, id) });
-    this.mapRepository.nativeDelete({ id: id });
-    this.tagRepository.nativeDelete({ map: rel(GroupMap, id) });
+    await this.placeForMapRepository.nativeDelete({ map: rel(GroupMap, id) });
+    await this.mapRepository.nativeDelete({ id: id });
+    await this.tagRepository.nativeDelete({ map: rel(GroupMap, id) });
     await this.mapRepository.flush();
   }
   async findTagByMapId(mapId: string): Promise<TagResponseDto[]> {

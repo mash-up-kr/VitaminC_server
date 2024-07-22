@@ -2,13 +2,14 @@ import {
   Collection,
   Entity,
   EntityRepositoryType,
+  ManyToOne,
   OneToMany,
   PrimaryKey,
   Property,
 } from '@mikro-orm/core';
 import { v4 as uuid } from 'uuid';
 
-import { GroupMapRepository, UserMap } from 'src/entities';
+import { GroupMapRepository, User, UserMap } from 'src/entities';
 
 @Entity({ tableName: 'map', repository: () => GroupMapRepository })
 export class GroupMap {
@@ -20,6 +21,9 @@ export class GroupMap {
 
   @OneToMany({ entity: () => UserMap, mappedBy: (userMap) => userMap.map })
   userMap = new Collection<UserMap>(this);
+
+  @ManyToOne(() => User)
+  createBy: User;
 
   @Property()
   createdAt: Date = new Date();
