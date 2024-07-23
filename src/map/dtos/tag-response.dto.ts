@@ -15,10 +15,14 @@ export class TagResponseDto implements Partial<Tag> {
   @ApiProperty()
   createdAt: Date;
 
+  @ApiProperty({ type: String, nullable: true })
+  iconType?: string | null;
+
   constructor(tag: Tag) {
     this.id = tag.id;
     this.mapId = tag.map ? tag.map.id : null;
     this.content = tag.content;
     this.createdAt = tag.createdAt;
+    this.iconType = tag.iconType ?? null;
   }
 }
