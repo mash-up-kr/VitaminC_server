@@ -8,6 +8,9 @@ import { KakaoPlaceItem } from 'src/search/kakao-map.types';
 
 export class SearchedPlaceResponseDto {
   @ApiProperty()
+  isRegisteredPlace: boolean;
+
+  @ApiProperty()
   kakaoId: number;
 
   @ApiProperty()
@@ -33,8 +36,8 @@ export class SearchedPlaceResponseDto {
   tags?: string[];
 
   @ApiProperty({ type: CreatedUser })
-  @ApiProperty()
-  createdBy: CreatedUser;
+  @IsOptional()
+  createdBy?: CreatedUser;
 
   @ApiProperty()
   @IsOptional()
@@ -42,13 +45,14 @@ export class SearchedPlaceResponseDto {
 
   @ApiProperty()
   @IsOptional()
-  likedUserCount?: number;
+  likedUserIds?: number[];
 
   constructor(searchedPlace: KakaoPlaceItem | PlaceForMap) {
     if ('place' in searchedPlace) {
       const { place } = searchedPlace;
       const { kakaoPlace } = place;
 
+      this.isRegisteredPlace = true;
       this.kakaoId = kakaoPlace.id;
       this.category = kakaoPlace.category;
       this.x = kakaoPlace.x;
@@ -59,10 +63,11 @@ export class SearchedPlaceResponseDto {
       this.tags = searchedPlace.tags.map((tag) => `#${tag.content}`);
       this.createdBy = new CreatedUser(searchedPlace.createdBy);
       this.score = kakaoPlace.score;
-      this.likedUserCount = searchedPlace.likedUserIds.length;
+      this.likedUserIds = searchedPlace.likedUserIds;
     } else {
+      this.isRegisteredPlace = false;
       this.kakaoId = Number(searchedPlace.id);
-      this.category = searchedPlace.category_name;
+      this.category = searchedPlace.category_group_name;
       this.x = Number(searchedPlace.x);
       this.y = Number(searchedPlace.y);
       this.placeName = searchedPlace.place_name;
