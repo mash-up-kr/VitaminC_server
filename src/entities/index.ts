@@ -33,6 +33,9 @@ export * from './invite-link.repository';
 export * from './tag.entity';
 export * from './tag.repository';
 
+export * from './tag-icon.entity';
+export * from './tag-icon.repository';
+
 export const entities = [
   User,
   GroupMap,
