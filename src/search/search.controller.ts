@@ -71,7 +71,7 @@ export class SearchController {
   })
   @ApiResponse({ type: SearchedPlaceResponseDto, isArray: true })
   @Get('places')
-  async test(
+  async searchPlacesWithMap(
     @Query('q') q: string,
     @Query('rect') rect: string,
     @Query('mapId') mapId: string,
