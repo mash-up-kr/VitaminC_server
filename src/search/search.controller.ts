@@ -11,7 +11,7 @@ import {
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { User, UserRole } from 'src/entities';
-import { PlaceResponseDto } from 'src/place/dto/place-for-map-response.dto';
+import { KakaoPlaceResponseDto } from 'src/place/dto/place-for-map-response.dto';
 import { SearchedPlaceResponseDto } from 'src/search/dtos/searched-place-response.dto';
 import { UserService } from 'src/user/user.service';
 
@@ -104,7 +104,7 @@ export class SearchController {
     required: false,
     description: '장소디테일 캐시를 무효화 할지 여부 (default false)',
   })
-  @ApiResponse({ type: PlaceResponseDto })
+  @ApiResponse({ type: KakaoPlaceResponseDto })
   @Get('places/kakao/:id')
   async searchPlaceDetail(
     @Param('id') id: string,

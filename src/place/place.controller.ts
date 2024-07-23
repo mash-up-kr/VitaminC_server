@@ -8,7 +8,10 @@ import {
 } from '@nestjs/swagger';
 
 import { RegisterPlaceDto } from 'src/place/dto/create-tag.dto';
-import { PlaceForMapResponseDto } from 'src/place/dto/place-for-map-response.dto';
+import {
+  PlaceForMapResponseDto,
+  PlaceResponseDto,
+} from 'src/place/dto/place-for-map-response.dto';
 
 import { UseAuthGuard } from '../common/decorators/auth-guard.decorator';
 import { CurrentUser } from '../common/decorators/user.decorator';
@@ -34,7 +37,6 @@ export class PlaceController {
   @ApiOperation({ summary: '카카오 place id로 장소 등록' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'kakaoPlaceId', description: '카카오 place id' })
-  @ApiResponse({ type: PlaceForMapResponseDto })
   @UseAuthGuard([UserRole.USER])
   @Put(':mapId/kakao/:kakaoPlaceId')
   async registerPlaceByKakaoId(
@@ -54,7 +56,7 @@ export class PlaceController {
   @ApiOperation({ summary: '저장된 place id로 장소 조회' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'placeId', description: '등록된 place id' })
-  @ApiResponse({ type: PlaceForMapResponseDto })
+  @ApiResponse({ type: PlaceResponseDto })
   @UseAuthGuard([UserRole.USER])
   @Get(':mapId/:placeId')
   async getPlaceInMap(

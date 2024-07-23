@@ -5,7 +5,10 @@ import { InjectRepository } from '@mikro-orm/nestjs';
 
 import { PlaceNotFoundException } from 'src/exceptions';
 import { RegisterPlaceDto } from 'src/place/dto/create-tag.dto';
-import { PlaceForMapResponseDto } from 'src/place/dto/place-for-map-response.dto';
+import {
+  PlaceForMapResponseDto,
+  PlaceResponseDto,
+} from 'src/place/dto/place-for-map-response.dto';
 
 import {
   GroupMap,
@@ -101,7 +104,13 @@ export class PlaceService {
     return { placeId: place.id };
   }
 
-  async findOne({ mapId, placeId }: { mapId: string; placeId: number }) {
+  async findOne({
+    mapId,
+    placeId,
+  }: {
+    mapId: string;
+    placeId: number;
+  }): Promise<PlaceResponseDto> {
     const place = await this.placeForMapRepository.findOne(
       {
         map: rel(GroupMap, mapId),
@@ -113,7 +122,7 @@ export class PlaceService {
       throw new PlaceNotFoundException();
     }
 
-    return place;
+    return new PlaceResponseDto(place);
   }
 
   async likePlace({
@@ -126,7 +135,7 @@ export class PlaceService {
     placeId: number;
     user: User;
     like: boolean;
-  }): Promise<PlaceForMapResponseDto> {
+  }) {
     const placeForMap = await this.placeForMapRepository.findOneOrFail(
       {
         place: rel(Place, placeId),
@@ -146,7 +155,6 @@ export class PlaceService {
     }
 
     await this.placeForMapRepository.persistAndFlush(placeForMap);
-    return new PlaceForMapResponseDto(placeForMap);
   }
 
   async remove(mapId: string, placeId: number): Promise<void> {
