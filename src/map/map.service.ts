@@ -152,9 +152,14 @@ export class MapService {
     if (entity) {
       throw new DuplicateTagException();
     }
+    const tagIcon = await this.tagIconRepository.findOne({
+      name: createTagDto.content,
+    });
+
     const tag = this.tagRepository.create({
       map: rel(GroupMap, mapId),
       ...createTagDto,
+      iconType: tagIcon ? tagIcon.iconType : null,
     });
     await this.tagRepository.persistAndFlush(tag);
 
