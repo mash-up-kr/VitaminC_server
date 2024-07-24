@@ -18,6 +18,9 @@ export class Tag {
   @Property({ type: 'string' })
   content: string;
 
+  @Property({ type: 'string', nullable: true })
+  iconType?: string;
+
   @Property()
   createdAt: Date = new Date();
 }

@@ -6,74 +6,6 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "string"
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "string"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        }
-      },
-      "name": "map",
-      "schema": "public",
-      "indexes": [
-        {
-          "keyName": "map_pkey",
-          "columnNames": ["id"],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {},
-      "nativeEnums": {
-        "user_provider": {
-          "name": "user_provider",
-          "schema": "public",
-          "items": ["KAKAO"]
-        },
-        "user_role": {
-          "name": "user_role",
-          "schema": "public",
-          "items": ["USER", "ADMIN"]
-        }
-      }
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
           "type": "int",
           "unsigned": true,
           "autoincrement": true,
@@ -114,25 +46,25 @@
         },
         "x": {
           "name": "x",
-          "type": "int",
+          "type": "double precision",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
           "default": "0",
           "comment": "카카오맵 경도",
-          "mappedType": "integer"
+          "mappedType": "double"
         },
         "y": {
           "name": "y",
-          "type": "int",
+          "type": "double precision",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
           "default": "0",
           "comment": "카카오맵 위도",
-          "mappedType": "integer"
+          "mappedType": "double"
         },
         "menu_list": {
           "name": "menu_list",
@@ -144,6 +76,17 @@
           "comment": "카카오맵 menuInfo.menuList",
           "mappedType": "json"
         },
+        "main_photo_url": {
+          "name": "main_photo_url",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "''",
+          "comment": "카카오맵 ",
+          "mappedType": "string"
+        },
         "photo_list": {
           "name": "photo_list",
           "type": "jsonb",
@@ -152,6 +95,63 @@
           "primary": false,
           "nullable": false,
           "comment": "카카오맵 basicInfo.photo.photoList",
+          "mappedType": "json"
+        },
+        "score": {
+          "name": "score",
+          "type": "numeric(10,1)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "precision": 10,
+          "scale": 1,
+          "default": "0",
+          "comment": "후기 점수",
+          "mappedType": "decimal"
+        },
+        "comment_cnt": {
+          "name": "comment_cnt",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "0",
+          "comment": "리뷰 수",
+          "mappedType": "integer"
+        },
+        "blog_review_cnt": {
+          "name": "blog_review_cnt",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "0",
+          "comment": "블로그 리뷰 수",
+          "mappedType": "integer"
+        },
+        "open_time_list": {
+          "name": "open_time_list",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "'[]'",
+          "comment": "영업 시간 정보",
+          "mappedType": "json"
+        },
+        "off_day_list": {
+          "name": "off_day_list",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "'[]'",
+          "comment": "휴무일 정보",
           "mappedType": "json"
         },
         "created_at": {
@@ -225,23 +225,25 @@
         },
         "x": {
           "name": "x",
-          "type": "int",
+          "type": "double precision",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
+          "default": "0",
           "comment": "경도",
-          "mappedType": "integer"
+          "mappedType": "double"
         },
         "y": {
           "name": "y",
-          "type": "int",
+          "type": "double precision",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
+          "default": "0",
           "comment": "위도",
-          "mappedType": "integer"
+          "mappedType": "double"
         },
         "created_at": {
           "name": "created_at",
@@ -308,6 +310,54 @@
         }
       },
       "comment": "장소 정보"
+    },
+    {
+      "columns": {
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "icon_type": {
+          "name": "icon_type",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        }
+      },
+      "name": "tag_icon",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "tag_icon_pkey",
+          "columnNames": ["name"],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {
+        "user_provider": {
+          "name": "user_provider",
+          "schema": "public",
+          "items": ["KAKAO"]
+        },
+        "user_role": {
+          "name": "user_role",
+          "schema": "public",
+          "items": ["USER", "ADMIN"]
+        }
+      }
     },
     {
       "columns": {
@@ -380,6 +430,17 @@
           "enumItems": ["USER", "ADMIN"],
           "mappedType": "enum"
         },
+        "recent_search_keywords": {
+          "name": "recent_search_keywords",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "'[]'",
+          "comment": "최근 검색어 배열",
+          "mappedType": "json"
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamptz",
@@ -446,14 +507,108 @@
     },
     {
       "columns": {
-        "map_id": {
-          "name": "map_id",
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
+        "name": {
+          "name": "name",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
           "mappedType": "string"
+        },
+        "create_by_id": {
+          "name": "create_by_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "map",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": ["name"],
+          "composite": false,
+          "keyName": "map_name_unique",
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "map_pkey",
+          "columnNames": ["id"],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "map_create_by_id_foreign": {
+          "constraintName": "map_create_by_id_foreign",
+          "columnNames": ["create_by_id"],
+          "localTableName": "public.map",
+          "referencedColumnNames": ["id"],
+          "referencedTableName": "public.user",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {
+        "user_provider": {
+          "name": "user_provider",
+          "schema": "public",
+          "items": ["KAKAO"]
+        },
+        "user_role": {
+          "name": "user_role",
+          "schema": "public",
+          "items": ["USER", "ADMIN"]
+        }
+      }
+    },
+    {
+      "columns": {
+        "map_id": {
+          "name": "map_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
         },
         "place_id": {
           "name": "place_id",
@@ -518,14 +673,6 @@
       "schema": "public",
       "indexes": [
         {
-          "columnNames": ["created_by_id"],
-          "composite": false,
-          "keyName": "place_for_map_created_by_id_unique",
-          "constraint": true,
-          "primary": false,
-          "unique": true
-        },
-        {
           "keyName": "place_for_map_pkey",
           "columnNames": ["map_id", "place_id"],
           "composite": true,
@@ -577,6 +724,233 @@
     },
     {
       "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "map_id": {
+          "name": "map_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "uuid"
+        },
+        "place_for_map_map_id": {
+          "name": "place_for_map_map_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "uuid"
+        },
+        "place_for_map_place_id": {
+          "name": "place_for_map_place_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "content": {
+          "name": "content",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "icon_type": {
+          "name": "icon_type",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "tag",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "tag_pkey",
+          "columnNames": ["id"],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "tag_map_id_foreign": {
+          "constraintName": "tag_map_id_foreign",
+          "columnNames": ["map_id"],
+          "localTableName": "public.tag",
+          "referencedColumnNames": ["id"],
+          "referencedTableName": "public.map",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "tag_place_for_map_map_id_place_for_map_place_id_foreign": {
+          "constraintName": "tag_place_for_map_map_id_place_for_map_place_id_foreign",
+          "columnNames": ["place_for_map_map_id", "place_for_map_place_id"],
+          "localTableName": "public.tag",
+          "referencedColumnNames": ["map_id", "place_id"],
+          "referencedTableName": "public.place_for_map",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {
+        "user_provider": {
+          "name": "user_provider",
+          "schema": "public",
+          "items": ["KAKAO"]
+        },
+        "user_role": {
+          "name": "user_role",
+          "schema": "public",
+          "items": ["USER", "ADMIN"]
+        }
+      }
+    },
+    {
+      "columns": {
+        "token": {
+          "name": "token",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "created_by_id": {
+          "name": "created_by_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "map_id": {
+          "name": "map_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
+        "map_role": {
+          "name": "map_role",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "'WRITE'",
+          "mappedType": "string"
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "invite_link",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "invite_link_pkey",
+          "columnNames": ["token"],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "invite_link_created_by_id_foreign": {
+          "constraintName": "invite_link_created_by_id_foreign",
+          "columnNames": ["created_by_id"],
+          "localTableName": "public.invite_link",
+          "referencedColumnNames": ["id"],
+          "referencedTableName": "public.user",
+          "updateRule": "cascade"
+        },
+        "invite_link_map_id_foreign": {
+          "constraintName": "invite_link_map_id_foreign",
+          "columnNames": ["map_id"],
+          "localTableName": "public.invite_link",
+          "referencedColumnNames": ["id"],
+          "referencedTableName": "public.map",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {
+        "user_provider": {
+          "name": "user_provider",
+          "schema": "public",
+          "items": ["KAKAO"]
+        },
+        "user_role": {
+          "name": "user_role",
+          "schema": "public",
+          "items": ["USER", "ADMIN"]
+        }
+      }
+    },
+    {
+      "columns": {
         "user_id": {
           "name": "user_id",
           "type": "int",
@@ -588,12 +962,12 @@
         },
         "map_id": {
           "name": "map_id",
-          "type": "varchar(255)",
+          "type": "uuid",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "mappedType": "string"
+          "mappedType": "uuid"
         },
         "role": {
           "name": "role",

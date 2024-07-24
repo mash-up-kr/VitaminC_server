@@ -9,6 +9,8 @@ import {
   GroupMapRepository,
   PlaceForMap,
   PlaceForMapRepository,
+  TagIcon,
+  TagIconRepository,
   User,
   UserMap,
   UserMapRepository,
@@ -43,6 +45,8 @@ export class MapService {
     private readonly placeForMapRepository: PlaceForMapRepository,
     @InjectRepository(Tag)
     private readonly tagRepository: TagRepository,
+    @InjectRepository(TagIcon)
+    private readonly tagIconRepository: TagIconRepository,
   ) {}
 
   async create(
@@ -126,7 +130,14 @@ export class MapService {
     const tags = await this.tagRepository.find({
       $or: [{ map: rel(GroupMap, mapId) }, { map: null }],
     });
-    return tags.map((tag) => new TagResponseDto(tag));
+
+    const defaultTags: Pick<Tag, 'content' | 'iconType'>[] = (
+      await this.tagIconRepository.findAll()
+    ).map((k) => ({
+      ...k,
+      content: k.name,
+    }));
+    return [...defaultTags, ...tags].map((tag) => new TagResponseDto(tag));
   }
 
   async createTag(
@@ -141,9 +152,14 @@ export class MapService {
     if (entity) {
       throw new DuplicateTagException();
     }
+    const tagIcon = await this.tagIconRepository.findOne({
+      name: createTagDto.content,
+    });
+
     const tag = this.tagRepository.create({
       map: rel(GroupMap, mapId),
       ...createTagDto,
+      iconType: tagIcon ? tagIcon.iconType : null,
     });
     await this.tagRepository.persistAndFlush(tag);
 
