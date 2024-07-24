@@ -2,11 +2,19 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { rel } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 
+import { SearchedPlaceResponseDto } from 'src/search/dtos/searched-place-response.dto';
 import { UtilService } from 'src/util/util.service';
 
-import { KakaoPlace, KakaoPlaceRepository } from '../entities';
+import {
+  GroupMap,
+  KakaoPlace,
+  KakaoPlaceRepository,
+  PlaceForMap,
+  PlaceForMapRepository,
+} from '../entities';
 import { KAKAO_SCRAPING_HEADERS, KakaoMapHelper } from './kakao-map.helper';
 import {
   KakaoCategoryGroupCode,
@@ -24,6 +32,8 @@ export class SearchService {
     private readonly utilService: UtilService,
     @InjectRepository(KakaoPlace)
     private readonly kakaoPlaceRepository: KakaoPlaceRepository,
+    @InjectRepository(PlaceForMap)
+    private readonly placeForMapRepository: PlaceForMapRepository,
     private readonly configService: ConfigService,
   ) {}
 
@@ -44,7 +54,7 @@ export class SearchService {
     query: string,
     rect: string,
     { isKakaoCoord = false }: { isKakaoCoord?: boolean } = {},
-  ): Promise<KakaoPlaceItem[]> {
+  ): Promise<SearchedPlaceResponseDto[]> {
     if (isKakaoCoord) {
       rect = await this.kakaoMapHelper.congNamulRectToLongLatRect(rect);
     }
@@ -53,7 +63,63 @@ export class SearchService {
       this.searchPlace(query, rect, KakaoCategoryGroupCode['카페']),
       this.searchPlace(query, rect, KakaoCategoryGroupCode['음식점']),
     ]);
-    return this.utilService.uniqueBy([...list1, ...list2], (item) => item.id);
+    const searchedPlaces = this.utilService.uniqueBy(
+      [...list1, ...list2],
+      (item) => item.id,
+    );
+
+    return searchedPlaces.map((searchedPlace) => {
+      return new SearchedPlaceResponseDto(searchedPlace);
+    });
+  }
+
+  async searchPlacesWithMap(
+    query: string,
+    rect: string,
+    mapId: string,
+    { isKakaoCoord = false }: { isKakaoCoord?: boolean } = {},
+  ): Promise<SearchedPlaceResponseDto[]> {
+    if (isKakaoCoord) {
+      rect = await this.kakaoMapHelper.congNamulRectToLongLatRect(rect);
+    }
+
+    const [{ documents: list1 }, { documents: list2 }] = await Promise.all([
+      this.searchPlace(query, rect, KakaoCategoryGroupCode['카페']),
+      this.searchPlace(query, rect, KakaoCategoryGroupCode['음식점']),
+    ]);
+    const kakaoPlaceItems = this.utilService.uniqueBy(
+      [...list1, ...list2],
+      (item) => item.id,
+    );
+    const kakaoPlaceIds = kakaoPlaceItems.map((item) => Number(item.id));
+
+    const existingPlacesMap = await this.getExistingPlacesMap(
+      mapId,
+      kakaoPlaceIds,
+    );
+    const mergedPlaces = kakaoPlaceItems.map(
+      (kakaoPlace) => existingPlacesMap[kakaoPlace.id] ?? kakaoPlace,
+    );
+
+    return mergedPlaces.map((place) => new SearchedPlaceResponseDto(place));
+  }
+
+  async getExistingPlacesMap(
+    mapId: string,
+    kakaoPlaceIds: number[],
+  ): Promise<{ [key: string]: PlaceForMap }> {
+    const existingPlaces = await this.placeForMapRepository.find(
+      {
+        map: rel(GroupMap, mapId),
+        place: { kakaoPlace: { $in: kakaoPlaceIds } },
+      },
+      { populate: ['place', 'place.kakaoPlace', 'createdBy', 'tags'] },
+    );
+
+    return existingPlaces.reduce((map, placeForMap) => {
+      map[placeForMap.place.kakaoPlace.id] = placeForMap;
+      return map;
+    }, {});
   }
 
   async searchPlaceDetail(
@@ -77,10 +143,9 @@ export class SearchService {
       kakaoPlace = new KakaoPlace();
       const basicInfo = kakaoPlaceRaw.basicInfo;
       const feedback = basicInfo.feedback;
-
       kakaoPlace.id = basicInfo.cid;
       kakaoPlace.name = basicInfo.placenamefull;
-      kakaoPlace.address = basicInfo.placenamefull;
+      kakaoPlace.address = basicInfo.address.newaddr.newaddrfull;
       kakaoPlace.category = basicInfo.category.cate1name;
       kakaoPlace.blogReviewCnt = feedback.blogrvwcnt;
       kakaoPlace.commentCnt = feedback.comntcnt;

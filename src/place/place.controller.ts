@@ -7,12 +7,16 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
+import { UseMapRoleGuard } from 'src/common/decorators/map-role-guard.decorator';
 import { RegisterPlaceDto } from 'src/place/dto/create-tag.dto';
-import { PlaceForMapResponseDto } from 'src/place/dto/place-for-map-response.dto';
+import {
+  PlaceForMapResponseDto,
+  PlaceResponseDto,
+} from 'src/place/dto/place-for-map-response.dto';
 
 import { UseAuthGuard } from '../common/decorators/auth-guard.decorator';
 import { CurrentUser } from '../common/decorators/user.decorator';
-import { User, UserRole } from '../entities';
+import { User, UserMapRole, UserRole } from '../entities';
 import { PlaceService } from './place.service';
 
 @ApiTags('place')
@@ -34,7 +38,6 @@ export class PlaceController {
   @ApiOperation({ summary: '카카오 place id로 장소 등록' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'kakaoPlaceId', description: '카카오 place id' })
-  @ApiResponse({ type: PlaceForMapResponseDto })
   @UseAuthGuard([UserRole.USER])
   @Put(':mapId/kakao/:kakaoPlaceId')
   async registerPlaceByKakaoId(
@@ -54,10 +57,10 @@ export class PlaceController {
   @ApiOperation({ summary: '저장된 place id로 장소 조회' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'placeId', description: '등록된 place id' })
-  @ApiResponse({ type: PlaceForMapResponseDto })
+  @ApiResponse({ type: PlaceResponseDto })
   @UseAuthGuard([UserRole.USER])
   @Get(':mapId/:placeId')
-  async getPlaceByKakaoId(
+  async getPlaceInMap(
     @Param('mapId') mapId: string,
     @Param('placeId') placeId: number,
   ) {
@@ -71,17 +74,13 @@ export class PlaceController {
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'placeId', description: 'place id' })
   @UseAuthGuard([UserRole.USER])
+  @UseMapRoleGuard([UserMapRole.ADMIN, UserMapRole.WRITE])
   @Delete(':mapId/:placeId')
   async deletePlaceByKakaoId(
     @Param('mapId') mapId: string,
-    @Param('placeId') placeId: number,
-    @CurrentUser() user: User,
+    @Param('placeId') placeId: string,
   ) {
-    await this.placeService.remove({
-      mapId,
-      placeId,
-      user,
-    });
+    await this.placeService.remove(mapId, +placeId);
   }
 
   @ApiOperation({ summary: '맛집 좋아요' })
