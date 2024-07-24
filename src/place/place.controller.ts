@@ -7,6 +7,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
+import { UseMapRoleGuard } from 'src/common/decorators/map-role-guard.decorator';
 import { RegisterPlaceDto } from 'src/place/dto/create-tag.dto';
 import {
   PlaceForMapResponseDto,
@@ -15,7 +16,7 @@ import {
 
 import { UseAuthGuard } from '../common/decorators/auth-guard.decorator';
 import { CurrentUser } from '../common/decorators/user.decorator';
-import { User, UserRole } from '../entities';
+import { User, UserMapRole, UserRole } from '../entities';
 import { PlaceService } from './place.service';
 
 @ApiTags('place')
@@ -73,6 +74,7 @@ export class PlaceController {
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'placeId', description: 'place id' })
   @UseAuthGuard([UserRole.USER])
+  @UseMapRoleGuard([UserMapRole.ADMIN, UserMapRole.WRITE])
   @Delete(':mapId/:placeId')
   async deletePlaceByKakaoId(
     @Param('mapId') mapId: string,
