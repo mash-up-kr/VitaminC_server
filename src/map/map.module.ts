@@ -4,7 +4,7 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 
 import { InviteLinkModule } from 'src/invite-link/invite-link.module';
 
-import { GroupMap, PlaceForMap, Tag, TagIcon, UserMap } from '../entities';
+import { GroupMap, PlaceForMap, Tag, UserMap } from '../entities';
 import { UserModule } from '../user/user.module';
 import { MapController } from './map.controller';
 import { MapService } from './map.service';
@@ -12,7 +12,7 @@ import { IsMapNameUnique } from './validator/is-map-name-unique.validator';
 
 @Module({
   imports: [
-    MikroOrmModule.forFeature([GroupMap, UserMap, PlaceForMap, Tag, TagIcon]),
+    MikroOrmModule.forFeature([GroupMap, UserMap, PlaceForMap, Tag]),
     UserModule,
     InviteLinkModule,
   ],
