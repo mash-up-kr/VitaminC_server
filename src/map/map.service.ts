@@ -131,12 +131,8 @@ export class MapService {
       $or: [{ map: rel(GroupMap, mapId) }, { map: null }],
     });
 
-    const defaultTags: Pick<Tag, 'content' | 'iconType'>[] = (
-      await this.tagIconRepository.findAll()
-    ).map((k) => ({
-      ...k,
-      content: k.name,
-    }));
+    const defaultTags = await this.tagIconRepository.findAll();
+
     return [...defaultTags, ...tags].map((tag) => new TagResponseDto(tag));
   }
 
@@ -146,14 +142,14 @@ export class MapService {
   ): Promise<TagResponseDto> {
     const entity = await this.tagRepository.findOne({
       map: rel(GroupMap, mapId),
-      content: createTagDto.content,
+      name: createTagDto.name,
     });
 
     if (entity) {
       throw new DuplicateTagException();
     }
     const tagIcon = await this.tagIconRepository.findOne({
-      name: createTagDto.content,
+      name: createTagDto.name,
     });
 
     const tag = this.tagRepository.create({
@@ -166,10 +162,10 @@ export class MapService {
     return new TagResponseDto(tag);
   }
 
-  async removeTag(mapId: string, tagId: number) {
+  async removeTag(mapId: string, name: string) {
     const tag = await this.tagRepository.findOne({
       map: rel(GroupMap, mapId),
-      id: tagId,
+      name,
     });
     if (!tag) {
       throw new TagNotFoundException();

@@ -2,8 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { IsNotEmpty } from 'class-validator';
 
+import { Tag } from 'src/entities';
+
 export class RegisterPlaceDto {
-  @ApiProperty({ type: Number, isArray: true })
+  @ApiProperty({ type: String, isArray: true })
   @IsNotEmpty()
-  tagIds: number[];
+  tagNames: Tag['name'][];
 }

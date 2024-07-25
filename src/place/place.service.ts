@@ -89,7 +89,7 @@ export class PlaceService {
     });
     if (placeForMap == null) {
       const tags = await this.tagRepository.find({
-        id: { $in: registerPlaceDto.tagIds },
+        name: { $in: registerPlaceDto.tagNames },
       });
       this.placeForMapRepository.create({
         place,

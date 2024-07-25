@@ -119,14 +119,14 @@ export class MapController {
     return this.mapService.createTag(id, createTagDto);
   }
 
-  @Delete(':id/tag/:tagId')
+  @Delete(':id/tag/:name')
   @ApiOperation({
     summary: '맛집 저장시 사용할 태그를 삭제합니다.',
   })
   @ApiBearerAuth()
   @UseAuthGuard([UserRole.USER])
-  removeTag(@Param('id') id: string, @Param('tagId') tagId: string) {
-    return this.mapService.removeTag(id, +tagId);
+  removeTag(@Param('id') id: string, @Param('name') name: string) {
+    return this.mapService.removeTag(id, name);
   }
 
   @Get('invite-links/:token')

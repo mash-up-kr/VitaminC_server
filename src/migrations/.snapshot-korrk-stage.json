@@ -724,14 +724,14 @@
     },
     {
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "unsigned": true,
-          "autoincrement": true,
-          "primary": true,
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
           "nullable": false,
-          "mappedType": "integer"
+          "mappedType": "string"
         },
         "map_id": {
           "name": "map_id",
@@ -760,15 +760,6 @@
           "nullable": true,
           "mappedType": "integer"
         },
-        "content": {
-          "name": "content",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "string"
-        },
         "icon_type": {
           "name": "icon_type",
           "type": "varchar(255)",
@@ -794,8 +785,8 @@
       "indexes": [
         {
           "keyName": "tag_pkey",
-          "columnNames": ["id"],
-          "composite": false,
+          "columnNames": ["name", "map_id"],
+          "composite": true,
           "constraint": true,
           "primary": true,
           "unique": true

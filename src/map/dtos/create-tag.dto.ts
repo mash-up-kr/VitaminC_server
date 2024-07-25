@@ -7,5 +7,5 @@ import { Tag } from 'src/entities/tag.entity';
 export class CreateTagDto implements Partial<Tag> {
   @ApiProperty()
   @IsNotEmpty()
-  content: string;
+  name: string;
 }
