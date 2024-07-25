@@ -60,7 +60,7 @@ export class SearchedPlaceResponseDto {
       this.placeName = kakaoPlace.name;
       this.address = kakaoPlace.address;
       this.placeId = place.id;
-      this.tags = searchedPlace.tags.map((tag) => `#${tag.name}`);
+      this.tags = searchedPlace.tags.map((tag) => tag.name);
       this.createdBy = new CreatedUser(searchedPlace.createdBy);
       this.score = kakaoPlace.score;
       this.likedUserIds = searchedPlace.likedUserIds;
