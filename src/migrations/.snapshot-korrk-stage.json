@@ -601,6 +601,83 @@
     },
     {
       "columns": {
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "map_id": {
+          "name": "map_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "uuid"
+        },
+        "icon_type": {
+          "name": "icon_type",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "tag",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "tag_pkey",
+          "columnNames": ["name", "map_id"],
+          "composite": true,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "tag_map_id_foreign": {
+          "constraintName": "tag_map_id_foreign",
+          "columnNames": ["map_id"],
+          "localTableName": "public.tag",
+          "referencedColumnNames": ["id"],
+          "referencedTableName": "public.map",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {
+        "user_provider": {
+          "name": "user_provider",
+          "schema": "public",
+          "items": ["KAKAO"]
+        },
+        "user_role": {
+          "name": "user_role",
+          "schema": "public",
+          "items": ["USER", "ADMIN"]
+        }
+      }
+    },
+    {
+      "columns": {
         "map_id": {
           "name": "map_id",
           "type": "uuid",
@@ -724,31 +801,13 @@
     },
     {
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "unsigned": true,
-          "autoincrement": true,
-          "primary": true,
-          "nullable": false,
-          "mappedType": "integer"
-        },
-        "map_id": {
-          "name": "map_id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "uuid"
-        },
         "place_for_map_map_id": {
           "name": "place_for_map_map_id",
           "type": "uuid",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": true,
+          "nullable": false,
           "mappedType": "uuid"
         },
         "place_for_map_place_id": {
@@ -757,11 +816,11 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": true,
+          "nullable": false,
           "mappedType": "integer"
         },
-        "content": {
-          "name": "content",
+        "tag_name": {
+          "name": "tag_name",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
@@ -769,33 +828,28 @@
           "nullable": false,
           "mappedType": "string"
         },
-        "icon_type": {
-          "name": "icon_type",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "string"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamptz",
+        "tag_map_id": {
+          "name": "tag_map_id",
+          "type": "uuid",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
+          "mappedType": "uuid"
         }
       },
-      "name": "tag",
+      "name": "place_for_map_tags",
       "schema": "public",
       "indexes": [
         {
-          "keyName": "tag_pkey",
-          "columnNames": ["id"],
-          "composite": false,
+          "keyName": "place_for_map_tags_pkey",
+          "columnNames": [
+            "place_for_map_map_id",
+            "place_for_map_place_id",
+            "tag_name",
+            "tag_map_id"
+          ],
+          "composite": true,
           "constraint": true,
           "primary": true,
           "unique": true
@@ -803,22 +857,22 @@
       ],
       "checks": [],
       "foreignKeys": {
-        "tag_map_id_foreign": {
-          "constraintName": "tag_map_id_foreign",
-          "columnNames": ["map_id"],
-          "localTableName": "public.tag",
-          "referencedColumnNames": ["id"],
-          "referencedTableName": "public.map",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        },
-        "tag_place_for_map_map_id_place_for_map_place_id_foreign": {
-          "constraintName": "tag_place_for_map_map_id_place_for_map_place_id_foreign",
+        "place_for_map_tags_place_for_map_map_id_place_for_99867_foreign": {
+          "constraintName": "place_for_map_tags_place_for_map_map_id_place_for_99867_foreign",
           "columnNames": ["place_for_map_map_id", "place_for_map_place_id"],
-          "localTableName": "public.tag",
+          "localTableName": "public.place_for_map_tags",
           "referencedColumnNames": ["map_id", "place_id"],
           "referencedTableName": "public.place_for_map",
-          "deleteRule": "set null",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "place_for_map_tags_tag_name_tag_map_id_foreign": {
+          "constraintName": "place_for_map_tags_tag_name_tag_map_id_foreign",
+          "columnNames": ["tag_name", "tag_map_id"],
+          "localTableName": "public.place_for_map_tags",
+          "referencedColumnNames": ["name", "map_id"],
+          "referencedTableName": "public.tag",
+          "deleteRule": "cascade",
           "updateRule": "cascade"
         }
       },

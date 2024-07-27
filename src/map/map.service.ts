@@ -28,6 +28,7 @@ import {
 } from 'src/exceptions';
 import { CreateTagDto } from 'src/map/dtos/create-tag.dto';
 import { TagResponseDto } from 'src/map/dtos/tag-response.dto';
+import { UtilService } from 'src/util/util.service';
 
 import { CreateMapDto } from './dtos/create-map.dto';
 import { MapItemForUserDto } from './dtos/map-item-for-user.dto';
@@ -47,6 +48,7 @@ export class MapService {
     private readonly tagRepository: TagRepository,
     @InjectRepository(TagIcon)
     private readonly tagIconRepository: TagIconRepository,
+    private readonly utilService: UtilService,
   ) {}
 
   async create(
@@ -128,16 +130,18 @@ export class MapService {
   }
   async findTagByMapId(mapId: string): Promise<TagResponseDto[]> {
     const tags = await this.tagRepository.find({
-      $or: [{ map: rel(GroupMap, mapId) }, { map: null }],
+      map: rel(GroupMap, mapId),
     });
 
-    const defaultTags: Pick<Tag, 'content' | 'iconType'>[] = (
-      await this.tagIconRepository.findAll()
-    ).map((k) => ({
-      ...k,
-      content: k.name,
-    }));
-    return [...defaultTags, ...tags].map((tag) => new TagResponseDto(tag));
+    const defaultTags: Pick<Tag, 'name' | 'iconType'>[] =
+      await this.tagIconRepository.findAll();
+
+    const uniqueTags = this.utilService.uniqueBy(
+      [...defaultTags, ...tags],
+      (t) => t.name,
+    );
+
+    return uniqueTags.map((tag) => new TagResponseDto(tag));
   }
 
   async createTag(
@@ -146,14 +150,14 @@ export class MapService {
   ): Promise<TagResponseDto> {
     const entity = await this.tagRepository.findOne({
       map: rel(GroupMap, mapId),
-      content: createTagDto.content,
+      name: createTagDto.name,
     });
 
     if (entity) {
       throw new DuplicateTagException();
     }
     const tagIcon = await this.tagIconRepository.findOne({
-      name: createTagDto.content,
+      name: createTagDto.name,
     });
 
     const tag = this.tagRepository.create({
@@ -166,10 +170,10 @@ export class MapService {
     return new TagResponseDto(tag);
   }
 
-  async removeTag(mapId: string, tagId: number) {
+  async removeTag(mapId: string, name: string) {
     const tag = await this.tagRepository.findOne({
       map: rel(GroupMap, mapId),
-      id: tagId,
+      name,
     });
     if (!tag) {
       throw new TagNotFoundException();
