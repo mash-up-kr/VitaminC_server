@@ -28,6 +28,7 @@ import {
 } from 'src/exceptions';
 import { CreateTagDto } from 'src/map/dtos/create-tag.dto';
 import { TagResponseDto } from 'src/map/dtos/tag-response.dto';
+import { UtilService } from 'src/util/util.service';
 
 import { CreateMapDto } from './dtos/create-map.dto';
 import { MapItemForUserDto } from './dtos/map-item-for-user.dto';
@@ -47,6 +48,7 @@ export class MapService {
     private readonly tagRepository: TagRepository,
     @InjectRepository(TagIcon)
     private readonly tagIconRepository: TagIconRepository,
+    private readonly utilService: UtilService,
   ) {}
 
   async create(
@@ -128,12 +130,18 @@ export class MapService {
   }
   async findTagByMapId(mapId: string): Promise<TagResponseDto[]> {
     const tags = await this.tagRepository.find({
-      $or: [{ map: rel(GroupMap, mapId) }, { map: null }],
+      map: rel(GroupMap, mapId),
     });
 
-    const defaultTags = await this.tagIconRepository.findAll();
+    const defaultTags: Pick<Tag, 'name' | 'iconType'>[] =
+      await this.tagIconRepository.findAll();
 
-    return [...defaultTags, ...tags].map((tag) => new TagResponseDto(tag));
+    const uniqueTags = this.utilService.uniqueBy(
+      [...defaultTags, ...tags],
+      (t) => t.name,
+    );
+
+    return uniqueTags.map((tag) => new TagResponseDto(tag));
   }
 
   async createTag(

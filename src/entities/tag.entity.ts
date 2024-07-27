@@ -1,5 +1,8 @@
 import {
+  Collection,
   Entity,
+  EntityRepositoryType,
+  ManyToMany,
   ManyToOne,
   PrimaryKey,
   PrimaryKeyProp,
@@ -19,14 +22,16 @@ export class Tag {
   @ManyToOne(() => GroupMap, { nullable: true, primary: true })
   map: Rel<GroupMap>;
 
-  @ManyToOne(() => PlaceForMap, { nullable: true })
-  placeForMap: Rel<PlaceForMap>;
+  @ManyToMany(() => PlaceForMap, (p) => p.tags, { nullable: true })
+  placeForMap = new Collection<PlaceForMap>(this);
 
   @Property({ type: 'string', nullable: true })
   iconType?: string;
 
   @Property()
   createdAt: Date = new Date();
+
+  [EntityRepositoryType]: TagRepository;
 
   [PrimaryKeyProp]: ['name', 'map'];
 }

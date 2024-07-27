@@ -18,6 +18,8 @@ import {
   PlaceForMapRepository,
   PlaceRepository,
   Tag,
+  TagIcon,
+  TagIconRepository,
   TagRepository,
   User,
 } from '../entities';
@@ -33,6 +35,8 @@ export class PlaceService {
     @InjectRepository(Tag)
     private readonly tagRepository: TagRepository,
     private readonly searchService: SearchService,
+    @InjectRepository(TagIcon)
+    private readonly tagIconRepository: TagIconRepository,
   ) {}
 
   /**
@@ -87,13 +91,18 @@ export class PlaceService {
       place,
       map: rel(GroupMap, mapId),
     });
-    if (placeForMap == null) {
+    if (placeForMap === null) {
       const tags = await this.tagRepository.find({
         name: { $in: registerPlaceDto.tagNames },
+        map: rel(GroupMap, mapId),
       });
+      const defaultTags = await this.tagIconRepository.find({
+        name: { $in: registerPlaceDto.tagNames },
+      });
+
       this.placeForMapRepository.create({
         place,
-        tags,
+        tags: [...tags, ...defaultTags],
         map: rel(GroupMap, mapId),
         createdBy: user,
         comments: [],

@@ -2,8 +2,8 @@ import {
   Collection,
   Entity,
   EntityRepositoryType,
+  ManyToMany,
   ManyToOne,
-  OneToMany,
   PrimaryKeyProp,
   Property,
   Rel,
@@ -41,7 +41,7 @@ export class PlaceForMap {
   })
   likedUserIds: number[];
 
-  @OneToMany(() => Tag, (tag) => tag.placeForMap)
+  @ManyToMany(() => Tag)
   tags = new Collection<Tag>(this);
 
   @ManyToOne(() => User)

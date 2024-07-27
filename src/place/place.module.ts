@@ -4,7 +4,14 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 
 import { MapModule } from 'src/map/map.module';
 
-import { GroupMap, KakaoPlace, Place, PlaceForMap, Tag } from '../entities';
+import {
+  GroupMap,
+  KakaoPlace,
+  Place,
+  PlaceForMap,
+  Tag,
+  TagIcon,
+} from '../entities';
 import { SearchModule } from '../search/search.module';
 import { PlaceController } from './place.controller';
 import { PlaceService } from './place.service';
@@ -12,7 +19,14 @@ import { PlaceService } from './place.service';
 @Module({
   imports: [
     SearchModule,
-    MikroOrmModule.forFeature([Place, KakaoPlace, PlaceForMap, GroupMap, Tag]),
+    MikroOrmModule.forFeature([
+      Place,
+      KakaoPlace,
+      PlaceForMap,
+      GroupMap,
+      Tag,
+      TagIcon,
+    ]),
     MapModule,
   ],
   controllers: [PlaceController],
