@@ -6,6 +6,7 @@ import { InjectRepository } from '@mikro-orm/nestjs';
 import { PlaceNotFoundException } from 'src/exceptions';
 import { RegisterPlaceDto } from 'src/place/dto/create-tag.dto';
 import {
+  KakaoPlaceResponseDto,
   PlaceForMapResponseDto,
   PlaceResponseDto,
 } from 'src/place/dto/place-for-map-response.dto';
@@ -113,13 +114,22 @@ export class PlaceService {
     return { placeId: place.id };
   }
 
-  async findOne({
-    mapId,
-    placeId,
-  }: {
-    mapId: string;
-    placeId: number;
-  }): Promise<PlaceResponseDto> {
+  async getPlaceByKakaoId(mapId: string, kakaoPlaceId: number) {
+    const placeForMap = await this.placeForMapRepository.findOne({
+      place: { kakaoPlace: rel(KakaoPlace, kakaoPlaceId) },
+      map: rel(GroupMap, mapId),
+    });
+    if (!placeForMap) {
+      const kakaoPlaceDetail = await this.searchService.searchPlaceDetail(
+        String(kakaoPlaceId),
+        false,
+      );
+      return new KakaoPlaceResponseDto(kakaoPlaceDetail);
+    }
+    return await this.getPlace(mapId, placeForMap.place.id);
+  }
+
+  async getPlace(mapId: string, placeId: number): Promise<PlaceResponseDto> {
     const place = await this.placeForMapRepository.findOne(
       {
         map: rel(GroupMap, mapId),

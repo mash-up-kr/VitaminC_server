@@ -53,7 +53,10 @@ export class OffDay {
 export class KakaoPlaceResponseDto implements Partial<KakaoPlace> {
   @ApiProperty()
   @IsNotEmpty()
-  id: number;
+  kakaoId: number;
+
+  @ApiProperty()
+  isRegisteredPlace: boolean;
 
   @ApiProperty()
   name: string;
@@ -96,14 +99,38 @@ export class KakaoPlaceResponseDto implements Partial<KakaoPlace> {
 
   @ApiProperty({ type: OffDay, isArray: true })
   offDayList: OffDay[];
+
+  constructor(kakaoPlace: KakaoPlace) {
+    this.kakaoId = kakaoPlace.id;
+    this.isRegisteredPlace = false;
+    this.name = kakaoPlace.name;
+    this.category = kakaoPlace.category;
+    this.address = kakaoPlace.address;
+    this.x = kakaoPlace.x;
+    this.y = kakaoPlace.y;
+    this.menuList = kakaoPlace.menuList;
+    this.mainPhotoUrl = kakaoPlace.mainPhotoUrl;
+    this.photoList = kakaoPlace.photoList;
+    this.score = kakaoPlace.score;
+    this.commentCnt = kakaoPlace.commentCnt;
+    this.blogReviewCnt = kakaoPlace.blogReviewCnt;
+    this.openTimeList = kakaoPlace.openTimeList;
+    this.offDayList = kakaoPlace.offDayList;
+  }
 }
 
-export class PlaceResponseDto implements Omit<KakaoPlaceResponseDto, 'id'> {
+export class PlaceResponseDto implements KakaoPlaceResponseDto {
   @ApiProperty()
   id: number;
 
   @ApiProperty()
+  kakaoId: number;
+
+  @ApiProperty()
   mapId: string;
+
+  @ApiProperty()
+  isRegisteredPlace: boolean;
 
   @ApiProperty({ type: Number, isArray: true })
   likedUserIds: number[];
@@ -167,7 +194,9 @@ export class PlaceResponseDto implements Omit<KakaoPlaceResponseDto, 'id'> {
     const { kakaoPlace } = place;
 
     this.id = place.id;
+    this.kakaoId = kakaoPlace.id;
     this.mapId = placeForMap.map.id;
+    this.isRegisteredPlace = true;
     this.likedUserIds = placeForMap.likedUserIds;
     this.tags = placeForMap.tags.map((tag) => new TagResponseDto(tag));
     this.createdBy = new CreatedUser(placeForMap.createdBy);
