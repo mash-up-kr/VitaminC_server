@@ -95,8 +95,8 @@ export class PlaceController {
   @ApiOperation({ summary: '맛집 장소 삭제' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'placeId', description: 'place id' })
+  @UseMapRoleGuard([UserMapRole.ADMIN, UserMapRole.WRITE])
   @UseAuthGuard([UserRole.USER])
-  // @UseMapRoleGuard([UserMapRole.ADMIN, UserMapRole.WRITE])
   @Delete(':mapId/:placeId')
   async deletePlaceByKakaoId(
     @Param('mapId') mapId: string,
