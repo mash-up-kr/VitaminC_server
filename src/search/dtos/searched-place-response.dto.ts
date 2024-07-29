@@ -47,6 +47,9 @@ export class SearchedPlaceResponseDto {
   @IsOptional()
   likedUserIds?: number[];
 
+  @ApiProperty({ description: '기타일 경우 100' })
+  category_icon_code: number;
+
   constructor(searchedPlace: KakaoPlaceItem | PlaceForMap) {
     if ('place' in searchedPlace) {
       const { place } = searchedPlace;
@@ -64,14 +67,16 @@ export class SearchedPlaceResponseDto {
       this.createdBy = new CreatedUser(searchedPlace.createdBy);
       this.score = kakaoPlace.score;
       this.likedUserIds = searchedPlace.likedUserIds;
+      this.category_icon_code = kakaoPlace.categoryIconCode;
     } else {
       this.isRegisteredPlace = false;
       this.kakaoId = Number(searchedPlace.id);
-      this.category = searchedPlace.category_group_name;
+      this.category = searchedPlace.category_name;
       this.x = Number(searchedPlace.x);
       this.y = Number(searchedPlace.y);
       this.placeName = searchedPlace.place_name;
       this.address = searchedPlace.road_address_name;
+      this.category_icon_code = searchedPlace.category_icon_code;
     }
   }
 }

@@ -6,7 +6,7 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { UserModule } from 'src/user/user.module';
 import { UtilModule } from 'src/util/util.module';
 
-import { KakaoPlace, PlaceForMap } from '../entities';
+import { CategoryIconMapping, KakaoPlace, PlaceForMap } from '../entities';
 import { KakaoMapHelper } from './kakao-map.helper';
 import { SearchController } from './search.controller';
 import { SearchService } from './search.service';
@@ -15,7 +15,7 @@ import { SearchService } from './search.service';
   imports: [
     HttpModule,
     UtilModule,
-    MikroOrmModule.forFeature([KakaoPlace, PlaceForMap]),
+    MikroOrmModule.forFeature([KakaoPlace, PlaceForMap, CategoryIconMapping]),
     UserModule,
   ],
   controllers: [SearchController],

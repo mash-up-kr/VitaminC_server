@@ -5,10 +5,12 @@ import { ConfigService } from '@nestjs/config';
 import { rel } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 
+import { DEFAULT_CATEGORY_ICON_CODE } from 'src/common/constants';
 import { SearchedPlaceResponseDto } from 'src/search/dtos/searched-place-response.dto';
 import { UtilService } from 'src/util/util.service';
 
 import {
+  CategoryIconMappingRepository,
   GroupMap,
   KakaoPlace,
   KakaoPlaceRepository,
@@ -35,6 +37,7 @@ export class SearchService {
     @InjectRepository(PlaceForMap)
     private readonly placeForMapRepository: PlaceForMapRepository,
     private readonly configService: ConfigService,
+    private readonly categoryMappingIconRepository: CategoryIconMappingRepository,
   ) {}
 
   async suggest(keyword: string): Promise<string[]> {
@@ -63,12 +66,15 @@ export class SearchService {
       this.searchPlace(query, rect, KakaoCategoryGroupCode['카페']),
       this.searchPlace(query, rect, KakaoCategoryGroupCode['음식점']),
     ]);
-    const searchedPlaces = this.utilService.uniqueBy(
+    const searchedPlaces: KakaoPlaceItem[] = this.utilService.uniqueBy(
       [...list1, ...list2],
       (item) => item.id,
     );
 
-    return searchedPlaces.map((searchedPlace) => {
+    const placesWithIconCode =
+      await this.addCategoryIconCodeToArray(searchedPlaces);
+
+    return placesWithIconCode.map((searchedPlace) => {
       return new SearchedPlaceResponseDto(searchedPlace);
     });
   }
@@ -87,7 +93,7 @@ export class SearchService {
       this.searchPlace(query, rect, KakaoCategoryGroupCode['카페']),
       this.searchPlace(query, rect, KakaoCategoryGroupCode['음식점']),
     ]);
-    const kakaoPlaceItems = this.utilService.uniqueBy(
+    const kakaoPlaceItems: KakaoPlaceItem[] = this.utilService.uniqueBy(
       [...list1, ...list2],
       (item) => item.id,
     );
@@ -97,7 +103,12 @@ export class SearchService {
       mapId,
       kakaoPlaceIds,
     );
-    const mergedPlaces = kakaoPlaceItems.map(
+
+    // TODO : 이미 등록된 장소를 중복으로 조회하지 않도록 개선 필요
+    const placesWithIconCode: KakaoPlaceItem[] =
+      await this.addCategoryIconCodeToArray(kakaoPlaceItems);
+
+    const mergedPlaces = placesWithIconCode.map(
       (kakaoPlace) => existingPlacesMap[kakaoPlace.id] ?? kakaoPlace,
     );
 
@@ -146,7 +157,12 @@ export class SearchService {
       kakaoPlace.id = basicInfo.cid;
       kakaoPlace.name = basicInfo.placenamefull;
       kakaoPlace.address = basicInfo.address.newaddr.newaddrfull;
-      kakaoPlace.category = basicInfo.category.cate1name;
+      kakaoPlace.category = this.utilService.parseSubCategory(
+        basicInfo.category.catename,
+      );
+      kakaoPlace.categoryIconCode = await this.getCategoryIconCode(
+        basicInfo.category.catename,
+      );
       kakaoPlace.blogReviewCnt = feedback.blogrvwcnt;
       kakaoPlace.commentCnt = feedback.comntcnt;
       kakaoPlace.mainPhotoUrl = basicInfo.mainphotourl;
@@ -239,6 +255,47 @@ export class SearchService {
         },
       },
     );
+
+    response.data.documents.forEach((document) => {
+      document.category_name = this.utilService.parseSubCategory(
+        document.category_name,
+      );
+    });
     return response.data;
+  }
+
+  private async getCategoryIconCode(category: string): Promise<number> {
+    const entity = await this.categoryMappingIconRepository.findOne({
+      kakaoCategory: category,
+    });
+    if (entity == null) return DEFAULT_CATEGORY_ICON_CODE;
+    return entity.iconCode;
+  }
+
+  private async addCategoryIconCodeToArray(
+    list: KakaoPlaceItem[],
+  ): Promise<KakaoPlaceItem[]> {
+    const uniqueCategoryList: string[] = this.utilService.getUniqueFieldValues(
+      list,
+      'category_name',
+    );
+
+    const categoryMappingList = await this.categoryMappingIconRepository.find({
+      kakaoCategory: uniqueCategoryList,
+    });
+
+    const categoryMappingMap: Map<string, number> = new Map(
+      categoryMappingList.map((mapping) => [
+        mapping.kakaoCategory,
+        mapping.iconCode,
+      ]),
+    );
+
+    return list.map((searchedPlace: KakaoPlaceItem) => {
+      searchedPlace.category_icon_code =
+        categoryMappingMap.get(searchedPlace.category_name) ||
+        DEFAULT_CATEGORY_ICON_CODE;
+      return searchedPlace;
+    });
   }
 }

@@ -38,4 +38,13 @@ export class UtilService {
       .update(input + saltBytes)
       .digest('hex');
   }
+
+  getUniqueFieldValues<T, K extends keyof T>(arr: T[], field: K): T[K][] {
+    return [...new Set(arr.map((item) => item[field]))];
+  }
+
+  parseSubCategory(catename: string): string {
+    const list = catename.split('> ');
+    return list[list.length - 1];
+  }
 }

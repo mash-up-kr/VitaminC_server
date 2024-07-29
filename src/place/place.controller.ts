@@ -48,6 +48,7 @@ export class PlaceController {
   @ApiOperation({ summary: '카카오 place id로 장소 등록' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'kakaoPlaceId', description: '카카오 place id' })
+  @UseMapRoleGuard()
   @UseAuthGuard([UserRole.USER])
   @Post(':mapId/kakao/:kakaoPlaceId')
   async registerPlaceByKakaoId(
