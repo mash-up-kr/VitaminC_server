@@ -41,7 +41,7 @@ export class PlaceForMap {
   })
   likedUserIds: number[];
 
-  @ManyToMany(() => Tag)
+  @ManyToMany(() => Tag, 'placeForMap', { owner: true })
   tags = new Collection<Tag>(this);
 
   @ManyToOne(() => User)

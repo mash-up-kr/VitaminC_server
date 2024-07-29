@@ -58,3 +58,8 @@ export class UserMapConflictException extends ExceptionOf.USER(
   HttpStatus.CONFLICT,
   '이미 지도에 가입된 유저입니다.' as const,
 ) {}
+
+export class PlaceForMapConflictException extends ExceptionOf.USER(
+  HttpStatus.CONFLICT,
+  '이미 생성된 지도입니다.' as const,
+) {}

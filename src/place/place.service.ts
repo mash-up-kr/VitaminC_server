@@ -3,7 +3,10 @@ import { Injectable } from '@nestjs/common';
 import { rel } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 
-import { PlaceNotFoundException } from 'src/exceptions';
+import {
+  PlaceForMapConflictException,
+  PlaceNotFoundException,
+} from 'src/exceptions';
 import { RegisterPlaceDto } from 'src/place/dto/create-tag.dto';
 import {
   PlaceForMapResponseDto,
@@ -70,11 +73,10 @@ export class PlaceService {
     user: User;
     registerPlaceDto: RegisterPlaceDto;
   }) {
-    // create place if not exist
     let place = await this.placeRepository.findOne({
       kakaoPlace: rel(KakaoPlace, kakaoPlaceId),
     });
-    if (place == null) {
+    if (place === null) {
       const kakaoPlace = await this.searchService.searchPlaceDetail(
         kakaoPlaceId.toString(),
         false,
@@ -86,30 +88,53 @@ export class PlaceService {
     }
     await this.placeRepository.persistAndFlush(place);
 
-    // create place for map if not exist
-    const placeForMap = await this.placeForMapRepository.findOne({
-      place,
+    if (
+      await this.placeForMapRepository.findOne({
+        place,
+        map: rel(GroupMap, mapId),
+      })
+    ) {
+      throw new PlaceForMapConflictException();
+    }
+
+    const tags = await this.tagRepository.find({
+      name: { $in: registerPlaceDto.tagNames },
       map: rel(GroupMap, mapId),
     });
-    if (placeForMap === null) {
-      const tags = await this.tagRepository.find({
-        name: { $in: registerPlaceDto.tagNames },
-        map: rel(GroupMap, mapId),
-      });
+
+    const restTagNames = registerPlaceDto.tagNames.filter(
+      (v) => !tags.find((k) => k.name === v),
+    );
+
+    if (restTagNames.length) {
       const defaultTags = await this.tagIconRepository.find({
-        name: { $in: registerPlaceDto.tagNames },
+        name: {
+          $in: restTagNames,
+        },
       });
 
-      this.placeForMapRepository.create({
-        place,
-        tags: [...tags, ...defaultTags],
-        map: rel(GroupMap, mapId),
-        createdBy: user,
-        comments: [],
-        likedUserIds: [],
+      const newTags = defaultTags.map((v) => {
+        const tag = new Tag();
+        tag.name = v.name;
+        tag.iconType = v.iconType;
+        tag.map = rel(GroupMap, mapId);
+        tags.push(tag);
+
+        return tag;
       });
-      await this.placeForMapRepository.flush();
+      await this.tagRepository.persistAndFlush(newTags);
     }
+
+    const placeForMap = new PlaceForMap();
+    placeForMap.place = place;
+    placeForMap.map = rel(GroupMap, mapId);
+    placeForMap.createdBy = user;
+    placeForMap.comments = [];
+    placeForMap.likedUserIds = [];
+    placeForMap.tags.add(tags);
+
+    this.placeForMapRepository.create(placeForMap);
+    await this.placeForMapRepository.flush();
     return { placeId: place.id };
   }
 
