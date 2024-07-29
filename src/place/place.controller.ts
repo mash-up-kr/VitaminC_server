@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -39,7 +47,7 @@ export class PlaceController {
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'kakaoPlaceId', description: '카카오 place id' })
   @UseAuthGuard([UserRole.USER])
-  @Put(':mapId/kakao/:kakaoPlaceId')
+  @Post(':mapId/kakao/:kakaoPlaceId')
   async registerPlaceByKakaoId(
     @Param('mapId') mapId: string,
     @Param('kakaoPlaceId') kakaoPlaceId: number,
