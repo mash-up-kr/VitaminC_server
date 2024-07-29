@@ -13,11 +13,13 @@ import {
   ApiParam,
   ApiResponse,
   ApiTags,
+  getSchemaPath,
 } from '@nestjs/swagger';
 
 import { UseMapRoleGuard } from 'src/common/decorators/map-role-guard.decorator';
 import { RegisterPlaceDto } from 'src/place/dto/create-tag.dto';
 import {
+  KakaoPlaceResponseDto,
   PlaceForMapResponseDto,
   PlaceResponseDto,
 } from 'src/place/dto/place-for-map-response.dto';
@@ -62,6 +64,29 @@ export class PlaceController {
     });
   }
 
+  @ApiOperation({
+    summary:
+      'kakaoId를 통해 place 상세 조회(장소 등록 여부에 따라 kakaoPlace, Place 상세 정보 반환)',
+  })
+  @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
+  @ApiParam({ name: 'kakaoPlaceId', description: '카카오 place id' })
+  @UseAuthGuard([UserRole.USER])
+  @ApiResponse({
+    schema: {
+      oneOf: [
+        { $ref: getSchemaPath(PlaceResponseDto) },
+        { $ref: getSchemaPath(KakaoPlaceResponseDto) },
+      ],
+    },
+  })
+  @Get(':mapId/kakao/:kakaoPlaceId')
+  async getPlaceByKakaoId(
+    @Param('mapId') mapId: string,
+    @Param('kakaoPlaceId') kakaoPlaceId: number,
+  ) {
+    return await this.placeService.getPlaceByKakaoId(mapId, kakaoPlaceId);
+  }
+
   @ApiOperation({ summary: '저장된 place id로 장소 조회' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'placeId', description: '등록된 place id' })
@@ -72,17 +97,14 @@ export class PlaceController {
     @Param('mapId') mapId: string,
     @Param('placeId') placeId: number,
   ) {
-    return await this.placeService.findOne({
-      mapId,
-      placeId,
-    });
+    return await this.placeService.getPlace(mapId, placeId);
   }
 
   @ApiOperation({ summary: '맛집 장소 삭제' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'placeId', description: 'place id' })
-  @UseAuthGuard([UserRole.USER])
   @UseMapRoleGuard([UserMapRole.ADMIN, UserMapRole.WRITE])
+  @UseAuthGuard([UserRole.USER])
   @Delete(':mapId/:placeId')
   async deletePlaceByKakaoId(
     @Param('mapId') mapId: string,

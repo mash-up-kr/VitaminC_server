@@ -21,7 +21,7 @@ export class MapRoleGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest();
     const user = request.user;
-    const mapId = request.params.id;
+    const mapId = request.params.mapId || request.params.id;
 
     const hasMapRole = async () => {
       try {
