@@ -4,3 +4,4 @@ export const IS_PROD = process.env.NODE_ENV === 'production';
 export const SEARCH_KEYWORD_MAX_LENGTH = 10;
 export const INVITE_LINK_EXPIRATION_DAYS = 7;
 export const INVITE_LINK_PREVIEW_LENGTH = 6;
+export const DEFAULT_CATEGORY_ICON_CODE = 100;

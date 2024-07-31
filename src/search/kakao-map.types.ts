@@ -66,6 +66,7 @@ export type KakaoPlaceItem = {
   road_address_name: string; // "서울 강남구 논현로94길 13"
   x: string; // "127.037366122263"
   y: string; // "37.5026329250425"
+  category_icon_code: number; // category_name 기준으로 mapping
 };
 
 export type KakaoPlaceDetailRaw = {

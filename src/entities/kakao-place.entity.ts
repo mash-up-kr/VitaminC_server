@@ -32,9 +32,15 @@ export class KakaoPlace {
 
   @Property({
     type: 'string',
-    comment: '카카오맵 basicInfo.category.cate1name',
+    comment: '카카오맵 basicInfo.category.catename',
   })
   category: string;
+
+  @Property({
+    comment: '카카오맵 basicInfo.category.catename을 기준으로 매핑한 icon_code',
+    nullable: true,
+  })
+  categoryIconCode: number;
 
   @Property({
     type: 'string',

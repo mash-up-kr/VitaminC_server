@@ -1,3 +1,4 @@
+import { CategoryIconMapping } from 'src/entities/category-icon-mapping.entity';
 import { Tag } from 'src/entities/tag.entity';
 
 import { GroupMap } from './group-map.entity';
@@ -36,6 +37,9 @@ export * from './tag.repository';
 export * from './tag-icon.entity';
 export * from './tag-icon.repository';
 
+export * from './category-icon-mapping.entity';
+export * from './category-icon-mapping.repository';
+
 export const entities = [
   User,
   GroupMap,
@@ -46,4 +50,5 @@ export const entities = [
   InviteLink,
   TagIcon,
   Tag,
+  CategoryIconMapping,
 ];
