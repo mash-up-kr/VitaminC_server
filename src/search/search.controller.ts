@@ -75,7 +75,7 @@ export class SearchController {
     @Query('q') q: string,
     @Query('rect') rect: string,
     @Query('mapId') mapId: string,
-  ) {
+  ): Promise<SearchedPlaceResponseDto[]> {
     return await this.searchService.searchPlacesWithMap(q, rect, mapId);
   }
 
@@ -87,11 +87,12 @@ export class SearchController {
     description: '카카오 좌표계 위도경도 "x1,x2,y1,y2"',
   })
   @ApiOperation({ summary: '카카오 좌표계(wcongnamul) 쿼리' })
+  @ApiResponse({ type: SearchedPlaceResponseDto, isArray: true })
   @Get('places/kakao')
   async searchPlacesByKakaoCoord(
     @Query('q') q: string,
     @Query('rect') rect: string,
-  ) {
+  ): Promise<SearchedPlaceResponseDto[]> {
     return await this.searchService.searchPlaceList(q, rect, {
       isKakaoCoord: true,
     });
