@@ -84,7 +84,7 @@ export class PlaceController {
   async getPlaceByKakaoId(
     @Param('mapId') mapId: string,
     @Param('kakaoPlaceId') kakaoPlaceId: number,
-  ) {
+  ): Promise<KakaoPlaceResponseDto> {
     return await this.placeService.getPlaceByKakaoId(mapId, kakaoPlaceId);
   }
 

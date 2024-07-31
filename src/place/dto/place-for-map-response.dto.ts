@@ -100,6 +100,9 @@ export class KakaoPlaceResponseDto implements Partial<KakaoPlace> {
   @ApiProperty({ type: OffDay, isArray: true })
   offDayList: OffDay[];
 
+  @ApiProperty()
+  categoryIconCode: number;
+
   constructor(kakaoPlace: KakaoPlace) {
     this.kakaoId = kakaoPlace.id;
     this.isRegisteredPlace = false;
@@ -116,6 +119,7 @@ export class KakaoPlaceResponseDto implements Partial<KakaoPlace> {
     this.blogReviewCnt = kakaoPlace.blogReviewCnt;
     this.openTimeList = kakaoPlace.openTimeList;
     this.offDayList = kakaoPlace.offDayList;
+    this.categoryIconCode = kakaoPlace.categoryIconCode;
   }
 }
 
@@ -184,6 +188,9 @@ export class PlaceResponseDto implements KakaoPlaceResponseDto {
   offDayList: OffDay[];
 
   @ApiProperty()
+  categoryIconCode: number;
+
+  @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()
@@ -215,6 +222,7 @@ export class PlaceResponseDto implements KakaoPlaceResponseDto {
     this.offDayList = kakaoPlace.offDayList;
     this.createdAt = placeForMap.createdAt;
     this.updatedAt = placeForMap.updatedAt;
+    this.categoryIconCode = kakaoPlace.categoryIconCode;
   }
 }
 
