@@ -170,7 +170,7 @@ export class SearchService {
       kakaoPlace.openTimeList = (basicInfo.openHour?.periodList || []).flatMap(
         (period) => period.timeList,
       );
-      kakaoPlace.offDayList = basicInfo.openHour.offdayList;
+      kakaoPlace.offDayList = basicInfo.openHour?.offdayList || [];
 
       const menuPhotoMap = (kakaoPlaceMenuRaw.photoViewer?.list || []).reduce(
         (map, { summary, url }) => {
