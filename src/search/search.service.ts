@@ -166,7 +166,8 @@ export class SearchService {
       kakaoPlace.blogReviewCnt = feedback.blogrvwcnt;
       kakaoPlace.commentCnt = feedback.comntcnt;
       kakaoPlace.mainPhotoUrl = basicInfo.mainphotourl;
-      kakaoPlace.score = feedback.scoresum / feedback.scorecnt;
+      kakaoPlace.score =
+        feedback.scorecnt !== 0 ? feedback.scoresum / feedback.scorecnt : 0;
       kakaoPlace.openTimeList = (basicInfo.openHour?.periodList || []).flatMap(
         (period) => period.timeList,
       );
