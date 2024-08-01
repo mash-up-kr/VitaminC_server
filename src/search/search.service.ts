@@ -179,7 +179,8 @@ export class SearchService {
         },
         {},
       );
-      kakaoPlace.menuList = kakaoPlaceRaw.menuInfo.menuList.map(
+
+      kakaoPlace.menuList = (kakaoPlaceRaw.menuInfo?.menuList || []).map(
         ({ menu, price }) => ({ menu, price, photo: menuPhotoMap[menu] || '' }),
       );
 
