@@ -167,7 +167,7 @@ export class SearchService {
       kakaoPlace.commentCnt = feedback.comntcnt;
       kakaoPlace.mainPhotoUrl = basicInfo.mainphotourl;
       kakaoPlace.score = feedback.scoresum / feedback.scorecnt;
-      kakaoPlace.openTimeList = basicInfo.openHour.periodList.flatMap(
+      kakaoPlace.openTimeList = (basicInfo.openHour?.periodList || []).flatMap(
         (period) => period.timeList,
       );
       kakaoPlace.offDayList = basicInfo.openHour.offdayList;
@@ -193,8 +193,8 @@ export class SearchService {
       kakaoPlace.y = coord.y;
 
       // TODO: 음식사진 가져오는것도 약간 우선순위를 두면 좋을듯
-      kakaoPlace.photoList = kakaoPlaceRaw.photo.photoList
-        .flatMap((photo) => photo.list)
+      kakaoPlace.photoList = (kakaoPlaceRaw.photo?.photoList || [])
+        .flatMap((photo) => photo.list || [])
         .map((photo) => photo.orgurl)
         .slice(0, 10);
       await this.kakaoPlaceRepository.upsert(kakaoPlace);
