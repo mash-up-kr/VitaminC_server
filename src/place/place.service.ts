@@ -114,15 +114,22 @@ export class PlaceService {
         },
       });
 
-      const newTags = defaultTags.map((v) => {
-        const tag = new Tag();
-        tag.name = v.name;
-        tag.iconType = v.iconType;
-        tag.map = rel(GroupMap, mapId);
-        tags.push(tag);
+      const restTagNamesAfterDefatulTag = restTagNames
+        .filter((name) => !defaultTags.find((k) => k.name === name))
+        .map((name) => ({ name, iconType: null }));
 
-        return tag;
-      });
+      const newTags = [...defaultTags, ...restTagNamesAfterDefatulTag].map(
+        (v) => {
+          const tag = new Tag();
+          tag.name = v.name;
+          tag.iconType = v.iconType;
+          tag.map = rel(GroupMap, mapId);
+          tags.push(tag);
+
+          return tag;
+        },
+      );
+
       await this.tagRepository.persistAndFlush(newTags);
     }
 
