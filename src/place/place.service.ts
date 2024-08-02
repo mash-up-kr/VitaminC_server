@@ -202,13 +202,20 @@ export class PlaceService {
   }
 
   async remove(mapId: string, placeId: number): Promise<void> {
-    const placeForMap = await this.placeForMapRepository.findOne({
-      place: rel(Place, placeId),
-      map: rel(GroupMap, mapId),
-    });
+    const placeForMap = await this.placeForMapRepository.findOne(
+      {
+        place: rel(Place, placeId),
+        map: rel(GroupMap, mapId),
+      },
+      { populate: ['tags'] },
+    );
+
     if (!placeForMap) {
       throw new PlaceNotFoundException();
     }
+    placeForMap.tags.removeAll();
+    await this.placeForMapRepository.flush();
+
     await this.placeForMapRepository.removeAndFlush(placeForMap);
   }
 }
