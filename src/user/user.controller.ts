@@ -78,6 +78,8 @@ export class UserController {
   @Delete('maps/:mapId')
   @ApiOperation({ summary: '지도(그룹) 나가기' })
   @ApiOkResponse({})
+  @UseAuthGuard([UserRole.USER])
+  @ApiBearerAuth()
   async leaveMap(@CurrentUser() user: User, @Param('mapId') mapId: string) {
     return await this.userService.leaveMap(user.id, mapId);
   }
