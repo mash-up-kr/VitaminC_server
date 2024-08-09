@@ -37,6 +37,7 @@ export class AuthController {
       sameSite: 'none',
       secure: true,
       path: '/',
+      maxAge: 3600 * 24 * 1 * 365, // 1y
       domain: '.korrk.kr',
     });
 
