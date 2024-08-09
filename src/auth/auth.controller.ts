@@ -37,7 +37,7 @@ export class AuthController {
       sameSite: 'none',
       secure: true,
       path: '/',
-      maxAge: 1000 * 60 + 60 * 24 * 1 * 365, // 1y
+      expires: new Date(new Date().getTime() + 1000 * 60 + 60 * 24 * 1 * 365),
       domain: '.korrk.kr',
     });
 
