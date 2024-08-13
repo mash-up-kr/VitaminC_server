@@ -1,9 +1,14 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 
 import { ExtractJwt, Strategy, VerifiedCallback } from 'passport-jwt';
 
+import { User } from 'src/entities/index';
 import { UserService } from 'src/user/user.service';
 
 @Injectable()
@@ -19,12 +24,14 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: { id: number }, done: VerifiedCallback) {
-    const user = await this.userService.findOne({
+    const user: User = await this.userService.findOne({
       id: payload.id,
     });
     if (!user) {
       throw new UnauthorizedException('존재하지 않는 유저입니다.');
     }
+    if (user.nickname == null)
+      throw new NotFoundException('닉네임 설정을 완료해주세요.');
     done(null, user);
   }
 }
