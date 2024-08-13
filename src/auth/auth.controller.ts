@@ -6,6 +6,7 @@ import { Response } from 'express';
 
 import { KakaoInfo } from 'src/common/decorators/kakao-info.decorator';
 import { KakaoGuard } from 'src/common/guards/kakao.guard';
+import { getCookieOption } from 'src/common/helper/cookie.helper';
 import { UserProvider } from 'src/entities';
 
 import { AuthService } from './auth.service';
@@ -32,14 +33,11 @@ export class AuthController {
       kakaoRefreshToken: refreshToken,
     });
 
-    res.cookie('Authorization', 'Bearer ' + user.accessToken, {
-      httpOnly: true,
-      sameSite: 'none',
-      secure: true,
-      path: '/',
-      expires: new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 1 * 365),
-      domain: '.korrk.kr',
-    });
+    res.cookie(
+      'Authorization',
+      'Bearer ' + user.accessToken,
+      getCookieOption(),
+    );
 
     return res.redirect(302, this.configService.get('CLIENT_URL'));
   }
