@@ -85,7 +85,7 @@ export class MapService {
   async findAll(user: User): Promise<MapItemForUserDto[]> {
     const userMapList = await this.userMapRepository.find(
       { user: user },
-      { populate: ['map'] },
+      { populate: ['map'], orderBy: { createdAt: 'DESC' } },
     );
 
     return userMapList.map(({ map, role }) => {
