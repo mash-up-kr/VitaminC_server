@@ -30,8 +30,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     if (!user) {
       throw new UnauthorizedException('존재하지 않는 유저입니다.');
     }
-    if (user.nickname == null)
-      throw new NotFoundException('닉네임 설정을 완료해주세요.');
     done(null, user);
   }
 }
