@@ -12,6 +12,7 @@ import { envValidation } from './common/helper/env.validation';
 import { GptModule } from './gpt/gpt.module';
 import { MapModule } from './map/map.module';
 import { PlaceModule } from './place/place.module';
+import { ProxyModule } from './proxy/proxy.module';
 import { SearchModule } from './search/search.module';
 import { UserModule } from './user/user.module';
 import { UtilModule } from './util/util.module';
@@ -34,6 +35,7 @@ import { UtilModule } from './util/util.module';
     UtilModule,
     PlaceModule,
     InviteLinkModule,
+    ProxyModule,
   ],
   controllers: [],
   providers: [],
