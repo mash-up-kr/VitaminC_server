@@ -23,7 +23,7 @@ import { TagResponseDto } from 'src/map/dtos/tag-response.dto';
 import { UseAuthGuard } from '../common/decorators/auth-guard.decorator';
 import { UseMapRoleGuard } from '../common/decorators/map-role-guard.decorator';
 import { CurrentUser } from '../common/decorators/user.decorator';
-import { InviteLink, User, UserMapRole, UserRole } from '../entities';
+import { GroupMap, InviteLink, User, UserMapRole, UserRole } from '../entities';
 import { InviteLinkService } from '../invite-link/invite-link.service';
 import { CreateMapDto } from './dtos/create-map.dto';
 import { InviteLinkResponseDto } from './dtos/invite-link-response.dto';
@@ -53,7 +53,7 @@ export class MapController {
   @ApiOperation({ summary: '사용자가 속해있는 지도를 가져옵니다.' })
   @ApiOkResponse({ type: [MapItemForUserDto] })
   @UseAuthGuard([UserRole.USER])
-  findAll(@CurrentUser() user: User) {
+  findAll(@CurrentUser() user: User): Promise<MapItemForUserDto[]> {
     return this.mapService.findAll(user);
   }
 
@@ -62,16 +62,28 @@ export class MapController {
   @ApiOkResponse({ type: MapResponseDto })
   @UseMapRoleGuard()
   @UseAuthGuard([UserRole.USER])
-  findOne(@Param('id') id: string) {
-    return this.mapService.findOne({ id });
+  async findOne(
+    @Param('id') id: string,
+    @CurrentUser() user: User,
+  ): Promise<MapResponseDto> {
+    const dto = await this.mapService.findOne({ id });
+    dto.sortMembers(user);
+    return dto;
   }
 
   @Patch(':id')
   @ApiOkResponse({ type: MapResponseDto })
   @UseMapRoleGuard([UserMapRole.ADMIN])
   @UseAuthGuard([UserRole.USER])
-  update(@Param('id') id: string, @Body() updateMapDto: UpdateMapDto) {
-    return this.mapService.update(id, updateMapDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateMapDto: UpdateMapDto,
+    @CurrentUser() user: User,
+  ): Promise<MapResponseDto> {
+    const map: GroupMap = await this.mapService.update(id, updateMapDto);
+    const dto = new MapResponseDto(map);
+    dto.sortMembers(user);
+    return dto;
   }
 
   @Delete(':id')
@@ -93,7 +105,7 @@ export class MapController {
     @CurrentUser() user: User,
     @Param('id') id: string,
   ): Promise<InviteLinkResponseDto> {
-    const entity = await this.inviteLinkService.create(id, user);
+    const entity: InviteLink = await this.inviteLinkService.create(id, user);
     return new InviteLinkResponseDto(entity);
   }
 
@@ -140,8 +152,11 @@ export class MapController {
     const inviteLink: InviteLink =
       await this.inviteLinkService.validate(inviteLinkToken);
 
-    const map = await this.mapService.findOne(inviteLink.map);
-    const previewList = await this.mapService.getPlacesPreview(inviteLink.map);
+    const map: MapResponseDto = await this.mapService.findOne(inviteLink.map);
+    map.sortMembers();
+    const previewList: string[] = await this.mapService.getPlacesPreview(
+      inviteLink.map,
+    );
 
     const inviteLinkResponseDto = new InviteLinkResponseDto(inviteLink);
     return new CheckInviteLinkResponseDto(

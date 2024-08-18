@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   GroupMap,
   PlaceForMap,
+  User,
   UserMap,
   UserMapRole,
   UserMapRoleValueType,
@@ -44,7 +45,7 @@ export class MapResponseDto {
   @ApiProperty({ type: UserResponseDto })
   createBy: UserResponseDto;
 
-  constructor(map: GroupMap, placeForMap: PlaceForMap[]) {
+  constructor(map: GroupMap, placeForMap: PlaceForMap[] = null) {
     this.id = map.id;
     this.name = map.name;
     this.createdAt = map.createdAt;
@@ -58,5 +59,28 @@ export class MapResponseDto {
       };
     });
     if (map.createBy) this.createBy = new UserResponseDto(map.createBy);
+  }
+
+  public sortMembers(currentUser: User = null) {
+    this.users.sort((a: MapUser, b: MapUser): number => {
+      // 본인을 최우선으로
+      if (currentUser) {
+        const isCurrentUserA = a.id === currentUser.id;
+        const isCurrentUserB = b.id === currentUser.id;
+
+        if (isCurrentUserA && !isCurrentUserB) return -1;
+        if (!isCurrentUserA && isCurrentUserB) return 1;
+      }
+
+      // 모임장을 다음으로
+      const isAdminA = a.role === UserMapRole.ADMIN;
+      const isAdminB = b.role === UserMapRole.ADMIN;
+
+      if (isAdminA && !isAdminB) return -1;
+      if (!isAdminA && isAdminB) return 1;
+
+      // 나머지 멤버는 그대로
+      return 0;
+    });
   }
 }

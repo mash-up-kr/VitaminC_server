@@ -89,7 +89,7 @@ export class MapService {
     );
 
     return userMapList.map(({ map, role }) => {
-      const mapItemForUser = new MapItemForUserDto();
+      const mapItemForUser: MapItemForUserDto = new MapItemForUserDto();
       mapItemForUser.id = map.id;
       mapItemForUser.name = map.name;
       mapItemForUser.createdAt = map.createdAt;
@@ -110,8 +110,8 @@ export class MapService {
     return new MapResponseDto(entity, placeForMap);
   }
 
-  async update(id: string, updateMapDto: UpdateMapDto) {
-    const map = await this.mapRepository.findOne(id);
+  async update(id: string, updateMapDto: UpdateMapDto): Promise<GroupMap> {
+    const map: GroupMap = await this.mapRepository.findOne(id);
     if (!map) {
       throw new MapNotFoundException();
     }
@@ -148,12 +148,12 @@ export class MapService {
     mapId: string,
     createTagDto: CreateTagDto,
   ): Promise<TagResponseDto> {
-    const entity = await this.tagRepository.findOne({
+    const entity: Tag = await this.tagRepository.findOne({
       map: rel(GroupMap, mapId),
       name: createTagDto.name,
     });
 
-    const tagIcon = await this.tagIconRepository.findOne({
+    const tagIcon: TagIcon = await this.tagIconRepository.findOne({
       name: createTagDto.name,
     });
 
@@ -172,7 +172,7 @@ export class MapService {
   }
 
   async removeTag(mapId: string, name: string) {
-    const tag = await this.tagRepository.findOne({
+    const tag: Tag = await this.tagRepository.findOne({
       map: rel(GroupMap, mapId),
       name,
     });
@@ -183,7 +183,7 @@ export class MapService {
   }
 
   async createUserMap(user: User, map: GroupMap, role?: UserMapRoleValueType) {
-    const existUserMap = await this.userMapRepository.findOne({
+    const existUserMap: UserMap = await this.userMapRepository.findOne({
       user: user,
       map: map,
     });
@@ -205,7 +205,7 @@ export class MapService {
       map: { id: mapId },
     };
 
-    const userMap = await this.userMapRepository.findOne(where);
+    const userMap: UserMap = await this.userMapRepository.findOne(where);
     if (!userMap) {
       throw new UserMapNotFoundException();
     }
@@ -213,16 +213,20 @@ export class MapService {
   }
 
   async getPlacesPreview(map: GroupMap): Promise<string[]> {
-    const placesForMapList = await this.placeForMapRepository.find(
-      { map },
-      {
-        populate: ['place', 'place.kakaoPlace', 'createdBy'],
-        orderBy: { createdAt: 'desc' },
-      },
+    const placesForMapList: PlaceForMap[] =
+      await this.placeForMapRepository.find(
+        { map },
+        {
+          populate: ['place', 'place.kakaoPlace', 'createdBy'],
+          orderBy: { createdAt: 'desc' },
+        },
+      );
+    const subList: PlaceForMap[] = placesForMapList.slice(
+      0,
+      INVITE_LINK_PREVIEW_LENGTH,
     );
-    const subList = placesForMapList.slice(0, INVITE_LINK_PREVIEW_LENGTH);
     return subList.map((item) => {
-      const photoList = item.place.kakaoPlace.photoList;
+      const photoList: string[] = item.place.kakaoPlace.photoList;
       if (photoList.length > 0) {
         return photoList[0];
       }
