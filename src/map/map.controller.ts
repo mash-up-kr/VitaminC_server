@@ -33,7 +33,6 @@ import { UpdateMapDto } from './dtos/update-map.dto';
 import { MapService } from './map.service';
 
 @ApiTags('maps')
-@ApiBearerAuth()
 @Controller('maps')
 export class MapController {
   constructor(
@@ -44,6 +43,7 @@ export class MapController {
   @Post()
   @ApiOkResponse({ type: MapItemForUserDto })
   @ApiOperation({ summary: '새 지도를 생성합니다' })
+  @ApiBearerAuth()
   @UseAuthGuard([UserRole.USER])
   create(@Body() createMapDto: CreateMapDto, @CurrentUser() user: User) {
     return this.mapService.create(createMapDto, user);
@@ -52,6 +52,7 @@ export class MapController {
   @Get()
   @ApiOperation({ summary: '사용자가 속해있는 지도를 가져옵니다.' })
   @ApiOkResponse({ type: [MapItemForUserDto] })
+  @ApiBearerAuth()
   @UseAuthGuard([UserRole.USER])
   findAll(@CurrentUser() user: User): Promise<MapItemForUserDto[]> {
     return this.mapService.findAll(user);
@@ -61,6 +62,7 @@ export class MapController {
   @ApiOperation({ summary: '지도 정보 조회 (포함된 유저 정보, 맛집 개수...)' })
   @ApiOkResponse({ type: MapResponseDto })
   @UseMapRoleGuard()
+  @ApiBearerAuth()
   @UseAuthGuard([UserRole.USER])
   async findOne(
     @Param('id') id: string,
@@ -89,6 +91,7 @@ export class MapController {
   @Delete(':id')
   @ApiOkResponse({ type: Number })
   @ApiExcludeEndpoint()
+  @ApiBearerAuth()
   remove(@Param('id') id: string) {
     return this.mapService.remove(id);
   }
@@ -98,6 +101,7 @@ export class MapController {
     summary: '지도의 초대링크 생성',
     description: '유효기간은 7일로 설정되어 있습니다.',
   })
+  @ApiBearerAuth()
   @ApiResponse({ type: InviteLinkResponseDto })
   @UseMapRoleGuard([UserMapRole.ADMIN])
   @UseAuthGuard([UserRole.USER])
@@ -113,6 +117,7 @@ export class MapController {
   @ApiOperation({
     summary: '기본 태그와 지도에 저장된 태그를 조회합니다.',
   })
+  @ApiBearerAuth()
   @ApiResponse({ type: TagResponseDto, isArray: true })
   @ApiBearerAuth()
   @UseAuthGuard([UserRole.USER])
@@ -124,6 +129,7 @@ export class MapController {
   @ApiOperation({
     summary: '맛집 저장시 사용할 태그를 생성합니다.',
   })
+  @ApiBearerAuth()
   @ApiResponse({ type: TagResponseDto })
   @ApiBearerAuth()
   @UseAuthGuard([UserRole.USER])
@@ -171,6 +177,7 @@ export class MapController {
     summary: '초대링크로 지도에 승선',
     description: '초대장 화면에서 "승선하기" 버튼 클릭 시 호출',
   })
+  @ApiBearerAuth()
   @UseAuthGuard([UserRole.USER])
   async joinInviteLink(
     @Param('token') inviteLinkToken: string,

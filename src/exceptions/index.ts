@@ -49,9 +49,9 @@ export class MapNotFoundException extends ExceptionOf.USER(
   '존재하지 않는 지도입니다.' as const,
 ) {}
 
-export class InviteLinkGoneException extends ExceptionOf.USER(
+export class InviteLinkInvalidException extends ExceptionOf.USER(
   HttpStatus.GONE,
-  '만료된 초대링크입니다.' as const,
+  '유효하지 않은 초대링크입니다.' as const,
 ) {}
 
 export class UserMapConflictException extends ExceptionOf.USER(

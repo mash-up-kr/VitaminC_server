@@ -1,7 +1,6 @@
-import { GoneException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { InjectRepository } from '@mikro-orm/nestjs';
-import { map } from 'rxjs/operators';
 
 import { INVITE_LINK_EXPIRATION_DAYS } from 'src/common/constants';
 import {
@@ -12,10 +11,9 @@ import {
   User,
 } from 'src/entities';
 import {
-  InviteLinkGoneException,
+  InviteLinkInvalidException,
   MapNotFoundException,
 } from 'src/exceptions/index';
-import { InviteLinkResponseDto } from 'src/map/dtos/invite-link-response.dto';
 import { UtilService } from 'src/util/util.service';
 
 @Injectable()
@@ -54,8 +52,12 @@ export class InviteLinkService {
       token: inviteLinkToken,
     });
 
+    if (!inviteLink) {
+      throw new InviteLinkInvalidException();
+    }
+
     if (new Date(inviteLink.expiresAt) < new Date()) {
-      throw new InviteLinkGoneException();
+      throw new InviteLinkInvalidException();
     }
 
     return inviteLink;
