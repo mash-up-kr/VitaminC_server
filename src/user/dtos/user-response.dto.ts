@@ -15,6 +15,8 @@ export class UserResponseDto implements Partial<Omit<User, 'userMap'>> {
   @ApiProperty()
   providerId: string;
 
+  @ApiProperty()
+  profileImage: string;
   // @ApiProperty({ enum: UserRole })
   // role: UserRoleValueType;
 
@@ -23,6 +25,7 @@ export class UserResponseDto implements Partial<Omit<User, 'userMap'>> {
     this.nickname = user.nickname;
     this.provider = user.provider;
     this.providerId = user.providerId;
+    this.profileImage = user.profileImage;
     // this.role = user.role;
   }
 }
