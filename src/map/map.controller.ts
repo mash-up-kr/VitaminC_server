@@ -6,12 +6,14 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiExcludeEndpoint,
   ApiOkResponse,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -30,7 +32,7 @@ import { InviteLinkResponseDto } from './dtos/invite-link-response.dto';
 import { MapItemForUserDto } from './dtos/map-item-for-user.dto';
 import { MapResponseDto, PublicMapResponseDto } from './dtos/map-response.dto';
 import { UpdateMapDto } from './dtos/update-map.dto';
-import { MapService } from './map.service';
+import { ArrayElement, MapService, publicMapOrder } from './map.service';
 
 @ApiTags('maps')
 @Controller('maps')
@@ -63,8 +65,18 @@ export class MapController {
   @ApiBearerAuth()
   @UseAuthGuard([UserRole.USER])
   @ApiOkResponse({ type: [PublicMapResponseDto] })
-  async findAllPublic(): Promise<PublicMapResponseDto[]> {
-    const map = await this.mapService.findPublic();
+  @ApiQuery({
+    name: 'order',
+    required: false,
+    enum: publicMapOrder,
+  })
+  @ApiQuery({ name: 'name', required: false })
+  async findAllPublic(
+    @Query('order')
+    order: ArrayElement<typeof publicMapOrder>,
+    @Query('name') name: string,
+  ): Promise<PublicMapResponseDto[]> {
+    const map = await this.mapService.findPublic({ order, name });
     return map.map((m) => new PublicMapResponseDto(m));
   }
 
