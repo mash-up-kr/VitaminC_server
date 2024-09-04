@@ -39,9 +39,19 @@ export class UserNotInMapException extends ExceptionOf.USER(
   '지도에 참여하지 않은 사용자입니다.' as const,
 ) {}
 
+export class UserMapRoleBadRequestException extends ExceptionOf.USER(
+  HttpStatus.BAD_REQUEST,
+  '어드민으로 변경할 수 없습니다.' as const,
+) {}
+
 export class UserMapNotFoundException extends ExceptionOf.USER(
   HttpStatus.NOT_FOUND,
   '해당 유저는 해당 지도의 멤버가 아닙니다.' as const,
+) {}
+
+export class UserMapRoleCannotMineException extends ExceptionOf.USER(
+  HttpStatus.BAD_REQUEST,
+  '자신의 권한은 변경할 수 없습니다.' as const,
 ) {}
 
 export class MapNotFoundException extends ExceptionOf.USER(

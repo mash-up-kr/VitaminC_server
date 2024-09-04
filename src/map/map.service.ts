@@ -25,6 +25,8 @@ import {
   TagNotFoundException,
   UserMapConflictException,
   UserMapNotFoundException,
+  UserMapRoleBadRequestException,
+  UserMapRoleCannotMineException,
 } from 'src/exceptions';
 import { CreateTagDto } from 'src/map/dtos/create-tag.dto';
 import { TagResponseDto } from 'src/map/dtos/tag-response.dto';
@@ -231,5 +233,30 @@ export class MapService {
         return photoList[0];
       }
     });
+  }
+
+  async updateRole(
+    mapId: string,
+    userId: number,
+    role: UserMapRoleValueType,
+    admin: User,
+  ) {
+    const userMap: UserMap = await this.userMapRepository.findOne({
+      user: { id: userId },
+      map: { id: mapId },
+    });
+    if (!userMap) {
+      throw new UserMapNotFoundException();
+    }
+    if (role === 'ADMIN') {
+      throw new UserMapRoleBadRequestException();
+    }
+
+    if (userId === admin.id) {
+      throw new UserMapRoleCannotMineException();
+    }
+
+    userMap.role = role;
+    await this.userMapRepository.persistAndFlush(userMap);
   }
 }
