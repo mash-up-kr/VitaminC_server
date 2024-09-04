@@ -28,7 +28,7 @@ import { InviteLinkService } from '../invite-link/invite-link.service';
 import { CreateMapDto } from './dtos/create-map.dto';
 import { InviteLinkResponseDto } from './dtos/invite-link-response.dto';
 import { MapItemForUserDto } from './dtos/map-item-for-user.dto';
-import { MapResponseDto } from './dtos/map-response.dto';
+import { MapResponseDto, PublicMapResponseDto } from './dtos/map-response.dto';
 import { UpdateMapDto } from './dtos/update-map.dto';
 import { MapService } from './map.service';
 
@@ -56,6 +56,16 @@ export class MapController {
   @UseAuthGuard([UserRole.USER])
   findAll(@CurrentUser() user: User): Promise<MapItemForUserDto[]> {
     return this.mapService.findAll(user);
+  }
+
+  @Get('public')
+  @ApiOperation({ summary: '공개된 지도를 가져옵니다.' })
+  @ApiBearerAuth()
+  @UseAuthGuard([UserRole.USER])
+  @ApiOkResponse({ type: [PublicMapResponseDto] })
+  async findAllPublic(): Promise<PublicMapResponseDto[]> {
+    const map = await this.mapService.findPublic();
+    return map.map((m) => new PublicMapResponseDto(m));
   }
 
   @Get(':id')

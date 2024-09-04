@@ -96,3 +96,40 @@ export class MapResponseDto {
     });
   }
 }
+
+export class PublicMapResponseDto {
+  @ApiProperty()
+  id: string;
+
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  placeCount: number;
+
+  @ApiProperty()
+  userCount: number;
+
+  @ApiProperty()
+  createdAt: Date;
+
+  @ApiProperty()
+  updatedAt: Date;
+
+  @ApiProperty()
+  isPublic: boolean;
+
+  @ApiProperty()
+  description: string;
+
+  constructor(map: any) {
+    this.id = map.id;
+    this.name = map.name;
+    this.placeCount = map.placeCount;
+    this.userCount = map.userCount;
+    this.createdAt = map.createdAt;
+    this.updatedAt = map.updatedAt;
+    this.isPublic = map.isPublic;
+    this.description = map.description;
+  }
+}
