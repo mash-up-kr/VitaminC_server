@@ -74,17 +74,17 @@ export class MapController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: '지도 정보 업데이트 (이름, 공개방, 설명 등)' })
   @ApiOkResponse({ type: MapResponseDto })
   @UseMapRoleGuard([UserMapRole.ADMIN])
+  @ApiBearerAuth()
   @UseAuthGuard([UserRole.USER])
   async update(
     @Param('id') id: string,
     @Body() updateMapDto: UpdateMapDto,
-    @CurrentUser() user: User,
   ): Promise<MapResponseDto> {
     const map: GroupMap = await this.mapService.update(id, updateMapDto);
     const dto = new MapResponseDto(map);
-    dto.sortMembers(user);
     return dto;
   }
 

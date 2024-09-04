@@ -30,8 +30,14 @@ export class MapResponseDto {
   @ApiProperty()
   name: string;
 
-  @ApiProperty({ type: MapUser, isArray: true })
+  @ApiProperty({ type: MapUser, isArray: true, nullable: true })
   users: MapUser[];
+
+  @ApiProperty()
+  description: string;
+
+  @ApiProperty()
+  isPublic: boolean;
 
   @ApiProperty()
   registeredPlaceCount: number;
@@ -48,16 +54,22 @@ export class MapResponseDto {
   constructor(map: GroupMap, placeForMap: PlaceForMap[] = null) {
     this.id = map.id;
     this.name = map.name;
+    this.description = map.description;
+    this.isPublic = map.isPublic;
     this.createdAt = map.createdAt;
     this.updatedAt = map.updatedAt;
     this.registeredPlaceCount = placeForMap?.length;
-    this.users = map.userMap.getItems().map((userMap: UserMap) => {
-      return {
-        id: userMap.user.id,
-        role: userMap.role,
-        nickname: userMap.user.nickname,
-      };
-    });
+
+    if (map.userMap.isInitialized()) {
+      this.users = map.userMap.getItems().map((userMap: UserMap) => {
+        return {
+          id: userMap.user.id,
+          role: userMap.role,
+          nickname: userMap.user.nickname,
+        };
+      });
+    }
+
     if (map.createBy) this.createBy = new UserResponseDto(map.createBy);
   }
 

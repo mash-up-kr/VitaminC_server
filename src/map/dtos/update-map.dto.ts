@@ -8,4 +8,12 @@ export class UpdateMapDto implements Partial<GroupMap> {
   @ApiProperty({ required: false })
   @IsOptional()
   name?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  description?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  isPublic?: boolean;
 }
