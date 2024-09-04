@@ -54,9 +54,6 @@ export class UserService {
     Object.assign(user, updateUserDto); // Assign DTO properties to user entity
     await this.userRepository.persistAndFlush(user); // Persist changes
     return user;
-    // (wrap(user) as any).assign(updateUserDto);
-    // await this.userRepository.persistAndFlush(user);
-    // return user;
   }
 
   remove(id: number) {
