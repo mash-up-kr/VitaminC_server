@@ -60,7 +60,7 @@ export class MapResponseDto {
     this.updatedAt = map.updatedAt;
     this.registeredPlaceCount = placeForMap?.length;
 
-    if (map.userMap.isInitialized()) {
+    if (map.userMap?.isInitialized()) {
       this.users = map.userMap.getItems().map((userMap: UserMap) => {
         return {
           id: userMap.user.id,
