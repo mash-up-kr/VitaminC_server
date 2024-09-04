@@ -20,7 +20,7 @@ export class InviteLink {
   @ManyToOne(() => GroupMap)
   map: GroupMap;
 
-  @Property({ type: 'string', default: UserMapRole.WRITE })
+  @Property({ type: 'string', default: UserMapRole.READ })
   @Enum({ items: [UserMapRole.ADMIN, UserMapRole.READ, UserMapRole.WRITE] })
   mapRole: UserMapRoleValueType;
 

@@ -17,6 +17,7 @@ import {
 } from '@nestjs/swagger';
 
 import { CheckInviteLinkResponseDto } from 'src/map/dtos/check-invite-link-response.dto';
+import { CreateInviteLinkDto } from 'src/map/dtos/create-invite-link.dto';
 import { CreateTagDto } from 'src/map/dtos/create-tag.dto';
 import { TagResponseDto } from 'src/map/dtos/tag-response.dto';
 
@@ -108,8 +109,13 @@ export class MapController {
   async createInviteLink(
     @CurrentUser() user: User,
     @Param('id') id: string,
+    @Body() body: CreateInviteLinkDto,
   ): Promise<InviteLinkResponseDto> {
-    const entity: InviteLink = await this.inviteLinkService.create(id, user);
+    const entity: InviteLink = await this.inviteLinkService.create(
+      id,
+      body.mapRole,
+      user,
+    );
     return new InviteLinkResponseDto(entity);
   }
 
@@ -164,7 +170,8 @@ export class MapController {
       inviteLink.map,
     );
 
-    const inviteLinkResponseDto = new InviteLinkResponseDto(inviteLink);
+    const inviteLinkResponseDto: InviteLinkResponseDto =
+      new InviteLinkResponseDto(inviteLink);
     return new CheckInviteLinkResponseDto(
       map,
       inviteLinkResponseDto,

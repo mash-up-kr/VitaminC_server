@@ -11,7 +11,7 @@ export class InviteLinkResponseDto {
   token: string;
 
   @ApiProperty({
-    enum: [UserMapRole.ADMIN, UserMapRole.READ, UserMapRole.WRITE],
+    enum: UserMapRole,
   })
   mapRole: UserMapRoleValueType;
 
