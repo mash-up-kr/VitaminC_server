@@ -239,7 +239,7 @@ export class MapService {
     mapId: string,
     userId: number,
     role: UserMapRoleValueType,
-    admin: User,
+    me: User,
   ) {
     const userMap: UserMap = await this.userMapRepository.findOne({
       user: { id: userId },
@@ -252,7 +252,7 @@ export class MapService {
       throw new UserMapRoleBadRequestException();
     }
 
-    if (userId === admin.id) {
+    if (userId === me.id) {
       throw new UserMapRoleCannotMineException();
     }
 
