@@ -819,7 +819,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "integer"
         },
         "created_at": {
@@ -879,6 +879,7 @@
           "localTableName": "public.place_for_map",
           "referencedColumnNames": ["id"],
           "referencedTableName": "public.user",
+          "deleteRule": "set null",
           "updateRule": "cascade"
         }
       },
