@@ -26,6 +26,9 @@ import {
   TagIconRepository,
   TagRepository,
   User,
+  UserMap,
+  UserMapRepository,
+  UserMapRole,
 } from '../entities';
 import { SearchService } from '../search/search.service';
 
@@ -41,6 +44,8 @@ export class PlaceService {
     private readonly searchService: SearchService,
     @InjectRepository(TagIcon)
     private readonly tagIconRepository: TagIconRepository,
+    @InjectRepository(UserMap)
+    private readonly userMapRepository: UserMapRepository,
   ) {}
 
   /**
@@ -223,8 +228,15 @@ export class PlaceService {
       throw new PlaceNotFoundException();
     }
 
-    if (placeForMap.createdBy.id !== user.id && user.role !== 'ADMIN') {
-      throw new PlaceForMapConflictException();
+    if (placeForMap.createdBy.id !== user.id) {
+      const roleOfUserInMap = await this.userMapRepository.findOneOrFail({
+        user,
+        map: rel(GroupMap, mapId),
+      });
+
+      if (roleOfUserInMap.role !== UserMapRole.ADMIN) {
+        throw new PlaceForMapConflictException();
+      }
     }
 
     placeForMap.tags.removeAll();
