@@ -248,7 +248,7 @@ export class MapService {
     if (!userMap) {
       throw new UserMapNotFoundException();
     }
-    if (role === 'ADMIN') {
+    if (role === UserMapRole.ADMIN) {
       throw new UserMapRoleBadRequestException();
     }
 
