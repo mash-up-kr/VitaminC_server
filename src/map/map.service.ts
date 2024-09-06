@@ -232,4 +232,27 @@ export class MapService {
       }
     });
   }
+
+  async kickUser(mapId: string, userId: number) {
+    const userMap: UserMap = await this.userMapRepository.findOne({
+      user: { id: userId },
+      map: { id: mapId },
+    });
+    if (!userMap) {
+      throw new UserMapNotFoundException();
+    }
+    const placeMap = await this.placeForMapRepository.find({
+      map: { id: mapId },
+      createdBy: { id: userId },
+    });
+
+    if (placeMap.length) {
+      placeMap.forEach((place) => {
+        place.createdBy = null;
+      });
+      await this.placeForMapRepository.flush();
+    }
+
+    await this.userMapRepository.removeAndFlush(userMap);
+  }
 }

@@ -12,7 +12,10 @@ export class CreatedUser implements Partial<User> {
   @ApiProperty({ type: String, nullable: true })
   nickname: string | null = null;
 
-  constructor(user: User) {
+  constructor(user: User | null) {
+    if (!user) {
+      return;
+    }
     this.id = user.id;
     this.nickname = user.nickname;
   }
@@ -142,8 +145,8 @@ export class PlaceResponseDto implements KakaoPlaceResponseDto {
   @ApiProperty({ type: TagResponseDto, isArray: true })
   tags: TagResponseDto[];
 
-  @ApiProperty({ type: CreatedUser })
-  createdBy: CreatedUser;
+  @ApiProperty({ type: CreatedUser || null })
+  createdBy: CreatedUser | null;
 
   @ApiProperty()
   name: string;
@@ -239,8 +242,8 @@ export class PlaceForMapResponseDto {
   @ApiProperty({ type: Number, isArray: true })
   likedUserIds: number[];
 
-  @ApiProperty({ type: CreatedUser })
-  createdBy: CreatedUser;
+  @ApiProperty({ type: CreatedUser || null })
+  createdBy: CreatedUser | null;
 
   @ApiProperty()
   createdAt: Date;

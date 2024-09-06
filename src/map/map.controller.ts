@@ -28,6 +28,7 @@ import { GroupMap, InviteLink, User, UserMapRole, UserRole } from '../entities';
 import { InviteLinkService } from '../invite-link/invite-link.service';
 import { CreateMapDto } from './dtos/create-map.dto';
 import { InviteLinkResponseDto } from './dtos/invite-link-response.dto';
+import { KickUserDto } from './dtos/kick-user.dto';
 import { MapItemForUserDto } from './dtos/map-item-for-user.dto';
 import { MapResponseDto } from './dtos/map-response.dto';
 import { UpdateMapDto } from './dtos/update-map.dto';
@@ -117,6 +118,17 @@ export class MapController {
       user,
     );
     return new InviteLinkResponseDto(entity);
+  }
+
+  @Post('kick/:id')
+  @ApiOperation({
+    summary: '지도에서 유저 추방',
+  })
+  @ApiBearerAuth()
+  @UseMapRoleGuard([UserMapRole.ADMIN])
+  @UseAuthGuard([UserRole.USER])
+  async kickUser(@Param('id') id: string, @Body() body: KickUserDto) {
+    await this.mapService.kickUser(id, body.userId);
   }
 
   @Get(':id/tag')
