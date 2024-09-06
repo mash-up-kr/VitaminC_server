@@ -26,7 +26,7 @@ import {
 
 import { UseAuthGuard } from '../common/decorators/auth-guard.decorator';
 import { CurrentUser } from '../common/decorators/user.decorator';
-import { User, UserMapRole, UserRole } from '../entities';
+import { User, UserMapRole } from '../entities';
 import { PlaceService } from './place.service';
 
 @ApiTags('place')
@@ -38,7 +38,8 @@ export class PlaceController {
   @ApiOperation({ summary: '맛집지도 (GroupMap)에 등록된 장소 전부 가져오기' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiResponse({ type: PlaceForMapResponseDto, isArray: true })
-  @UseMapRoleGuard()
+  @UseMapRoleGuard([UserMapRole.ADMIN, UserMapRole.WRITE, UserMapRole.READ])
+  @UseAuthGuard()
   @Get(':mapId')
   async getAllPlaceForMap(@Param('mapId') mapId: string) {
     return await this.placeService.getAllPlacesForMap({
@@ -50,7 +51,7 @@ export class PlaceController {
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'kakaoPlaceId', description: '카카오 place id' })
   @UseMapRoleGuard([UserMapRole.ADMIN, UserMapRole.WRITE])
-  @UseAuthGuard([UserRole.USER])
+  @UseAuthGuard()
   @Post(':mapId/kakao/:kakaoPlaceId')
   async registerPlaceByKakaoId(
     @Param('mapId') mapId: string,
@@ -72,7 +73,7 @@ export class PlaceController {
   })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'kakaoPlaceId', description: '카카오 place id' })
-  @UseAuthGuard([UserRole.USER])
+  @UseAuthGuard()
   @ApiResponse({
     schema: {
       oneOf: [
@@ -93,7 +94,7 @@ export class PlaceController {
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'placeId', description: '등록된 place id' })
   @ApiResponse({ type: PlaceResponseDto })
-  @UseAuthGuard([UserRole.USER])
+  @UseAuthGuard()
   @Get(':mapId/:placeId')
   async getPlaceInMap(
     @Param('mapId') mapId: string,
@@ -106,7 +107,7 @@ export class PlaceController {
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'placeId', description: 'place id' })
   @UseMapRoleGuard([UserMapRole.ADMIN, UserMapRole.WRITE])
-  @UseAuthGuard([UserRole.USER])
+  @UseAuthGuard()
   @Delete(':mapId/:placeId')
   async deletePlaceByKakaoId(
     @Param('mapId') mapId: string,
@@ -120,7 +121,7 @@ export class PlaceController {
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'placeId', description: 'place id' })
   @UseMapRoleGuard()
-  @UseAuthGuard([UserRole.USER])
+  @UseAuthGuard()
   @Put(':mapId/:placeId/like')
   async likePlace(
     @Param('mapId') mapId: string,
@@ -139,7 +140,7 @@ export class PlaceController {
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'placeId', description: 'place id' })
   @UseMapRoleGuard()
-  @UseAuthGuard([UserRole.USER])
+  @UseAuthGuard()
   @Delete(':mapId/:placeId/like')
   async dislikePlace(
     @Param('mapId') mapId: string,
