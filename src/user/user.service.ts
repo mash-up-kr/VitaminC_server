@@ -80,7 +80,7 @@ export class UserService {
   }
 
   async leaveMap(userId: number, mapId: string): Promise<void> {
-    await this.em.transactional(async (em) => {
+    await this.em.transactional(async () => {
       const userJoinedMap = await this.userMapRepository.findOne({
         map: rel(GroupMap, mapId),
         user: rel(User, userId),
