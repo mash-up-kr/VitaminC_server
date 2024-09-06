@@ -197,20 +197,26 @@ export class PlaceService {
         place: rel(Place, placeId),
         map: rel(GroupMap, mapId),
       },
-      { populate: ['place', 'place.kakaoPlace', 'createdBy', 'tags'] },
+      {
+        populate: [
+          'place',
+          'place.kakaoPlace',
+          'createdBy',
+          'tags',
+          'likedUser.id',
+        ],
+      },
     );
 
-    if (like && !placeForMap.likedUserIds.includes(user.id)) {
-      placeForMap.likedUserIds = [...placeForMap.likedUserIds, user.id];
+    if (like && !placeForMap.likedUser.find((u) => u.id === user.id)) {
+      placeForMap.likedUser.add(user);
     }
 
-    if (!like && placeForMap.likedUserIds.includes(user.id)) {
-      placeForMap.likedUserIds = placeForMap.likedUserIds.filter(
-        (id) => id !== user.id,
-      );
+    if (!like && placeForMap.likedUser.find((u) => u.id === user.id)) {
+      placeForMap.likedUser.remove(user);
     }
 
-    await this.placeForMapRepository.persistAndFlush(placeForMap);
+    await this.placeForMapRepository.flush();
   }
 
   async remove(mapId: string, placeId: number, user: User): Promise<void> {
