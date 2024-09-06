@@ -19,6 +19,7 @@ import {
 } from '@nestjs/swagger';
 
 import { CheckInviteLinkResponseDto } from 'src/map/dtos/check-invite-link-response.dto';
+import { CreateInviteLinkDto } from 'src/map/dtos/create-invite-link.dto';
 import { CreateTagDto } from 'src/map/dtos/create-tag.dto';
 import { TagResponseDto } from 'src/map/dtos/tag-response.dto';
 
@@ -29,9 +30,10 @@ import { GroupMap, InviteLink, User, UserMapRole, UserRole } from '../entities';
 import { InviteLinkService } from '../invite-link/invite-link.service';
 import { CreateMapDto } from './dtos/create-map.dto';
 import { InviteLinkResponseDto } from './dtos/invite-link-response.dto';
+import { KickUserDto } from './dtos/kick-user.dto';
 import { MapItemForUserDto } from './dtos/map-item-for-user.dto';
 import { MapResponseDto, PublicMapResponseDto } from './dtos/map-response.dto';
-import { UpdateMapDto } from './dtos/update-map.dto';
+import { UpdateMapDto, UpdateUserRoleInMapDto } from './dtos/update-map.dto';
 import { ArrayElement, MapService, publicMapOrder } from './map.service';
 
 @ApiTags('maps')
@@ -110,6 +112,22 @@ export class MapController {
     return dto;
   }
 
+  @Patch('roles/:id/:userId')
+  @ApiOperation({
+    summary: '지도 멤버의 권한을 변경합니다.',
+  })
+  @ApiOkResponse({ type: MapResponseDto })
+  @ApiBearerAuth()
+  @UseMapRoleGuard([UserMapRole.ADMIN])
+  @UseAuthGuard([UserRole.USER])
+  async updateRole(
+    @Param('id') id: string,
+    @Body() body: UpdateUserRoleInMapDto,
+    @CurrentUser() user: User,
+  ) {
+    await this.mapService.updateRole(id, body.userId, body.role, user);
+  }
+
   @Delete(':id')
   @ApiOkResponse({ type: Number })
   @ApiExcludeEndpoint()
@@ -130,9 +148,25 @@ export class MapController {
   async createInviteLink(
     @CurrentUser() user: User,
     @Param('id') id: string,
+    @Body() body: CreateInviteLinkDto,
   ): Promise<InviteLinkResponseDto> {
-    const entity: InviteLink = await this.inviteLinkService.create(id, user);
+    const entity: InviteLink = await this.inviteLinkService.create(
+      id,
+      body.mapRole,
+      user,
+    );
     return new InviteLinkResponseDto(entity);
+  }
+
+  @Post('kick/:id')
+  @ApiOperation({
+    summary: '지도에서 유저 추방',
+  })
+  @ApiBearerAuth()
+  @UseMapRoleGuard([UserMapRole.ADMIN])
+  @UseAuthGuard([UserRole.USER])
+  async kickUser(@Param('id') id: string, @Body() body: KickUserDto) {
+    await this.mapService.kickUser(id, body.userId);
   }
 
   @Get(':id/tag')
@@ -154,6 +188,7 @@ export class MapController {
   @ApiBearerAuth()
   @ApiResponse({ type: TagResponseDto })
   @ApiBearerAuth()
+  @UseMapRoleGuard([UserMapRole.ADMIN, UserMapRole.WRITE])
   @UseAuthGuard([UserRole.USER])
   createTag(@Param('id') id: string, @Body() createTagDto: CreateTagDto) {
     return this.mapService.createTag(id, createTagDto);
@@ -164,6 +199,7 @@ export class MapController {
     summary: '맛집 저장시 사용할 태그를 삭제합니다.',
   })
   @ApiBearerAuth()
+  @UseMapRoleGuard([UserMapRole.ADMIN, UserMapRole.WRITE])
   @UseAuthGuard([UserRole.USER])
   removeTag(@Param('id') id: string, @Param('name') name: string) {
     return this.mapService.removeTag(id, name);
@@ -186,7 +222,8 @@ export class MapController {
       inviteLink.map,
     );
 
-    const inviteLinkResponseDto = new InviteLinkResponseDto(inviteLink);
+    const inviteLinkResponseDto: InviteLinkResponseDto =
+      new InviteLinkResponseDto(inviteLink);
     return new CheckInviteLinkResponseDto(
       map,
       inviteLinkResponseDto,

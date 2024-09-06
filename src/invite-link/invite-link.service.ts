@@ -9,6 +9,7 @@ import {
   InviteLink,
   InviteLinkRepository,
   User,
+  UserMapRoleValueType,
 } from 'src/entities';
 import {
   InviteLinkInvalidException,
@@ -26,7 +27,11 @@ export class InviteLinkService {
     private readonly utilService: UtilService,
   ) {}
 
-  async create(mapId: string, by: User): Promise<InviteLink> {
+  async create(
+    mapId: string,
+    role: UserMapRoleValueType,
+    by: User,
+  ): Promise<InviteLink> {
     const map = await this.mapRepository.findOne({ id: mapId });
     if (map == null) {
       throw new MapNotFoundException();
@@ -40,6 +45,7 @@ export class InviteLinkService {
     inviteLink.token = token;
     inviteLink.createdBy = by;
     inviteLink.map = map;
+    inviteLink.mapRole = role;
     inviteLink.expiresAt = new Date(expiration);
 
     await this.inviteLinkRepository.persistAndFlush(inviteLink);

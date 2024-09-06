@@ -25,6 +25,8 @@ import {
   TagNotFoundException,
   UserMapConflictException,
   UserMapNotFoundException,
+  UserMapRoleBadRequestException,
+  UserMapRoleCannotMineException,
 } from 'src/exceptions';
 import { CreateTagDto } from 'src/map/dtos/create-tag.dto';
 import { TagResponseDto } from 'src/map/dtos/tag-response.dto';
@@ -282,5 +284,53 @@ export class MapService {
         return photoList[0];
       }
     });
+  }
+
+  async kickUser(mapId: string, userId: number) {
+    const userMap: UserMap = await this.userMapRepository.findOne({
+      user: { id: userId },
+      map: { id: mapId },
+    });
+    if (!userMap) {
+      throw new UserMapNotFoundException();
+    }
+    const placeMap = await this.placeForMapRepository.find({
+      map: { id: mapId },
+      createdBy: { id: userId },
+    });
+
+    if (placeMap.length) {
+      placeMap.forEach((place) => {
+        place.createdBy = null;
+      });
+      await this.placeForMapRepository.flush();
+    }
+
+    await this.userMapRepository.removeAndFlush(userMap);
+  }
+
+  async updateRole(
+    mapId: string,
+    userId: number,
+    role: UserMapRoleValueType,
+    me: User,
+  ) {
+    const userMap: UserMap = await this.userMapRepository.findOne({
+      user: { id: userId },
+      map: { id: mapId },
+    });
+    if (!userMap) {
+      throw new UserMapNotFoundException();
+    }
+    if (role === UserMapRole.ADMIN) {
+      throw new UserMapRoleBadRequestException();
+    }
+
+    if (userId === me.id) {
+      throw new UserMapRoleCannotMineException();
+    }
+
+    userMap.role = role;
+    await this.userMapRepository.persistAndFlush(userMap);
   }
 }

@@ -38,6 +38,9 @@ export class User {
   @Property({ type: 'string', default: null })
   nickname: string | null = null;
 
+  @Property({ type: 'string', default: null })
+  profileImage: string | null = null;
+
   @Property()
   kakaoAccessToken: string;
 

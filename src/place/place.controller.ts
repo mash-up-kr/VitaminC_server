@@ -38,6 +38,7 @@ export class PlaceController {
   @ApiOperation({ summary: '맛집지도 (GroupMap)에 등록된 장소 전부 가져오기' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiResponse({ type: PlaceForMapResponseDto, isArray: true })
+  @UseMapRoleGuard()
   @Get(':mapId')
   async getAllPlaceForMap(@Param('mapId') mapId: string) {
     return await this.placeService.getAllPlacesForMap({
@@ -48,7 +49,7 @@ export class PlaceController {
   @ApiOperation({ summary: '카카오 place id로 장소 등록' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'kakaoPlaceId', description: '카카오 place id' })
-  @UseMapRoleGuard()
+  @UseMapRoleGuard([UserMapRole.ADMIN, UserMapRole.WRITE])
   @UseAuthGuard([UserRole.USER])
   @Post(':mapId/kakao/:kakaoPlaceId')
   async registerPlaceByKakaoId(
@@ -110,13 +111,15 @@ export class PlaceController {
   async deletePlaceByKakaoId(
     @Param('mapId') mapId: string,
     @Param('placeId') placeId: string,
+    @CurrentUser() user: User,
   ) {
-    await this.placeService.remove(mapId, +placeId);
+    await this.placeService.remove(mapId, +placeId, user);
   }
 
   @ApiOperation({ summary: '맛집 좋아요' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'placeId', description: 'place id' })
+  @UseMapRoleGuard()
   @UseAuthGuard([UserRole.USER])
   @Put(':mapId/:placeId/like')
   async likePlace(
@@ -135,6 +138,7 @@ export class PlaceController {
   @ApiOperation({ summary: '맛집 좋아요 취소' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'placeId', description: 'place id' })
+  @UseMapRoleGuard()
   @UseAuthGuard([UserRole.USER])
   @Delete(':mapId/:placeId/like')
   async dislikePlace(

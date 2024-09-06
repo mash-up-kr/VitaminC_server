@@ -467,6 +467,16 @@
           "default": "null",
           "mappedType": "string"
         },
+        "profile_image": {
+          "name": "profile_image",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "default": "null",
+          "mappedType": "string"
+        },
         "kakao_access_token": {
           "name": "kakao_access_token",
           "type": "varchar(255)",
@@ -828,7 +838,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "integer"
         },
         "created_at": {
@@ -888,6 +898,7 @@
           "localTableName": "public.place_for_map",
           "referencedColumnNames": ["id"],
           "referencedTableName": "public.user",
+          "deleteRule": "set null",
           "updateRule": "cascade"
         }
       },
@@ -1031,7 +1042,7 @@
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "default": "'WRITE'",
+          "default": "'READ'",
           "mappedType": "string"
         },
         "expires_at": {

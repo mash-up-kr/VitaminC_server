@@ -26,6 +26,9 @@ import {
   TagIconRepository,
   TagRepository,
   User,
+  UserMap,
+  UserMapRepository,
+  UserMapRole,
 } from '../entities';
 import { SearchService } from '../search/search.service';
 
@@ -41,6 +44,8 @@ export class PlaceService {
     private readonly searchService: SearchService,
     @InjectRepository(TagIcon)
     private readonly tagIconRepository: TagIconRepository,
+    @InjectRepository(UserMap)
+    private readonly userMapRepository: UserMapRepository,
   ) {}
 
   /**
@@ -208,18 +213,30 @@ export class PlaceService {
     await this.placeForMapRepository.persistAndFlush(placeForMap);
   }
 
-  async remove(mapId: string, placeId: number): Promise<void> {
+  async remove(mapId: string, placeId: number, user: User): Promise<void> {
     const placeForMap = await this.placeForMapRepository.findOne(
       {
         place: rel(Place, placeId),
         map: rel(GroupMap, mapId),
       },
-      { populate: ['tags'] },
+      { populate: ['tags', 'createdBy'] },
     );
 
     if (!placeForMap) {
       throw new PlaceNotFoundException();
     }
+
+    if (placeForMap.createdBy.id !== user.id) {
+      const roleOfUserInMap = await this.userMapRepository.findOneOrFail({
+        user,
+        map: rel(GroupMap, mapId),
+      });
+
+      if (roleOfUserInMap.role !== UserMapRole.ADMIN) {
+        throw new PlaceForMapConflictException();
+      }
+    }
+
     placeForMap.tags.removeAll();
     await this.placeForMapRepository.flush();
 
