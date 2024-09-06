@@ -172,13 +172,21 @@ export class PlaceService {
         map: rel(GroupMap, mapId),
         place: rel(Place, placeId),
       },
-      { populate: ['place.kakaoPlace', 'tags'] },
+      {
+        populate: ['place.kakaoPlace', 'tags', 'likedUser'],
+        fields: [
+          'likedUser.id',
+          'likedUser.nickname',
+          'likedUser.profileImage',
+        ],
+      },
     );
+
     if (!place) {
       throw new PlaceNotFoundException();
     }
 
-    return new PlaceResponseDto(place);
+    return new PlaceResponseDto(place as unknown as PlaceForMap);
   }
 
   async likePlace({

@@ -151,6 +151,9 @@ export class PlaceResponseDto implements KakaoPlaceResponseDto {
   @ApiProperty()
   name: string;
 
+  @ApiProperty({ type: [User] })
+  likedUser: Partial<User>[];
+
   @ApiProperty()
   category: string;
 
@@ -226,6 +229,11 @@ export class PlaceResponseDto implements KakaoPlaceResponseDto {
     this.createdAt = placeForMap.createdAt;
     this.updatedAt = placeForMap.updatedAt;
     this.categoryIconCode = kakaoPlace.categoryIconCode;
+    this.likedUser = placeForMap.likedUser.map((v) => ({
+      id: v.id,
+      nickname: v.nickname,
+      profileImage: v.profileImage,
+    }));
   }
 }
 
