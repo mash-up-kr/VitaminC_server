@@ -27,9 +27,4 @@ export class UpdateUserRequestDto implements Partial<User> {
   @IsString()
   @MaxLength(6, { message: '닉네임은 최대 6글자까지 입력할 수 있어요.' })
   nickname: string;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsString()
-  profileImage?: string;
 }

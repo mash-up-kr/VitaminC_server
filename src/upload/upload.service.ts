@@ -19,16 +19,21 @@ export class UploadService {
   }
 
   async uploadFile(file: Express.Multer.File, folder: string = '') {
-    const uploadResult = await this.awsS3
-      .upload({
-        Bucket: this.configService.get('NCP_BUCKET_NAME'),
-        Key: folder + file.originalname,
-        Body: file.buffer,
-        ContentType: file.mimetype,
-        ACL: 'public-read',
-      })
-      .promise();
+    try {
+      const uploadResult = await this.awsS3
+        .upload({
+          Bucket: this.configService.get('NCP_BUCKET_NAME'),
+          Key: folder + file.originalname,
+          Body: file.buffer,
+          ContentType: file.mimetype,
+          ACL: 'public-read',
+        })
+        .promise();
 
-    return uploadResult.Location;
+      return uploadResult.Location;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 }

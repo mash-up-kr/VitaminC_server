@@ -6,9 +6,14 @@ import {
   Param,
   Patch,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
   ApiOkResponse,
   ApiOperation,
   ApiQuery,
@@ -39,14 +44,38 @@ export class UserController {
 
   @Patch('me')
   @ApiOperation({ summary: '내 정보를 수정합니다.' })
+  @ApiConsumes('multipart/form-data')
   @UseAuthGuard([UserRole.USER])
   @ApiOkResponse({ type: UserResponseDto })
   @ApiBearerAuth()
+  @ApiBody({
+    required: false,
+    schema: {
+      type: 'object',
+      properties: {
+        nickname: {
+          type: 'string',
+          description: '사용자 닉네임',
+        },
+        profileImage: {
+          type: 'File',
+          format: 'binary',
+          description: '프로필 이미지',
+        },
+      },
+    },
+  })
+  @UseInterceptors(FileInterceptor('profileImage'))
   async updateMe(
     @Body() updateUserDto: UpdateUserRequestDto,
     @CurrentUser() user: User,
+    @UploadedFile() profileImage?: Express.Multer.File,
   ): Promise<UserResponseDto> {
-    const updatedUser = await this.userService.update(user.id, updateUserDto);
+    const updatedUser = await this.userService.update(
+      user.id,
+      updateUserDto,
+      profileImage,
+    );
 
     return new UserResponseDto(updatedUser);
   }

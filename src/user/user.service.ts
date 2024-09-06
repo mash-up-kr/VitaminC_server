@@ -17,6 +17,7 @@ import {
   UserNotInMapException,
 } from 'src/exceptions';
 import { MapService } from 'src/map/map.service';
+import { UploadService } from 'src/upload/upload.service';
 
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -29,6 +30,7 @@ export class UserService {
     private readonly userMapRepository: UserMapRepository,
     private readonly mapService: MapService,
     private readonly em: EntityManager,
+    private readonly uploadService: UploadService,
   ) {}
   async create(createUserDto: CreateUserDto) {
     const user: User = this.userRepository.create(createUserDto);
@@ -46,11 +48,21 @@ export class UserService {
     return user;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(
+    id: number,
+    updateUserDto: UpdateUserDto,
+    profileImage?: Express.Multer.File,
+  ) {
     const user = await this.userRepository.findOne(id);
     if (user == undefined) {
       throw new UserNotFoundException();
     }
+
+    if (profileImage) {
+      const profileImageUrl = await this.uploadService.uploadFile(profileImage);
+      Object.assign(updateUserDto, { profileImageUrl });
+    }
+
     Object.assign(user, updateUserDto); // Assign DTO properties to user entity
     await this.userRepository.persistAndFlush(user); // Persist changes
     return user;
