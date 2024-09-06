@@ -19,6 +19,12 @@ export class GroupMap {
   @Property({ type: 'string', unique: true })
   name: string;
 
+  @Property({ type: 'string', nullable: true })
+  description?: string;
+
+  @Property({ type: 'boolean', default: false })
+  isPublic: boolean;
+
   @OneToMany({ entity: () => UserMap, mappedBy: (userMap) => userMap.map })
   userMap = new Collection<UserMap>(this);
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { FilterQuery, rel } from '@mikro-orm/core';
+import { FilterQuery, raw, rel, sql } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 
 import { INVITE_LINK_PREVIEW_LENGTH } from 'src/common/constants';
@@ -34,8 +34,18 @@ import { UtilService } from 'src/util/util.service';
 
 import { CreateMapDto } from './dtos/create-map.dto';
 import { MapItemForUserDto } from './dtos/map-item-for-user.dto';
-import { MapResponseDto } from './dtos/map-response.dto';
+import { MapResponseDto, PublicMapResponseDto } from './dtos/map-response.dto';
 import { UpdateMapDto } from './dtos/update-map.dto';
+
+export const publicMapOrder = [
+  '"map"."created_at"-desc',
+  '"map"."created_at"-asc',
+  '"user_count"-desc',
+  '"user_count"-asc',
+] as const;
+
+export type ArrayElement<T extends readonly unknown[]> =
+  T extends readonly (infer U)[] ? U : never;
 
 @Injectable()
 export class MapService {
@@ -99,6 +109,47 @@ export class MapService {
       mapItemForUser.role = role;
       return mapItemForUser;
     });
+  }
+
+  async findPublic({
+    order,
+    name,
+  }: {
+    order: ArrayElement<typeof publicMapOrder>;
+    name: string;
+  }) {
+    const qb = this.placeForMapRepository.createQueryBuilder('placeForMap');
+    qb.select('map.*')
+      .leftJoin('placeForMap.map', 'map')
+      .leftJoin('map.userMap', 'userMap')
+      .leftJoin('userMap.user', 'user')
+      .leftJoin('placeForMap.place', 'place')
+      .where({ map: { isPublic: true } })
+      .addSelect(sql`COUNT(DISTINCT "place"."id") AS "place_count"`)
+      .addSelect(sql`COUNT(DISTINCT "user"."id") AS "user_count"`)
+      .groupBy('map.id');
+
+    if (name) {
+      qb.andWhere('map.name like ?', [`%${name}%`]);
+    }
+
+    if (order) {
+      const [column, orderType] = order.split('-');
+      qb.orderBy({ [raw(`${column}`)]: orderType });
+    }
+
+    const result = await qb.execute();
+
+    const toCamelCase = (str: string) =>
+      str.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
+
+    return result.map((v) =>
+      Object.entries(v).reduce((acc, [_key, value]) => {
+        const key = toCamelCase(_key);
+        acc[key] = value;
+        return acc;
+      }, {} as PublicMapResponseDto),
+    );
   }
 
   async findOne(where: FilterQuery<GroupMap>): Promise<MapResponseDto> {

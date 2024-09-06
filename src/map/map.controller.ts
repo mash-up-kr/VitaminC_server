@@ -6,12 +6,14 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiExcludeEndpoint,
   ApiOkResponse,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -30,9 +32,9 @@ import { CreateMapDto } from './dtos/create-map.dto';
 import { InviteLinkResponseDto } from './dtos/invite-link-response.dto';
 import { KickUserDto } from './dtos/kick-user.dto';
 import { MapItemForUserDto } from './dtos/map-item-for-user.dto';
-import { MapResponseDto } from './dtos/map-response.dto';
+import { MapResponseDto, PublicMapResponseDto } from './dtos/map-response.dto';
 import { UpdateMapDto, UpdateUserRoleInMapDto } from './dtos/update-map.dto';
-import { MapService } from './map.service';
+import { ArrayElement, MapService, publicMapOrder } from './map.service';
 
 @ApiTags('maps')
 @Controller('maps')
@@ -60,6 +62,26 @@ export class MapController {
     return this.mapService.findAll(user);
   }
 
+  @Get('public')
+  @ApiOperation({ summary: '공개된 지도를 가져옵니다.' })
+  @ApiBearerAuth()
+  @UseAuthGuard([UserRole.USER])
+  @ApiOkResponse({ type: [PublicMapResponseDto] })
+  @ApiQuery({
+    name: 'order',
+    required: false,
+    enum: publicMapOrder,
+  })
+  @ApiQuery({ name: 'name', required: false })
+  async findAllPublic(
+    @Query('order')
+    order: ArrayElement<typeof publicMapOrder>,
+    @Query('name') name: string,
+  ): Promise<PublicMapResponseDto[]> {
+    const map = await this.mapService.findPublic({ order, name });
+    return map.map((m) => new PublicMapResponseDto(m));
+  }
+
   @Get(':id')
   @ApiOperation({ summary: '지도 정보 조회 (포함된 유저 정보, 맛집 개수...)' })
   @ApiOkResponse({ type: MapResponseDto })
@@ -76,17 +98,17 @@ export class MapController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: '지도 정보 업데이트 (이름, 공개방, 설명 등)' })
   @ApiOkResponse({ type: MapResponseDto })
   @UseMapRoleGuard([UserMapRole.ADMIN])
+  @ApiBearerAuth()
   @UseAuthGuard([UserRole.USER])
   async update(
     @Param('id') id: string,
     @Body() updateMapDto: UpdateMapDto,
-    @CurrentUser() user: User,
   ): Promise<MapResponseDto> {
     const map: GroupMap = await this.mapService.update(id, updateMapDto);
     const dto = new MapResponseDto(map);
-    dto.sortMembers(user);
     return dto;
   }
 
