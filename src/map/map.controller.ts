@@ -28,6 +28,7 @@ import { GroupMap, InviteLink, User, UserMapRole, UserRole } from '../entities';
 import { InviteLinkService } from '../invite-link/invite-link.service';
 import { CreateMapDto } from './dtos/create-map.dto';
 import { InviteLinkResponseDto } from './dtos/invite-link-response.dto';
+import { KickUserDto } from './dtos/kick-user.dto';
 import { MapItemForUserDto } from './dtos/map-item-for-user.dto';
 import { MapResponseDto } from './dtos/map-response.dto';
 import { UpdateMapDto, UpdateUserRoleInMapDto } from './dtos/update-map.dto';
@@ -135,6 +136,17 @@ export class MapController {
     return new InviteLinkResponseDto(entity);
   }
 
+  @Post('kick/:id')
+  @ApiOperation({
+    summary: '지도에서 유저 추방',
+  })
+  @ApiBearerAuth()
+  @UseMapRoleGuard([UserMapRole.ADMIN])
+  @UseAuthGuard([UserRole.USER])
+  async kickUser(@Param('id') id: string, @Body() body: KickUserDto) {
+    await this.mapService.kickUser(id, body.userId);
+  }
+
   @Get(':id/tag')
   @ApiOperation({
     summary: '기본 태그와 지도에 저장된 태그를 조회합니다.',
@@ -154,6 +166,7 @@ export class MapController {
   @ApiBearerAuth()
   @ApiResponse({ type: TagResponseDto })
   @ApiBearerAuth()
+  @UseMapRoleGuard([UserMapRole.ADMIN, UserMapRole.WRITE])
   @UseAuthGuard([UserRole.USER])
   createTag(@Param('id') id: string, @Body() createTagDto: CreateTagDto) {
     return this.mapService.createTag(id, createTagDto);
@@ -164,6 +177,7 @@ export class MapController {
     summary: '맛집 저장시 사용할 태그를 삭제합니다.',
   })
   @ApiBearerAuth()
+  @UseMapRoleGuard([UserMapRole.ADMIN, UserMapRole.WRITE])
   @UseAuthGuard([UserRole.USER])
   removeTag(@Param('id') id: string, @Param('name') name: string) {
     return this.mapService.removeTag(id, name);
@@ -177,9 +191,8 @@ export class MapController {
   async checkInviteLink(
     @Param('token') inviteLinkToken: string,
   ): Promise<CheckInviteLinkResponseDto> {
-    const inviteLink: InviteLink = await this.inviteLinkService.validate(
-      inviteLinkToken,
-    );
+    const inviteLink: InviteLink =
+      await this.inviteLinkService.validate(inviteLinkToken);
 
     const map: MapResponseDto = await this.mapService.findOne(inviteLink.map);
     map.sortMembers();
@@ -207,9 +220,8 @@ export class MapController {
     @Param('token') inviteLinkToken: string,
     @CurrentUser() user: User,
   ) {
-    const inviteLink: InviteLink = await this.inviteLinkService.validate(
-      inviteLinkToken,
-    );
+    const inviteLink: InviteLink =
+      await this.inviteLinkService.validate(inviteLinkToken);
     await this.mapService.createUserMap(
       user,
       inviteLink.map,

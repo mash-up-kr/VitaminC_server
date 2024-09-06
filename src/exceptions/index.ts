@@ -73,3 +73,8 @@ export class PlaceForMapConflictException extends ExceptionOf.USER(
   HttpStatus.CONFLICT,
   '이미 생성된 지도입니다.' as const,
 ) {}
+
+export class PlaceNotMineException extends ExceptionOf.USER(
+  HttpStatus.FORBIDDEN,
+  '내가 등록한 장소만 삭제할 수 있습니다.' as const,
+) {}
