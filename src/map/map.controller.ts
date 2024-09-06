@@ -31,7 +31,7 @@ import { InviteLinkResponseDto } from './dtos/invite-link-response.dto';
 import { KickUserDto } from './dtos/kick-user.dto';
 import { MapItemForUserDto } from './dtos/map-item-for-user.dto';
 import { MapResponseDto } from './dtos/map-response.dto';
-import { UpdateMapDto } from './dtos/update-map.dto';
+import { UpdateMapDto, UpdateUserRoleInMapDto } from './dtos/update-map.dto';
 import { MapService } from './map.service';
 
 @ApiTags('maps')
@@ -88,6 +88,22 @@ export class MapController {
     const dto = new MapResponseDto(map);
     dto.sortMembers(user);
     return dto;
+  }
+
+  @Patch('roles/:id/:userId')
+  @ApiOperation({
+    summary: '지도 멤버의 권한을 변경합니다.',
+  })
+  @ApiOkResponse({ type: MapResponseDto })
+  @ApiBearerAuth()
+  @UseMapRoleGuard([UserMapRole.ADMIN])
+  @UseAuthGuard([UserRole.USER])
+  async updateRole(
+    @Param('id') id: string,
+    @Body() body: UpdateUserRoleInMapDto,
+    @CurrentUser() user: User,
+  ) {
+    await this.mapService.updateRole(id, body.userId, body.role, user);
   }
 
   @Delete(':id')
@@ -175,9 +191,8 @@ export class MapController {
   async checkInviteLink(
     @Param('token') inviteLinkToken: string,
   ): Promise<CheckInviteLinkResponseDto> {
-    const inviteLink: InviteLink = await this.inviteLinkService.validate(
-      inviteLinkToken,
-    );
+    const inviteLink: InviteLink =
+      await this.inviteLinkService.validate(inviteLinkToken);
 
     const map: MapResponseDto = await this.mapService.findOne(inviteLink.map);
     map.sortMembers();
@@ -205,9 +220,8 @@ export class MapController {
     @Param('token') inviteLinkToken: string,
     @CurrentUser() user: User,
   ) {
-    const inviteLink: InviteLink = await this.inviteLinkService.validate(
-      inviteLinkToken,
-    );
+    const inviteLink: InviteLink =
+      await this.inviteLinkService.validate(inviteLinkToken);
     await this.mapService.createUserMap(
       user,
       inviteLink.map,

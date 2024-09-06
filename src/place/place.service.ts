@@ -52,9 +52,11 @@ export class PlaceService {
    * map id (GroupMap.id)에 속한 장소를 전부 가져옵니다.
    * TODO: 나중에 커지면 geo-query + pagination 해야할듯
    */
-  async getAllPlacesForMap(
-    { mapId }: { mapId: string },
-  ): Promise<PlaceForMapResponseDto[]> {
+  async getAllPlacesForMap({
+    mapId,
+  }: {
+    mapId: string;
+  }): Promise<PlaceForMapResponseDto[]> {
     const placesForMapList = await this.placeForMapRepository.find(
       {
         map: rel(GroupMap, mapId),
@@ -66,19 +68,17 @@ export class PlaceService {
     );
   }
 
-  async registerPlaceByKakaoId(
-    {
-      kakaoPlaceId,
-      mapId,
-      user,
-      registerPlaceDto,
-    }: {
-      kakaoPlaceId: number;
-      mapId: string;
-      user: User;
-      registerPlaceDto: RegisterPlaceDto;
-    },
-  ) {
+  async registerPlaceByKakaoId({
+    kakaoPlaceId,
+    mapId,
+    user,
+    registerPlaceDto,
+  }: {
+    kakaoPlaceId: number;
+    mapId: string;
+    user: User;
+    registerPlaceDto: RegisterPlaceDto;
+  }) {
     let place = await this.placeRepository.findOne({
       kakaoPlace: rel(KakaoPlace, kakaoPlaceId),
     });
@@ -181,19 +181,17 @@ export class PlaceService {
     return new PlaceResponseDto(place);
   }
 
-  async likePlace(
-    {
-      mapId,
-      placeId,
-      user,
-      like,
-    }: {
-      mapId: string;
-      placeId: number;
-      user: User;
-      like: boolean;
-    },
-  ) {
+  async likePlace({
+    mapId,
+    placeId,
+    user,
+    like,
+  }: {
+    mapId: string;
+    placeId: number;
+    user: User;
+    like: boolean;
+  }) {
     const placeForMap = await this.placeForMapRepository.findOneOrFail(
       {
         place: rel(Place, placeId),
