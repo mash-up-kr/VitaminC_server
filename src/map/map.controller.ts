@@ -138,6 +138,7 @@ export class MapController {
   @ApiBearerAuth()
   @ApiResponse({ type: TagResponseDto })
   @ApiBearerAuth()
+  @UseMapRoleGuard([UserMapRole.ADMIN, UserMapRole.WRITE])
   @UseAuthGuard([UserRole.USER])
   createTag(@Param('id') id: string, @Body() createTagDto: CreateTagDto) {
     return this.mapService.createTag(id, createTagDto);
@@ -148,6 +149,7 @@ export class MapController {
     summary: '맛집 저장시 사용할 태그를 삭제합니다.',
   })
   @ApiBearerAuth()
+  @UseMapRoleGuard([UserMapRole.ADMIN, UserMapRole.WRITE])
   @UseAuthGuard([UserRole.USER])
   removeTag(@Param('id') id: string, @Param('name') name: string) {
     return this.mapService.removeTag(id, name);
@@ -161,8 +163,9 @@ export class MapController {
   async checkInviteLink(
     @Param('token') inviteLinkToken: string,
   ): Promise<CheckInviteLinkResponseDto> {
-    const inviteLink: InviteLink =
-      await this.inviteLinkService.validate(inviteLinkToken);
+    const inviteLink: InviteLink = await this.inviteLinkService.validate(
+      inviteLinkToken,
+    );
 
     const map: MapResponseDto = await this.mapService.findOne(inviteLink.map);
     map.sortMembers();
@@ -190,8 +193,9 @@ export class MapController {
     @Param('token') inviteLinkToken: string,
     @CurrentUser() user: User,
   ) {
-    const inviteLink: InviteLink =
-      await this.inviteLinkService.validate(inviteLinkToken);
+    const inviteLink: InviteLink = await this.inviteLinkService.validate(
+      inviteLinkToken,
+    );
     await this.mapService.createUserMap(
       user,
       inviteLink.map,
