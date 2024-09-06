@@ -1131,6 +1131,86 @@
           "nullable": false,
           "mappedType": "integer"
         },
+        "place_for_map_map_id": {
+          "name": "place_for_map_map_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
+        "place_for_map_place_id": {
+          "name": "place_for_map_place_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        }
+      },
+      "name": "user_liked_place",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "user_liked_place_pkey",
+          "columnNames": [
+            "user_id",
+            "place_for_map_map_id",
+            "place_for_map_place_id"
+          ],
+          "composite": true,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "user_liked_place_user_id_foreign": {
+          "constraintName": "user_liked_place_user_id_foreign",
+          "columnNames": ["user_id"],
+          "localTableName": "public.user_liked_place",
+          "referencedColumnNames": ["id"],
+          "referencedTableName": "public.user",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "user_liked_place_place_for_map_map_id_place_for_m_e6f7e_foreign": {
+          "constraintName": "user_liked_place_place_for_map_map_id_place_for_m_e6f7e_foreign",
+          "columnNames": ["place_for_map_map_id", "place_for_map_place_id"],
+          "localTableName": "public.user_liked_place",
+          "referencedColumnNames": ["map_id", "place_id"],
+          "referencedTableName": "public.place_for_map",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {
+        "user_provider": {
+          "name": "user_provider",
+          "schema": "public",
+          "items": ["KAKAO"]
+        },
+        "user_role": {
+          "name": "user_role",
+          "schema": "public",
+          "items": ["USER", "ADMIN"]
+        }
+      }
+    },
+    {
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
         "map_id": {
           "name": "map_id",
           "type": "uuid",

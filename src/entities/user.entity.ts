@@ -4,12 +4,14 @@ import {
   EntityRepositoryType,
   Enum,
   Index,
+  ManyToMany,
   OneToMany,
   PrimaryKey,
   Property,
   Unique,
 } from '@mikro-orm/core';
 
+import { PlaceForMap } from './place-for-map.entity';
 import { UserMap } from './user-map.entity';
 import { UserRepository } from './user.repository';
 
@@ -75,6 +77,12 @@ export class User {
 
   @Property({ onUpdate: () => new Date() })
   updatedAt: Date = new Date();
+
+  @ManyToMany(() => PlaceForMap, (p) => p.likedUser, {
+    owner: true,
+    nullable: true,
+  })
+  likedPlace = new Collection<PlaceForMap>(this);
 
   [EntityRepositoryType]?: UserRepository;
 }
