@@ -3,15 +3,13 @@ import { ConfigService } from '@nestjs/config';
 
 import AWS, { S3 } from 'aws-sdk';
 
-const endpoint = new AWS.Endpoint('https://kr.object.ncloudstorage.com');
-
 @Injectable()
 export class UploadService {
   private readonly awsS3: S3;
 
   constructor(private readonly configService: ConfigService) {
     this.awsS3 = new S3({
-      endpoint,
+      endpoint: new AWS.Endpoint(this.configService.get('NCP_ENDPOINT')),
       accessKeyId: this.configService.get('NCP_ACCESS_KEY_ID'),
       secretAccessKey: this.configService.get('NCP_SECRET_ACCESS_KEY'),
       region: 'kr-standard',
