@@ -23,6 +23,7 @@ import {
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { User, UserRole } from 'src/entities';
+import { UploadService } from 'src/upload/upload.service';
 
 import { UpdateUserRequestDto } from './dtos/update-user.dto';
 import { UserResponseDto } from './dtos/user-response.dto';
@@ -31,7 +32,10 @@ import { UserService } from './user.service';
 @ApiTags('users')
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly uploadService: UploadService,
+  ) {}
 
   @Get('me')
   @ApiOperation({ summary: '내 정보를 조회합니다.' })
@@ -71,11 +75,12 @@ export class UserController {
     @CurrentUser() user: User,
     @UploadedFile() profileImage?: Express.Multer.File,
   ): Promise<UserResponseDto> {
-    const updatedUser = await this.userService.update(
-      user.id,
-      updateUserDto,
-      profileImage,
-    );
+    if (profileImage) {
+      const profileImageUrl = await this.uploadService.uploadFile(profileImage);
+      updateUserDto.profileImage = profileImageUrl;
+    }
+
+    const updatedUser = await this.userService.update(user.id, updateUserDto);
 
     return new UserResponseDto(updatedUser);
   }
