@@ -14,6 +14,7 @@ import { MapModule } from './map/map.module';
 import { PlaceModule } from './place/place.module';
 import { ProxyModule } from './proxy/proxy.module';
 import { SearchModule } from './search/search.module';
+import { UploadModule } from './upload/upload.module';
 import { UserModule } from './user/user.module';
 import { UtilModule } from './util/util.module';
 
@@ -36,6 +37,7 @@ import { UtilModule } from './util/util.module';
     PlaceModule,
     InviteLinkModule,
     ProxyModule,
+    UploadModule,
   ],
   controllers: [],
   providers: [],

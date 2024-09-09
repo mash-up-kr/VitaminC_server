@@ -51,6 +51,7 @@ export class UserService {
     if (user == undefined) {
       throw new UserNotFoundException();
     }
+
     Object.assign(user, updateUserDto); // Assign DTO properties to user entity
     await this.userRepository.persistAndFlush(user); // Persist changes
     return user;
@@ -80,7 +81,7 @@ export class UserService {
   }
 
   async leaveMap(userId: number, mapId: string): Promise<void> {
-    await this.em.transactional(async (em) => {
+    await this.em.transactional(async () => {
       const userJoinedMap = await this.userMapRepository.findOne({
         map: rel(GroupMap, mapId),
         user: rel(User, userId),

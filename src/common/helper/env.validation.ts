@@ -77,6 +77,18 @@ export class EnvironmentVariables {
 
   @IsString()
   GPT_KEY: string;
+
+  @IsString()
+  NCP_ACCESS_KEY_ID: string;
+
+  @IsString()
+  NCP_SECRET_ACCESS_KEY: string;
+
+  @IsString()
+  NCP_BUCKET_NAME: string;
+
+  @IsString()
+  NCP_ENDPOINT: string;
 }
 
 export function envValidation(config: Record<string, unknown>) {
