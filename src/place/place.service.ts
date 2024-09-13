@@ -210,13 +210,7 @@ export class PlaceService {
         map: rel(GroupMap, mapId),
       },
       {
-        populate: [
-          'place',
-          'place.kakaoPlace',
-          'createdBy',
-          'tags',
-          'likedUser.id',
-        ],
+        populate: ['place', 'likedUser.id', 'likedUser.likedPlace.place'],
       },
     );
 

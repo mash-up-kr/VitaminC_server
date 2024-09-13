@@ -78,7 +78,7 @@ export class User {
   @Property({ onUpdate: () => new Date() })
   updatedAt: Date = new Date();
 
-  @ManyToMany(() => PlaceForMap, (p) => p.likedUser, {
+  @ManyToMany(() => PlaceForMap, (p: PlaceForMap) => p.likedUser, {
     owner: true,
     nullable: true,
   })

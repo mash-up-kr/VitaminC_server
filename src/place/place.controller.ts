@@ -105,7 +105,7 @@ export class PlaceController {
   async getPlaceInMap(
     @Param('mapId') mapId: string,
     @Param('placeId') placeId: number,
-  ) {
+  ): Promise<PlaceResponseDto> {
     return await this.placeService.getPlace(mapId, placeId);
   }
 
