@@ -65,11 +65,39 @@ export class PlaceService {
       {
         map: rel(GroupMap, mapId),
       },
-      { populate: ['place', 'place.kakaoPlace', 'createdBy', 'tags'] },
+      {
+        populate: [
+          'place',
+          'place.kakaoPlace',
+          'createdBy',
+          'tags',
+          'likedUser',
+        ],
+      },
     );
     return placesForMapList.map(
       (placeForMap) => new PlaceForMapResponseDto(placeForMap),
     );
+  }
+
+  async findUserLikePlace(mapId: string, userId: number) {
+    const placeForMap = await this.placeForMapRepository.find(
+      {
+        likedUser: rel(User, userId),
+        map: rel(GroupMap, mapId),
+      },
+      {
+        populate: [
+          'place',
+          'place.kakaoPlace',
+          'createdBy',
+          'tags',
+          'likedUser',
+        ],
+      },
+    );
+
+    return placeForMap.map((place) => new PlaceForMapResponseDto(place));
   }
 
   async registerPlaceByKakaoId({

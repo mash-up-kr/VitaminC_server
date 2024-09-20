@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiOkResponse,
   ApiOperation,
   ApiParam,
   ApiResponse,
@@ -26,7 +27,7 @@ import {
 
 import { UseAuthGuard } from '../common/decorators/auth-guard.decorator';
 import { CurrentUser } from '../common/decorators/user.decorator';
-import { User, UserMapRole } from '../entities';
+import { User, UserMapRole, UserRole } from '../entities';
 import { PlaceService } from './place.service';
 
 @ApiTags('place')
@@ -51,6 +52,19 @@ export class PlaceController {
     return await this.placeService.getAllPlacesForMap({
       mapId,
     });
+  }
+
+  @Get('user/like/:mapId/:userId')
+  @ApiOperation({ summary: '특정 유저가 좋아요한 맛집을 조회합니다' })
+  @ApiOkResponse({ type: PlaceForMapResponseDto, isArray: true })
+  @UseMapRoleGuard()
+  @ApiBearerAuth()
+  @UseAuthGuard([UserRole.USER])
+  async findUserLikePlace(
+    @Param('mapId') mapId: string,
+    @Param('userId') userId: number,
+  ) {
+    return this.placeService.findUserLikePlace(mapId, userId);
   }
 
   @ApiOperation({ summary: '카카오 place id로 장소 등록' })
