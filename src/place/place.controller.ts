@@ -67,6 +67,20 @@ export class PlaceController {
     return this.placeService.findUserLikePlace(mapId, userId);
   }
 
+  @Get('differ/:mapId/:userId')
+  @ApiOperation({ summary: '취향 차이' })
+  @ApiOkResponse({ type: Number })
+  @UseMapRoleGuard()
+  @ApiBearerAuth()
+  @UseAuthGuard([UserRole.USER])
+  async getDifference(
+    @Param('mapId') mapId: string,
+    @Param('userId') userId: number,
+    @CurrentUser() user: User,
+  ) {
+    return this.placeService.getDifference(mapId, userId, user.id);
+  }
+
   @ApiOperation({ summary: '카카오 place id로 장소 등록' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'kakaoPlaceId', description: '카카오 place id' })
