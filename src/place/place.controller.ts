@@ -54,7 +54,7 @@ export class PlaceController {
     });
   }
 
-  @Get('user/like/:mapId/:userId')
+  @Get('like/:mapId/:userId')
   @ApiOperation({ summary: '특정 유저가 좋아요한 맛집을 조회합니다' })
   @ApiOkResponse({ type: PlaceForMapResponseDto, isArray: true })
   @UseMapRoleGuard()
