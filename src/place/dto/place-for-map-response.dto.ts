@@ -259,6 +259,9 @@ export class PlaceForMapResponseDto {
   @ApiProperty()
   updatedAt: Date;
 
+  @ApiProperty({ type: [User] })
+  likedUser: Partial<User>[];
+
   constructor(placeForMap: PlaceForMap) {
     this.place = placeForMap.place;
     this.tags = placeForMap.tags
@@ -269,5 +272,8 @@ export class PlaceForMapResponseDto {
     this.createdBy = new CreatedUser(placeForMap.createdBy);
     this.createdAt = placeForMap.createdAt;
     this.updatedAt = placeForMap.updatedAt;
+    this.likedUser = placeForMap.likedUser.map((v) => ({
+      id: v.id,
+    }));
   }
 }

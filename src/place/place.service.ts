@@ -65,10 +65,64 @@ export class PlaceService {
       {
         map: rel(GroupMap, mapId),
       },
-      { populate: ['place', 'place.kakaoPlace', 'createdBy', 'tags'] },
+      {
+        populate: [
+          'place',
+          'place.kakaoPlace',
+          'createdBy',
+          'tags',
+          'likedUser',
+        ],
+      },
     );
     return placesForMapList.map(
       (placeForMap) => new PlaceForMapResponseDto(placeForMap),
+    );
+  }
+
+  async findUserLikePlace(mapId: string, userId: number) {
+    const placeForMap = await this.placeForMapRepository.find(
+      {
+        likedUser: rel(User, userId),
+        map: rel(GroupMap, mapId),
+      },
+      {
+        populate: [
+          'place',
+          'place.kakaoPlace',
+          'createdBy',
+          'tags',
+          'likedUser',
+        ],
+      },
+    );
+
+    return placeForMap.map((place) => new PlaceForMapResponseDto(place));
+  }
+
+  async getDifference(mapId: string, userId: number, myId: number) {
+    const youLike = await this.placeForMapRepository
+      .createQueryBuilder('pfm')
+      .select('pfm.place')
+      .where({
+        likedUser: rel(User, userId),
+        map: rel(GroupMap, mapId),
+      })
+      .execute();
+
+    const iLike = await this.placeForMapRepository
+      .createQueryBuilder('pfm')
+      .select('pfm.place')
+      .where({
+        likedUser: rel(User, myId),
+        map: rel(GroupMap, mapId),
+      })
+      .execute();
+
+    return (
+      (iLike.filter((v) => youLike.some((k) => k.place === v.place)).length /
+        iLike.length) *
+      100
     );
   }
 
