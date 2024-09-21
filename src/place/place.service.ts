@@ -48,10 +48,6 @@ export class PlaceService {
     private readonly userMapRepository: UserMapRepository,
   ) {}
 
-  temp(userId: number) {
-    return this.placeForMapRepository.count({ createdBy: rel(User, userId) });
-  }
-
   /**
    * map id (GroupMap.id)에 속한 장소를 전부 가져옵니다.
    * TODO: 나중에 커지면 geo-query + pagination 해야할듯

@@ -36,12 +36,6 @@ import { PlaceService } from './place.service';
 export class PlaceController {
   constructor(private readonly placeService: PlaceService) {}
 
-  @Get('temp/:userId')
-  @UseAuthGuard()
-  async temp(@CurrentUser() user: User) {
-    return await this.placeService.temp(user.id);
-  }
-
   @ApiOperation({ summary: '맛집지도 (GroupMap)에 등록된 장소 전부 가져오기' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiResponse({ type: PlaceForMapResponseDto, isArray: true })
