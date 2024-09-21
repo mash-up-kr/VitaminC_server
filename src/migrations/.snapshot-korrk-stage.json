@@ -822,16 +822,6 @@
           "comment": "사진 URL과 코멘트를 담은 객체 배열",
           "mappedType": "json"
         },
-        "liked_user_ids": {
-          "name": "liked_user_ids",
-          "type": "jsonb",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "comment": "좋아요 누른 유저 ID 배열",
-          "mappedType": "json"
-        },
         "created_by_id": {
           "name": "created_by_id",
           "type": "int",
