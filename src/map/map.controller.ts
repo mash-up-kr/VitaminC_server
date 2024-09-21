@@ -6,12 +6,14 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiExcludeEndpoint,
   ApiOkResponse,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -28,10 +30,11 @@ import { GroupMap, InviteLink, User, UserMapRole, UserRole } from '../entities';
 import { InviteLinkService } from '../invite-link/invite-link.service';
 import { CreateMapDto } from './dtos/create-map.dto';
 import { InviteLinkResponseDto } from './dtos/invite-link-response.dto';
+import { KickUserDto } from './dtos/kick-user.dto';
 import { MapItemForUserDto } from './dtos/map-item-for-user.dto';
-import { MapResponseDto } from './dtos/map-response.dto';
-import { UpdateMapDto } from './dtos/update-map.dto';
-import { MapService } from './map.service';
+import { MapResponseDto, PublicMapResponseDto } from './dtos/map-response.dto';
+import { UpdateMapDto, UpdateUserRoleInMapDto } from './dtos/update-map.dto';
+import { ArrayElement, MapService, publicMapOrder } from './map.service';
 
 @ApiTags('maps')
 @Controller('maps')
@@ -59,6 +62,26 @@ export class MapController {
     return this.mapService.findAll(user);
   }
 
+  @Get('public')
+  @ApiOperation({ summary: '공개된 지도를 가져옵니다.' })
+  @ApiBearerAuth()
+  @UseAuthGuard([UserRole.USER])
+  @ApiOkResponse({ type: [PublicMapResponseDto] })
+  @ApiQuery({
+    name: 'order',
+    required: false,
+    enum: publicMapOrder,
+  })
+  @ApiQuery({ name: 'name', required: false })
+  async findAllPublic(
+    @Query('order')
+    order: ArrayElement<typeof publicMapOrder>,
+    @Query('name') name: string,
+  ): Promise<PublicMapResponseDto[]> {
+    const map = await this.mapService.findPublic({ order, name });
+    return map.map((m) => new PublicMapResponseDto(m));
+  }
+
   @Get(':id')
   @ApiOperation({ summary: '지도 정보 조회 (포함된 유저 정보, 맛집 개수...)' })
   @ApiOkResponse({ type: MapResponseDto })
@@ -75,18 +98,34 @@ export class MapController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: '지도 정보 업데이트 (이름, 공개방, 설명 등)' })
   @ApiOkResponse({ type: MapResponseDto })
   @UseMapRoleGuard([UserMapRole.ADMIN])
+  @ApiBearerAuth()
   @UseAuthGuard([UserRole.USER])
   async update(
     @Param('id') id: string,
     @Body() updateMapDto: UpdateMapDto,
-    @CurrentUser() user: User,
   ): Promise<MapResponseDto> {
     const map: GroupMap = await this.mapService.update(id, updateMapDto);
     const dto = new MapResponseDto(map);
-    dto.sortMembers(user);
     return dto;
+  }
+
+  @Patch('roles/:id/:userId')
+  @ApiOperation({
+    summary: '지도 멤버의 권한을 변경합니다.',
+  })
+  @ApiOkResponse({ type: MapResponseDto })
+  @ApiBearerAuth()
+  @UseMapRoleGuard([UserMapRole.ADMIN])
+  @UseAuthGuard([UserRole.USER])
+  async updateRole(
+    @Param('id') id: string,
+    @Body() body: UpdateUserRoleInMapDto,
+    @CurrentUser() user: User,
+  ) {
+    await this.mapService.updateRole(id, body.userId, body.role, user);
   }
 
   @Delete(':id')
@@ -119,6 +158,17 @@ export class MapController {
     return new InviteLinkResponseDto(entity);
   }
 
+  @Post('kick/:id')
+  @ApiOperation({
+    summary: '지도에서 유저 추방',
+  })
+  @ApiBearerAuth()
+  @UseMapRoleGuard([UserMapRole.ADMIN])
+  @UseAuthGuard([UserRole.USER])
+  async kickUser(@Param('id') id: string, @Body() body: KickUserDto) {
+    await this.mapService.kickUser(id, body.userId);
+  }
+
   @Get(':id/tag')
   @ApiOperation({
     summary: '기본 태그와 지도에 저장된 태그를 조회합니다.',
@@ -138,6 +188,7 @@ export class MapController {
   @ApiBearerAuth()
   @ApiResponse({ type: TagResponseDto })
   @ApiBearerAuth()
+  @UseMapRoleGuard([UserMapRole.ADMIN, UserMapRole.WRITE])
   @UseAuthGuard([UserRole.USER])
   createTag(@Param('id') id: string, @Body() createTagDto: CreateTagDto) {
     return this.mapService.createTag(id, createTagDto);
@@ -148,6 +199,7 @@ export class MapController {
     summary: '맛집 저장시 사용할 태그를 삭제합니다.',
   })
   @ApiBearerAuth()
+  @UseMapRoleGuard([UserMapRole.ADMIN, UserMapRole.WRITE])
   @UseAuthGuard([UserRole.USER])
   removeTag(@Param('id') id: string, @Param('name') name: string) {
     return this.mapService.removeTag(id, name);

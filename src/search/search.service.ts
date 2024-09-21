@@ -41,16 +41,21 @@ export class SearchService {
   ) {}
 
   async suggest(keyword: string): Promise<string[]> {
-    const response = await this.httpService.axiosRef.get<{ items: any[] }>(
-      `https://m.map.kakao.com/actions/topSuggestV2Json?q=${encodeURIComponent(
-        keyword,
-      )}`,
-      {
-        responseType: 'json',
-        headers: KAKAO_SCRAPING_HEADERS,
-      },
-    );
-    return response.data.items.map((place) => place.key);
+    try {
+      const response = await this.httpService.axiosRef.get<{ items: any[] }>(
+        `https://m.map.kakao.com/actions/topSuggestV2Json?q=${encodeURIComponent(
+          keyword,
+        )}`,
+        {
+          responseType: 'json',
+          headers: KAKAO_SCRAPING_HEADERS,
+        },
+      );
+      return response.data.items.map((place) => place.key);
+    } catch (e) {
+      console.error(e);
+      throw new Error(e);
+    }
   }
 
   async searchPlaceList(

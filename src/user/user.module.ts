@@ -11,6 +11,7 @@ import {
   UserMap,
 } from 'src/entities';
 import { MapService } from 'src/map/map.service';
+import { UploadModule } from 'src/upload/upload.module';
 import { UtilModule } from 'src/util/util.module';
 
 import { UserController } from './user.controller';
@@ -27,6 +28,7 @@ import { UserService } from './user.service';
       TagIcon,
     ]),
     UtilModule,
+    UploadModule,
   ],
   controllers: [UserController],
   providers: [UserService, MapService],

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { FilterQuery, rel } from '@mikro-orm/core';
+import { FilterQuery, raw, rel, sql } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 
 import { INVITE_LINK_PREVIEW_LENGTH } from 'src/common/constants';
@@ -25,6 +25,8 @@ import {
   TagNotFoundException,
   UserMapConflictException,
   UserMapNotFoundException,
+  UserMapRoleBadRequestException,
+  UserMapRoleCannotMineException,
 } from 'src/exceptions';
 import { CreateTagDto } from 'src/map/dtos/create-tag.dto';
 import { TagResponseDto } from 'src/map/dtos/tag-response.dto';
@@ -32,8 +34,18 @@ import { UtilService } from 'src/util/util.service';
 
 import { CreateMapDto } from './dtos/create-map.dto';
 import { MapItemForUserDto } from './dtos/map-item-for-user.dto';
-import { MapResponseDto } from './dtos/map-response.dto';
+import { MapResponseDto, PublicMapResponseDto } from './dtos/map-response.dto';
 import { UpdateMapDto } from './dtos/update-map.dto';
+
+export const publicMapOrder = [
+  '"map"."created_at"-desc',
+  '"map"."created_at"-asc',
+  '"user_count"-desc',
+  '"user_count"-asc',
+] as const;
+
+export type ArrayElement<T extends readonly unknown[]> =
+  T extends readonly (infer U)[] ? U : never;
 
 @Injectable()
 export class MapService {
@@ -97,6 +109,47 @@ export class MapService {
       mapItemForUser.role = role;
       return mapItemForUser;
     });
+  }
+
+  async findPublic({
+    order,
+    name,
+  }: {
+    order: ArrayElement<typeof publicMapOrder>;
+    name: string;
+  }): Promise<PublicMapResponseDto[]> {
+    const qb = this.placeForMapRepository.createQueryBuilder('placeForMap');
+    qb.select('map.*')
+      .leftJoin('placeForMap.map', 'map')
+      .leftJoin('map.userMap', 'userMap')
+      .leftJoin('userMap.user', 'user')
+      .leftJoin('placeForMap.place', 'place')
+      .where({ map: { isPublic: true } })
+      .addSelect(sql`COUNT(DISTINCT "place"."id") AS "place_count"`)
+      .addSelect(sql`COUNT(DISTINCT "user"."id") AS "user_count"`)
+      .groupBy('map.id');
+
+    if (name) {
+      qb.andWhere('map.name like ?', [`%${name}%`]);
+    }
+
+    if (order) {
+      const [column, orderType] = order.split('-');
+      qb.orderBy({ [raw(`${column}`)]: orderType });
+    }
+
+    const result = await qb.execute();
+
+    const toCamelCase = (str: string) =>
+      str.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
+
+    return result.map((v) =>
+      Object.entries(v).reduce((acc, [_key, value]) => {
+        const key = toCamelCase(_key);
+        acc[key] = value;
+        return acc;
+      }, {} as PublicMapResponseDto),
+    );
   }
 
   async findOne(where: FilterQuery<GroupMap>): Promise<MapResponseDto> {
@@ -231,5 +284,53 @@ export class MapService {
         return photoList[0];
       }
     });
+  }
+
+  async kickUser(mapId: string, userId: number) {
+    const userMap: UserMap = await this.userMapRepository.findOne({
+      user: { id: userId },
+      map: { id: mapId },
+    });
+    if (!userMap) {
+      throw new UserMapNotFoundException();
+    }
+    const placeMap = await this.placeForMapRepository.find({
+      map: { id: mapId },
+      createdBy: { id: userId },
+    });
+
+    if (placeMap.length) {
+      placeMap.forEach((place) => {
+        place.createdBy = null;
+      });
+      await this.placeForMapRepository.flush();
+    }
+
+    await this.userMapRepository.removeAndFlush(userMap);
+  }
+
+  async updateRole(
+    mapId: string,
+    userId: number,
+    role: UserMapRoleValueType,
+    me: User,
+  ) {
+    const userMap: UserMap = await this.userMapRepository.findOne({
+      user: { id: userId },
+      map: { id: mapId },
+    });
+    if (!userMap) {
+      throw new UserMapNotFoundException();
+    }
+    if (role === UserMapRole.ADMIN) {
+      throw new UserMapRoleBadRequestException();
+    }
+
+    if (userId === me.id) {
+      throw new UserMapRoleCannotMineException();
+    }
+
+    userMap.role = role;
+    await this.userMapRepository.persistAndFlush(userMap);
   }
 }

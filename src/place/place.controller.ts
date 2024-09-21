@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiOkResponse,
   ApiOperation,
   ApiParam,
   ApiResponse,
@@ -35,9 +36,17 @@ import { PlaceService } from './place.service';
 export class PlaceController {
   constructor(private readonly placeService: PlaceService) {}
 
+  @Get('temp/:userId')
+  @UseAuthGuard()
+  async temp(@CurrentUser() user: User) {
+    return await this.placeService.temp(user.id);
+  }
+
   @ApiOperation({ summary: '맛집지도 (GroupMap)에 등록된 장소 전부 가져오기' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiResponse({ type: PlaceForMapResponseDto, isArray: true })
+  @UseMapRoleGuard([UserMapRole.ADMIN, UserMapRole.WRITE, UserMapRole.READ])
+  @UseAuthGuard()
   @Get(':mapId')
   async getAllPlaceForMap(@Param('mapId') mapId: string) {
     return await this.placeService.getAllPlacesForMap({
@@ -45,11 +54,38 @@ export class PlaceController {
     });
   }
 
+  @Get('like/:mapId/:userId')
+  @ApiOperation({ summary: '특정 유저가 좋아요한 맛집을 조회합니다' })
+  @ApiOkResponse({ type: PlaceForMapResponseDto, isArray: true })
+  @UseMapRoleGuard()
+  @ApiBearerAuth()
+  @UseAuthGuard([UserRole.USER])
+  async findUserLikePlace(
+    @Param('mapId') mapId: string,
+    @Param('userId') userId: number,
+  ) {
+    return this.placeService.findUserLikePlace(mapId, userId);
+  }
+
+  @Get('differ/:mapId/:userId')
+  @ApiOperation({ summary: '취향 차이' })
+  @ApiOkResponse({ type: Number })
+  @UseMapRoleGuard()
+  @ApiBearerAuth()
+  @UseAuthGuard([UserRole.USER])
+  async getDifference(
+    @Param('mapId') mapId: string,
+    @Param('userId') userId: number,
+    @CurrentUser() user: User,
+  ) {
+    return this.placeService.getDifference(mapId, userId, user.id);
+  }
+
   @ApiOperation({ summary: '카카오 place id로 장소 등록' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'kakaoPlaceId', description: '카카오 place id' })
-  @UseMapRoleGuard()
-  @UseAuthGuard([UserRole.USER])
+  @UseMapRoleGuard([UserMapRole.ADMIN, UserMapRole.WRITE])
+  @UseAuthGuard()
   @Post(':mapId/kakao/:kakaoPlaceId')
   async registerPlaceByKakaoId(
     @Param('mapId') mapId: string,
@@ -71,7 +107,7 @@ export class PlaceController {
   })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'kakaoPlaceId', description: '카카오 place id' })
-  @UseAuthGuard([UserRole.USER])
+  @UseAuthGuard()
   @ApiResponse({
     schema: {
       oneOf: [
@@ -92,12 +128,12 @@ export class PlaceController {
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'placeId', description: '등록된 place id' })
   @ApiResponse({ type: PlaceResponseDto })
-  @UseAuthGuard([UserRole.USER])
+  @UseAuthGuard()
   @Get(':mapId/:placeId')
   async getPlaceInMap(
     @Param('mapId') mapId: string,
     @Param('placeId') placeId: number,
-  ) {
+  ): Promise<PlaceResponseDto> {
     return await this.placeService.getPlace(mapId, placeId);
   }
 
@@ -105,19 +141,21 @@ export class PlaceController {
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'placeId', description: 'place id' })
   @UseMapRoleGuard([UserMapRole.ADMIN, UserMapRole.WRITE])
-  @UseAuthGuard([UserRole.USER])
+  @UseAuthGuard()
   @Delete(':mapId/:placeId')
   async deletePlaceByKakaoId(
     @Param('mapId') mapId: string,
     @Param('placeId') placeId: string,
+    @CurrentUser() user: User,
   ) {
-    await this.placeService.remove(mapId, +placeId);
+    await this.placeService.remove(mapId, +placeId, user);
   }
 
   @ApiOperation({ summary: '맛집 좋아요' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'placeId', description: 'place id' })
-  @UseAuthGuard([UserRole.USER])
+  @UseMapRoleGuard()
+  @UseAuthGuard()
   @Put(':mapId/:placeId/like')
   async likePlace(
     @Param('mapId') mapId: string,
@@ -135,7 +173,8 @@ export class PlaceController {
   @ApiOperation({ summary: '맛집 좋아요 취소' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'placeId', description: 'place id' })
-  @UseAuthGuard([UserRole.USER])
+  @UseMapRoleGuard()
+  @UseAuthGuard()
   @Delete(':mapId/:placeId/like')
   async dislikePlace(
     @Param('mapId') mapId: string,

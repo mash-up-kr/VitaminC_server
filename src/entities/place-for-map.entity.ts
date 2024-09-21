@@ -41,11 +41,14 @@ export class PlaceForMap {
   })
   likedUserIds: number[];
 
+  @ManyToMany(() => User, (p: User) => p.likedPlace, { nullable: true })
+  likedUser = new Collection<User>(this);
+
   @ManyToMany(() => Tag, 'placeForMap', { owner: true })
   tags = new Collection<Tag>(this);
 
-  @ManyToOne(() => User)
-  createdBy: User;
+  @ManyToOne(() => User, { nullable: true })
+  createdBy: User | null;
 
   @Property()
   createdAt: Date = new Date();

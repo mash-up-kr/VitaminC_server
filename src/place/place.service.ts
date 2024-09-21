@@ -26,6 +26,9 @@ import {
   TagIconRepository,
   TagRepository,
   User,
+  UserMap,
+  UserMapRepository,
+  UserMapRole,
 } from '../entities';
 import { SearchService } from '../search/search.service';
 
@@ -41,7 +44,13 @@ export class PlaceService {
     private readonly searchService: SearchService,
     @InjectRepository(TagIcon)
     private readonly tagIconRepository: TagIconRepository,
+    @InjectRepository(UserMap)
+    private readonly userMapRepository: UserMapRepository,
   ) {}
+
+  temp(userId: number) {
+    return this.placeForMapRepository.count({ createdBy: rel(User, userId) });
+  }
 
   /**
    * map id (GroupMap.id)에 속한 장소를 전부 가져옵니다.
@@ -56,10 +65,64 @@ export class PlaceService {
       {
         map: rel(GroupMap, mapId),
       },
-      { populate: ['place', 'place.kakaoPlace', 'createdBy', 'tags'] },
+      {
+        populate: [
+          'place',
+          'place.kakaoPlace',
+          'createdBy',
+          'tags',
+          'likedUser',
+        ],
+      },
     );
     return placesForMapList.map(
       (placeForMap) => new PlaceForMapResponseDto(placeForMap),
+    );
+  }
+
+  async findUserLikePlace(mapId: string, userId: number) {
+    const placeForMap = await this.placeForMapRepository.find(
+      {
+        likedUser: rel(User, userId),
+        map: rel(GroupMap, mapId),
+      },
+      {
+        populate: [
+          'place',
+          'place.kakaoPlace',
+          'createdBy',
+          'tags',
+          'likedUser',
+        ],
+      },
+    );
+
+    return placeForMap.map((place) => new PlaceForMapResponseDto(place));
+  }
+
+  async getDifference(mapId: string, userId: number, myId: number) {
+    const youLike = await this.placeForMapRepository
+      .createQueryBuilder('pfm')
+      .select('pfm.place')
+      .where({
+        likedUser: rel(User, userId),
+        map: rel(GroupMap, mapId),
+      })
+      .execute();
+
+    const iLike = await this.placeForMapRepository
+      .createQueryBuilder('pfm')
+      .select('pfm.place')
+      .where({
+        likedUser: rel(User, myId),
+        map: rel(GroupMap, mapId),
+      })
+      .execute();
+
+    return (
+      (iLike.filter((v) => youLike.some((k) => k.place === v.place)).length /
+        iLike.length) *
+      100
     );
   }
 
@@ -167,13 +230,21 @@ export class PlaceService {
         map: rel(GroupMap, mapId),
         place: rel(Place, placeId),
       },
-      { populate: ['place.kakaoPlace', 'tags'] },
+      {
+        populate: ['place.kakaoPlace', 'tags', 'likedUser'],
+        fields: [
+          'likedUser.id',
+          'likedUser.nickname',
+          'likedUser.profileImage',
+        ],
+      },
     );
+
     if (!place) {
       throw new PlaceNotFoundException();
     }
 
-    return new PlaceResponseDto(place);
+    return new PlaceResponseDto(place as unknown as PlaceForMap);
   }
 
   async likePlace({
@@ -192,34 +263,46 @@ export class PlaceService {
         place: rel(Place, placeId),
         map: rel(GroupMap, mapId),
       },
-      { populate: ['place', 'place.kakaoPlace', 'createdBy', 'tags'] },
+      {
+        populate: ['place', 'likedUser.id', 'likedUser.likedPlace.place'],
+      },
     );
 
-    if (like && !placeForMap.likedUserIds.includes(user.id)) {
-      placeForMap.likedUserIds = [...placeForMap.likedUserIds, user.id];
+    if (like && !placeForMap.likedUser.find((u) => u.id === user.id)) {
+      placeForMap.likedUser.add(user);
     }
 
-    if (!like && placeForMap.likedUserIds.includes(user.id)) {
-      placeForMap.likedUserIds = placeForMap.likedUserIds.filter(
-        (id) => id !== user.id,
-      );
+    if (!like && placeForMap.likedUser.find((u) => u.id === user.id)) {
+      placeForMap.likedUser.remove(user);
     }
 
-    await this.placeForMapRepository.persistAndFlush(placeForMap);
+    await this.placeForMapRepository.flush();
   }
 
-  async remove(mapId: string, placeId: number): Promise<void> {
+  async remove(mapId: string, placeId: number, user: User): Promise<void> {
     const placeForMap = await this.placeForMapRepository.findOne(
       {
         place: rel(Place, placeId),
         map: rel(GroupMap, mapId),
       },
-      { populate: ['tags'] },
+      { populate: ['tags', 'createdBy'] },
     );
 
     if (!placeForMap) {
       throw new PlaceNotFoundException();
     }
+
+    if (placeForMap.createdBy.id !== user.id) {
+      const roleOfUserInMap = await this.userMapRepository.findOneOrFail({
+        user,
+        map: rel(GroupMap, mapId),
+      });
+
+      if (roleOfUserInMap.role !== UserMapRole.ADMIN) {
+        throw new PlaceForMapConflictException();
+      }
+    }
+
     placeForMap.tags.removeAll();
     await this.placeForMapRepository.flush();
 

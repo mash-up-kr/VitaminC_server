@@ -12,7 +12,10 @@ export class CreatedUser implements Partial<User> {
   @ApiProperty({ type: String, nullable: true })
   nickname: string | null = null;
 
-  constructor(user: User) {
+  constructor(user: User | null) {
+    if (!user) {
+      return;
+    }
     this.id = user.id;
     this.nickname = user.nickname;
   }
@@ -142,11 +145,14 @@ export class PlaceResponseDto implements KakaoPlaceResponseDto {
   @ApiProperty({ type: TagResponseDto, isArray: true })
   tags: TagResponseDto[];
 
-  @ApiProperty({ type: CreatedUser })
-  createdBy: CreatedUser;
+  @ApiProperty({ type: CreatedUser || null })
+  createdBy: CreatedUser | null;
 
   @ApiProperty()
   name: string;
+
+  @ApiProperty({ type: [User] })
+  likedUser: Partial<User>[];
 
   @ApiProperty()
   category: string;
@@ -223,6 +229,11 @@ export class PlaceResponseDto implements KakaoPlaceResponseDto {
     this.createdAt = placeForMap.createdAt;
     this.updatedAt = placeForMap.updatedAt;
     this.categoryIconCode = kakaoPlace.categoryIconCode;
+    this.likedUser = placeForMap.likedUser.map((v) => ({
+      id: v.id,
+      nickname: v.nickname,
+      profileImage: v.profileImage,
+    }));
   }
 }
 
@@ -239,14 +250,17 @@ export class PlaceForMapResponseDto {
   @ApiProperty({ type: Number, isArray: true })
   likedUserIds: number[];
 
-  @ApiProperty({ type: CreatedUser })
-  createdBy: CreatedUser;
+  @ApiProperty({ type: CreatedUser || null })
+  createdBy: CreatedUser | null;
 
   @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()
   updatedAt: Date;
+
+  @ApiProperty({ type: [User] })
+  likedUser: Partial<User>[];
 
   constructor(placeForMap: PlaceForMap) {
     this.place = placeForMap.place;
@@ -258,5 +272,8 @@ export class PlaceForMapResponseDto {
     this.createdBy = new CreatedUser(placeForMap.createdBy);
     this.createdAt = placeForMap.createdAt;
     this.updatedAt = placeForMap.updatedAt;
+    this.likedUser = placeForMap.likedUser.map((v) => ({
+      id: v.id,
+    }));
   }
 }

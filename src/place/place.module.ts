@@ -11,6 +11,7 @@ import {
   PlaceForMap,
   Tag,
   TagIcon,
+  UserMap,
 } from '../entities';
 import { SearchModule } from '../search/search.module';
 import { PlaceController } from './place.controller';
@@ -26,6 +27,7 @@ import { PlaceService } from './place.service';
       GroupMap,
       Tag,
       TagIcon,
+      UserMap,
     ]),
     MapModule,
   ],
