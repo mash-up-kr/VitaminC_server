@@ -1,26 +1,56 @@
-import { Controller, Get, Injectable, Param, Query, Sse } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Param, Query, Sse } from '@nestjs/common';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { Observable } from 'rxjs';
 
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { User, UserRole } from 'src/entities';
+import { GptUsageLimitExceededException } from 'src/exceptions';
 import { testPlaces } from 'src/gpt/__fixtures__/stream-test-places';
+import { GptUsageResponseDto } from 'src/gpt/dto/gpt-usage-response.dto';
 
 import { GptService } from './gpt.service';
 
-@Injectable()
 @ApiTags('gpt')
 @ApiBearerAuth()
 @Controller('gpt')
 export class GptController {
   constructor(private readonly gptService: GptService) {}
 
+  @UseAuthGuard([UserRole.USER])
+  @ApiResponse({ type: GptUsageResponseDto })
+  @Get('usage')
+  async getGptUsage(@CurrentUser() user: User) {
+    return await this.gptService.getGptUsageByUser(user);
+  }
+
   @Get(':word')
-  @UseAuthGuard(['ADMIN'])
   checkIfIsBadWordx(@Param('word') word: string) {
-    return this.gptService.checkIfIsBadwordWithGpt(word);
+    return this.gptService.checkIfIsBadWordWithGpt(word);
+  }
+
+  @UseAuthGuard([UserRole.USER])
+  @Sse('restaurants/recommend')
+  async recommendRestaurants(
+    @CurrentUser() user: User,
+    @Query('question') question: string,
+    // default x,y 강남역으로 해놨음
+    @Query('x') x: string = '127.027926',
+    @Query('y') y: string = '37.497175',
+  ): Promise<Observable<MessageEvent>> {
+    console.time('Execution Time');
+    if (await this.gptService.isGptUsageLimitExceeded(user)) {
+      throw new GptUsageLimitExceededException();
+    }
+    const result = await this.gptService.recommendRestaurants(
+      user,
+      question,
+      x,
+      y,
+    );
+    console.timeEnd('Execution Time');
+    return result;
   }
 
   @UseAuthGuard([UserRole.USER])
@@ -38,14 +68,21 @@ export class GptController {
           '테스트테스트테스트줄넘기\n테스트테스트테스트테스트테스트테스트테스트🤩테스트테스트'.split(
             '',
           );
+
         for (const char of textStream) {
           await new Promise((resolve) => setTimeout(resolve, 100));
           // @ts-ignore
-          observer.next({ type: 'text', data: char });
+          observer.next({
+            type: 'text',
+            data: char,
+          });
         }
         testPlaces.forEach((testPlace) => {
           // @ts-ignore
-          observer.next({ data: testPlace, type: 'json' });
+          observer.next({
+            data: testPlace,
+            type: 'json',
+          });
         });
         observer.complete();
       };
