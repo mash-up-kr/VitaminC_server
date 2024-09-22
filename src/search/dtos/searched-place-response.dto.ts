@@ -43,10 +43,6 @@ export class SearchedPlaceResponseDto {
   @IsOptional()
   score?: number;
 
-  @ApiProperty()
-  @IsOptional()
-  likedUserIds?: number[];
-
   @ApiProperty({ description: '기타일 경우 100' })
   categoryIconCode: number;
 
@@ -66,7 +62,6 @@ export class SearchedPlaceResponseDto {
       this.tags = searchedPlace.tags.map((tag) => tag.name);
       this.createdBy = new CreatedUser(searchedPlace.createdBy);
       this.score = kakaoPlace.score;
-      this.likedUserIds = searchedPlace.likedUserIds;
       this.categoryIconCode = kakaoPlace.categoryIconCode;
     } else {
       this.isRegisteredPlace = false;

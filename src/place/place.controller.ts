@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiOkResponse,
   ApiOperation,
   ApiParam,
   ApiResponse,
@@ -26,7 +27,7 @@ import {
 
 import { UseAuthGuard } from '../common/decorators/auth-guard.decorator';
 import { CurrentUser } from '../common/decorators/user.decorator';
-import { User, UserMapRole } from '../entities';
+import { User, UserMapRole, UserRole } from '../entities';
 import { PlaceService } from './place.service';
 
 @ApiTags('place')
@@ -34,12 +35,6 @@ import { PlaceService } from './place.service';
 @Controller('place')
 export class PlaceController {
   constructor(private readonly placeService: PlaceService) {}
-
-  @Get('temp/:userId')
-  @UseAuthGuard()
-  async temp(@CurrentUser() user: User) {
-    return await this.placeService.temp(user.id);
-  }
 
   @ApiOperation({ summary: '맛집지도 (GroupMap)에 등록된 장소 전부 가져오기' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
@@ -51,6 +46,33 @@ export class PlaceController {
     return await this.placeService.getAllPlacesForMap({
       mapId,
     });
+  }
+
+  @Get('like/:mapId/:userId')
+  @ApiOperation({ summary: '특정 유저가 좋아요한 맛집을 조회합니다' })
+  @ApiOkResponse({ type: PlaceForMapResponseDto, isArray: true })
+  @UseMapRoleGuard()
+  @ApiBearerAuth()
+  @UseAuthGuard([UserRole.USER])
+  async findUserLikePlace(
+    @Param('mapId') mapId: string,
+    @Param('userId') userId: number,
+  ) {
+    return this.placeService.findUserLikePlace(mapId, userId);
+  }
+
+  @Get('differ/:mapId/:userId')
+  @ApiOperation({ summary: '취향 차이' })
+  @ApiOkResponse({ type: Number })
+  @UseMapRoleGuard()
+  @ApiBearerAuth()
+  @UseAuthGuard([UserRole.USER])
+  async getDifference(
+    @Param('mapId') mapId: string,
+    @Param('userId') userId: number,
+    @CurrentUser() user: User,
+  ) {
+    return this.placeService.getDifference(mapId, userId, user.id);
   }
 
   @ApiOperation({ summary: '카카오 place id로 장소 등록' })

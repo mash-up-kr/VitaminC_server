@@ -34,13 +34,6 @@ export class PlaceForMap {
   })
   comments: { photoUrls: string[]; comment: string; userId: number }[];
 
-  // 나중에 정규화 하고싶으면 PlaceForMapLike라는 Entity를 만들어서 관리하면 될듯.
-  @Property({
-    type: 'json',
-    comment: '좋아요 누른 유저 ID 배열',
-  })
-  likedUserIds: number[];
-
   @ManyToMany(() => User, (p: User) => p.likedPlace, { nullable: true })
   likedUser = new Collection<User>(this);
 

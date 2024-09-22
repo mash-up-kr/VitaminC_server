@@ -122,7 +122,7 @@ export class PublicMapResponseDto {
   @ApiProperty()
   description: string;
 
-  constructor(map: GroupMap & { placeCount: number; userCount: number }) {
+  constructor(map: PublicMapResponseDto) {
     this.id = map.id;
     this.name = map.name;
     this.placeCount = map.placeCount;

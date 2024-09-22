@@ -117,7 +117,7 @@ export class MapService {
   }: {
     order: ArrayElement<typeof publicMapOrder>;
     name: string;
-  }) {
+  }): Promise<PublicMapResponseDto[]> {
     const qb = this.placeForMapRepository.createQueryBuilder('placeForMap');
     qb.select('map.*')
       .leftJoin('placeForMap.map', 'map')

@@ -139,9 +139,6 @@ export class PlaceResponseDto implements KakaoPlaceResponseDto {
   @ApiProperty()
   isRegisteredPlace: boolean;
 
-  @ApiProperty({ type: Number, isArray: true })
-  likedUserIds: number[];
-
   @ApiProperty({ type: TagResponseDto, isArray: true })
   tags: TagResponseDto[];
 
@@ -210,7 +207,6 @@ export class PlaceResponseDto implements KakaoPlaceResponseDto {
     this.kakaoId = kakaoPlace.id;
     this.mapId = placeForMap.map.id;
     this.isRegisteredPlace = true;
-    this.likedUserIds = placeForMap.likedUserIds;
     this.tags = placeForMap.tags.map((tag) => new TagResponseDto(tag));
     this.createdBy = new CreatedUser(placeForMap.createdBy);
     this.name = kakaoPlace.name;
@@ -247,9 +243,6 @@ export class PlaceForMapResponseDto {
   @ApiProperty({ type: Object, isArray: true })
   comments: { photoUrls: string[]; comment: string; userId: number }[];
 
-  @ApiProperty({ type: Number, isArray: true })
-  likedUserIds: number[];
-
   @ApiProperty({ type: CreatedUser || null })
   createdBy: CreatedUser | null;
 
@@ -259,15 +252,20 @@ export class PlaceForMapResponseDto {
   @ApiProperty()
   updatedAt: Date;
 
+  @ApiProperty({ type: [User] })
+  likedUser: Partial<User>[];
+
   constructor(placeForMap: PlaceForMap) {
     this.place = placeForMap.place;
     this.tags = placeForMap.tags
       .getItems()
       .map((tag) => new TagResponseDto(tag));
     this.comments = placeForMap.comments;
-    this.likedUserIds = placeForMap.likedUserIds;
     this.createdBy = new CreatedUser(placeForMap.createdBy);
     this.createdAt = placeForMap.createdAt;
     this.updatedAt = placeForMap.updatedAt;
+    this.likedUser = placeForMap.likedUser.map((v) => ({
+      id: v.id,
+    }));
   }
 }
