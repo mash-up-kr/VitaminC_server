@@ -7,6 +7,9 @@ settings:
 importers:
   .:
     dependencies:
+      '@azure/openai':
+        specifier: 2.0.0-beta.1
+        version: 2.0.0-beta.1
       '@mikro-orm/core':
         specifier: ^6.2.9
         version: 6.2.9
@@ -265,6 +268,13 @@ packages:
         npm: ^6.11.0 || ^7.5.6 || >=8.0.0,
         yarn: '>= 1.13.0',
       }
+
+  '@azure/openai@2.0.0-beta.1':
+    resolution:
+      {
+        integrity: sha512-SMcGMbhv8gYiTvmv2aKlkDAW0sI5pjGW5KyC94DTAYgpZS7eK+B1WpCfuJLzVaLxbYZXYWTsmd+dCsS4rXJ9+w==,
+      }
+    engines: { node: '>=18.0.0' }
 
   '@babel/code-frame@7.24.7':
     resolution:
@@ -7296,6 +7306,10 @@ snapshots:
       rxjs: 7.8.1
     transitivePeerDependencies:
       - chokidar
+
+  '@azure/openai@2.0.0-beta.1':
+    dependencies:
+      tslib: 2.6.3
 
   '@babel/code-frame@7.24.7':
     dependencies:
