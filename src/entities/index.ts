@@ -1,4 +1,5 @@
 import { CategoryIconMapping } from 'src/entities/category-icon-mapping.entity';
+import { GptUsage } from 'src/entities/gpt-usage.entity';
 import { Tag } from 'src/entities/tag.entity';
 
 import { GroupMap } from './group-map.entity';
@@ -40,6 +41,9 @@ export * from './tag-icon.repository';
 export * from './category-icon-mapping.entity';
 export * from './category-icon-mapping.repository';
 
+export * from './gpt-usage.entity';
+export * from './gpt-usage.repository';
+
 export const entities = [
   User,
   GroupMap,
@@ -51,4 +55,5 @@ export const entities = [
   TagIcon,
   Tag,
   CategoryIconMapping,
+  GptUsage,
 ];

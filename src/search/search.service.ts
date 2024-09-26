@@ -40,6 +40,78 @@ export class SearchService {
     private readonly categoryMappingIconRepository: CategoryIconMappingRepository,
   ) {}
 
+  async searchLocationByKeyword(query: string, size: number = 3) {
+    try {
+      const response = await this.httpService.axiosRef.get(
+        'https://dapi.kakao.com/v2/local/search/keyword.json',
+        {
+          params: { query, size, category_group_code: 'SW8' }, // 위치는 역 기준으로 찾음
+          responseType: 'json',
+          headers: {
+            Authorization: `KakaoAK ${this.configService.get('KAKAO_REST_API_KEY')}`,
+          },
+        },
+      );
+      return response.data.documents;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async searchPlaceByKeyword(
+    query: string,
+    x: string = null,
+    y: string = null,
+    sort: 'distance' | 'accuracy' = 'distance',
+    size: number = 6,
+  ) {
+    try {
+      const response = await this.httpService.axiosRef.get(
+        'https://dapi.kakao.com/v2/local/search/keyword.json',
+        {
+          params: { query, x, y, sort, radius: 2000, size },
+          responseType: 'json',
+          headers: {
+            Authorization: `KakaoAK ${this.configService.get('KAKAO_REST_API_KEY')}`,
+          },
+        },
+      );
+      console.log({ query, x, y, sort, radius: 2000, size });
+      console.log(response.data.documents);
+      return response.data.documents;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async searchPlaceByCategory(
+    x: string,
+    y: string,
+    sort: 'distance' | 'accuracy' = 'distance',
+  ) {
+    try {
+      const response = await this.httpService.axiosRef.get(
+        'https://dapi.kakao.com/v2/local/search/category.json',
+        {
+          params: {
+            category_group_code: 'FD6', // 일단 음식점만..
+            x,
+            y,
+            radius: 2000,
+            sort,
+          },
+          responseType: 'json',
+          headers: {
+            Authorization: `KakaoAK ${this.configService.get('KAKAO_REST_API_KEY')}`,
+          },
+        },
+      );
+      return response.data.documents;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   async suggest(keyword: string): Promise<string[]> {
     try {
       const response = await this.httpService.axiosRef.get<{ items: any[] }>(

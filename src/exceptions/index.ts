@@ -78,3 +78,8 @@ export class PlaceNotMineException extends ExceptionOf.USER(
   HttpStatus.FORBIDDEN,
   '내가 등록한 장소만 삭제할 수 있습니다.' as const,
 ) {}
+
+export class GptUsageLimitExceededException extends ExceptionOf.USER(
+  HttpStatus.TOO_MANY_REQUESTS,
+  'GPT 사용량을 초과했습니다.' as const,
+) {}
