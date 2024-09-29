@@ -75,6 +75,19 @@ export class PlaceController {
     return this.placeService.getDifference(mapId, userId, user.id);
   }
 
+  @ApiOperation({ summary: '특정 유저가 특정 지도에 등록한 맛집 목록 조회' })
+  @ApiOkResponse({ type: PlaceForMapResponseDto, isArray: true })
+  @Get(':mapId/:userId')
+  @UseMapRoleGuard()
+  @ApiBearerAuth()
+  @UseAuthGuard([UserRole.USER])
+  async getPlacesByUser(
+    @Param('mapId') mapId: string,
+    @Param('userId') userId: number,
+  ): Promise<PlaceForMapResponseDto[]> {
+    return this.placeService.getPlaceByUserId(mapId, userId);
+  }
+
   @ApiOperation({ summary: '카카오 place id로 장소 등록' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
   @ApiParam({ name: 'kakaoPlaceId', description: '카카오 place id' })
