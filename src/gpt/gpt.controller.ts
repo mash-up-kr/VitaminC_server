@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Query, Sse } from '@nestjs/common';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { Observable } from 'rxjs';
 
@@ -32,6 +32,9 @@ export class GptController {
 
   @UseAuthGuard([UserRole.USER])
   @Sse('restaurants/recommend')
+  @ApiQuery({ name: 'question', required: true })
+  @ApiQuery({ name: 'x', required: false })
+  @ApiQuery({ name: 'y', required: false })
   async recommendRestaurants(
     @CurrentUser() user: User,
     @Query('question') question: string,
