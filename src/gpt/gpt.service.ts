@@ -230,7 +230,7 @@ export class GptService {
           const textStream = response.choices[0].message.content.split('');
           const sendChars = async () => {
             for (const char of textStream) {
-              await new Promise((resolve) => setTimeout(resolve, 100));
+              await new Promise((resolve) => setTimeout(resolve, 20));
               // @ts-ignore
               observer.next({
                 type: 'text',
