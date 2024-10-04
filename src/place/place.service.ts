@@ -52,23 +52,29 @@ export class PlaceService {
    * map id (GroupMap.id)에 속한 장소를 전부 가져옵니다.
    * TODO: 나중에 커지면 geo-query + pagination 해야할듯
    */
-  async getAllPlacesForMap(
-    { mapId }: { mapId: string },
-  ): Promise<PlaceForMapResponseDto[]> {
-    const placesForMapList = await this.placeForMapRepository.find(
-      {
-        map: rel(GroupMap, mapId),
-      },
-      {
-        populate: [
-          'place',
-          'place.kakaoPlace',
-          'createdBy',
-          'tags',
-          'likedUser',
-        ],
-      },
-    );
+  async getAllPlacesForMap({
+    mapId,
+  }: {
+    mapId: string;
+  }): Promise<PlaceForMapResponseDto[]> {
+    const placesForMapList: PlaceForMap[] =
+      await this.placeForMapRepository.find(
+        {
+          map: rel(GroupMap, mapId),
+        },
+        {
+          populate: [
+            'place',
+            'place.kakaoPlace',
+            'createdBy',
+            'tags',
+            'likedUser',
+          ],
+          orderBy: {
+            createdAt: 'DESC',
+          },
+        },
+      );
     return placesForMapList.map(
       (placeForMap) => new PlaceForMapResponseDto(placeForMap),
     );
@@ -94,11 +100,17 @@ export class PlaceService {
       },
     );
 
-    return placeForMap.map((place) => new PlaceForMapResponseDto(place));
+    return placeForMap.map(
+      (place: PlaceForMap) => new PlaceForMapResponseDto(place),
+    );
   }
 
-  async getDifference(mapId: string, userId: number, myId: number) {
-    const youLike = await this.placeForMapRepository
+  async getDifference(
+    mapId: string,
+    userId: number,
+    myId: number,
+  ): Promise<string> {
+    const youLike: PlaceForMap[] = await this.placeForMapRepository
       .createQueryBuilder('pfm')
       .select('pfm.place')
       .where({
@@ -107,7 +119,7 @@ export class PlaceService {
       })
       .execute();
 
-    const iLike = await this.placeForMapRepository
+    const iLike: PlaceForMap[] = await this.placeForMapRepository
       .createQueryBuilder('pfm')
       .select('pfm.place')
       .where({
@@ -117,25 +129,25 @@ export class PlaceService {
       .execute();
 
     return (
-      (iLike.filter((v) => youLike.some((k) => k.place === v.place)).length /
+      (iLike.filter((v: PlaceForMap) =>
+        youLike.some((k: PlaceForMap): boolean => k.place === v.place),
+      ).length /
         iLike.length) *
       100
     ).toFixed(1);
   }
 
-  async registerPlaceByKakaoId(
-    {
-      kakaoPlaceId,
-      mapId,
-      user,
-      registerPlaceDto,
-    }: {
-      kakaoPlaceId: number;
-      mapId: string;
-      user: User;
-      registerPlaceDto: RegisterPlaceDto;
-    },
-  ) {
+  async registerPlaceByKakaoId({
+    kakaoPlaceId,
+    mapId,
+    user,
+    registerPlaceDto,
+  }: {
+    kakaoPlaceId: number;
+    mapId: string;
+    user: User;
+    registerPlaceDto: RegisterPlaceDto;
+  }) {
     let place = await this.placeRepository.findOne({
       kakaoPlace: rel(KakaoPlace, kakaoPlaceId),
     });
@@ -245,19 +257,17 @@ export class PlaceService {
     return new PlaceResponseDto(place as unknown as PlaceForMap);
   }
 
-  async likePlace(
-    {
-      mapId,
-      placeId,
-      user,
-      like,
-    }: {
-      mapId: string;
-      placeId: number;
-      user: User;
-      like: boolean;
-    },
-  ) {
+  async likePlace({
+    mapId,
+    placeId,
+    user,
+    like,
+  }: {
+    mapId: string;
+    placeId: number;
+    user: User;
+    like: boolean;
+  }) {
     const placeForMap = await this.placeForMapRepository.findOneOrFail(
       {
         place: rel(Place, placeId),
