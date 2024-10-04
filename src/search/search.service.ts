@@ -63,7 +63,7 @@ export class SearchService {
     x: string = null,
     y: string = null,
     sort: 'distance' | 'accuracy' = 'distance',
-    size: number = 6,
+    size: number = 15,
   ) {
     try {
       const response = await this.httpService.axiosRef.get(
@@ -76,8 +76,6 @@ export class SearchService {
           },
         },
       );
-      console.log({ query, x, y, sort, radius: 2000, size });
-      console.log(response.data.documents);
       return response.data.documents;
     } catch (e) {
       console.log(e);

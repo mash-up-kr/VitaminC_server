@@ -68,6 +68,7 @@ export class GptService {
     currentUserLatitude: string,
   ): Promise<Observable<MessageEvent<any>>> {
     try {
+      console.log('# 사용자 질문 : ' + question);
       const tools: ChatCompletionTool[] = [
         {
           type: 'function',
@@ -138,32 +139,34 @@ export class GptService {
             latitudeToSearch,
           );
           console.log(
-            `### 추출된 카테고리: ${extractedCategory}로 검색된 음식점 리스트`,
+            `### 추출된 카테고리: ${extractedCategory}로 검색된 음식점`,
           );
         } else {
           searchedPlaces = await this.searchService.searchPlaceByCategory(
             longitudeToSearch,
             latitudeToSearch,
           );
-          console.log('### 검색된 가장 가까운 음식점 리스트');
+          console.log('### 검색된 가장 가까운 음식점');
         }
-        const searchedPlacesWithDetail = await this.getRandomPlacesDetail(
+        const searchedPlacesWithDetail = await this.getPlaceDetail(
           searchedPlaces,
-          3,
+          5,
         );
 
         // # GPT 추천
         const parsedStringList = searchedPlacesWithDetail.map(
           (place, index) => {
-            return `${index + 1}. 가게명: ${place.name}, 평점: ${place.score.toFixed(1)}`;
+            return `${index + 1}. 식당명: ${place.name}, 평점: ${place.score.toFixed(1)}`;
           },
         );
 
         const prompt = `
-      제공된 음식점 정보는 사용자의 요구에 맞게 이미 추천된 음식점들이야.
-      사용자의 요구를 바탕으로 추천하는 이유를 간결한 문장으로 격식차리지 않고 친절하게 답변해줘.
+      제공된 식당 정보는 사용자의 요구에 맞게 이미 추천된 음식점들이야.
+      사용자의 요구를 바탕으로 식당을 소개하지 말고 추천하는 이유를 한줄로 설명해줘. 
+      답변의 마지막은 '~~한 이유로 아래의 5가지 식당을 추천했습니다'라고 끝내줘 
+      그리고 간결한 문장으로 존댓말로 친절하게 답변해줘.
        
-      #음식점 정보
+      #식당 정보
       ${parsedStringList.join('\n')}
     `;
         console.log('### prompt');
@@ -181,6 +184,7 @@ export class GptService {
             })
             .then((response) => {
               const reader = response.toReadableStream().getReader();
+              let answer = '';
               const processStream = async () => {
                 while (true) {
                   const { done, value } = await reader.read();
@@ -206,11 +210,12 @@ export class GptService {
                           type: 'text',
                           data: data.choices[0].delta.content,
                         });
+                        answer += data.choices[0].delta.content;
                       }
                     }
                   }
                 }
-                searchedPlacesWithDetail.slice(0, 3).forEach((restaurant) => {
+                searchedPlacesWithDetail.slice(0, 5).forEach((restaurant) => {
                   // @ts-ignore
                   observer.next({
                     type: 'json',
@@ -218,6 +223,7 @@ export class GptService {
                   });
                 });
                 await this.incrementGptUsage(user);
+                console.log(answer);
                 observer.complete();
               };
 
@@ -230,7 +236,7 @@ export class GptService {
           const textStream = response.choices[0].message.content.split('');
           const sendChars = async () => {
             for (const char of textStream) {
-              await new Promise((resolve) => setTimeout(resolve, 20));
+              await new Promise((resolve) => setTimeout(resolve, 10));
               // @ts-ignore
               observer.next({
                 type: 'text',
@@ -252,25 +258,10 @@ export class GptService {
     }
   }
 
-  // 장소와 키워드에 따라 동일한 음식점 계속 나와서 6개중에 3개 랜덤으로..
-  async getRandomPlacesDetail(
-    places: Place[],
-    count: number,
-  ): Promise<KakaoPlace[]> {
-    const selectedPlaces = [];
-    const selectedIndices = new Set<number>();
-
-    while (selectedPlaces.length < count) {
-      const randomIndex = Math.floor(Math.random() * places.length);
-      if (!selectedIndices.has(randomIndex)) {
-        selectedPlaces.push(places[randomIndex]);
-        selectedIndices.add(randomIndex);
-      }
-    }
-
+  async getPlaceDetail(places: Place[], count: number): Promise<KakaoPlace[]> {
     const placeDetails = await Promise.allSettled(
-      selectedPlaces.map((place) =>
-        this.searchService.searchPlaceDetail(place.id, false),
+      places.map((place) =>
+        this.searchService.searchPlaceDetail(String(place.id), false),
       ),
     );
 
@@ -278,7 +269,9 @@ export class GptService {
       .filter((result) => result.status === 'fulfilled')
       .map((fulfilledResult) => {
         return (fulfilledResult as PromiseFulfilledResult<KakaoPlace>).value;
-      });
+      })
+      .sort((a, b) => b.score - a.score)
+      .slice(0, count);
   }
 
   async incrementGptUsage(user: User): Promise<void> {

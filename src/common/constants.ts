@@ -6,7 +6,7 @@ export const INVITE_LINK_EXPIRATION_DAYS = 7;
 export const INVITE_LINK_PREVIEW_LENGTH = 6;
 export const DEFAULT_CATEGORY_ICON_CODE = 100;
 
-export const GPT_USAGE_MAX_LIMIT = 3;
+export const GPT_USAGE_MAX_LIMIT = 6;
 
 export const RESTAURANT_CATEGORY_LIST = [
   '일식',
@@ -25,4 +25,17 @@ export const RESTAURANT_CATEGORY_LIST = [
   '회',
   '패스트푸드',
   '베이커리',
+  '돈까스',
+  '떡볶이',
+  '족발',
+  '찜닭',
+  '곱창',
+  '닭갈비',
+  '마라탕',
+  '스테이크',
+  '파스타',
+  '스파게티',
+  '햄버거',
+  '샌드위치',
+  '샐러드',
 ];
