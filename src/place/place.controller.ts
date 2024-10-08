@@ -6,12 +6,14 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
   getSchemaPath,
@@ -38,13 +40,32 @@ export class PlaceController {
 
   @ApiOperation({ summary: '맛집지도 (GroupMap)에 등록된 장소 전부 가져오기' })
   @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
+  @ApiQuery({
+    name: 'offset',
+    required: false,
+    description: '앞에서부터 몇 번째를 건너뛸지',
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: '한 번에 가져올 데이터의 개수',
+    type: Number,
+  })
+  @ApiResponse({ type: PlaceForMapResponseDto, isArray: true })
   @ApiResponse({ type: PlaceForMapResponseDto, isArray: true })
   @UseMapRoleGuard([UserMapRole.ADMIN, UserMapRole.WRITE, UserMapRole.READ])
   @UseAuthGuard()
   @Get(':mapId')
-  async getAllPlaceForMap(@Param('mapId') mapId: string) {
+  async getAllPlaceForMap(
+    @Param('mapId') mapId: string,
+    @Query('offset') offset: number,
+    @Query('limit') limit: number,
+  ) {
     return await this.placeService.getAllPlacesForMap({
       mapId,
+      offset,
+      limit,
     });
   }
 

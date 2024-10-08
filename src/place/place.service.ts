@@ -54,8 +54,12 @@ export class PlaceService {
    */
   async getAllPlacesForMap({
     mapId,
+    offset,
+    limit,
   }: {
     mapId: string;
+    offset: number;
+    limit: number;
   }): Promise<PlaceForMapResponseDto[]> {
     const placesForMapList: PlaceForMap[] =
       await this.placeForMapRepository.find(
@@ -73,10 +77,12 @@ export class PlaceService {
           orderBy: {
             createdAt: 'DESC',
           },
+          offset: offset,
+          limit: limit,
         },
       );
     return placesForMapList.map(
-      (placeForMap) => new PlaceForMapResponseDto(placeForMap),
+      (placeForMap: PlaceForMap) => new PlaceForMapResponseDto(placeForMap),
     );
   }
 
@@ -84,7 +90,7 @@ export class PlaceService {
     mapId: string,
     userId: number,
   ): Promise<PlaceForMapResponseDto[]> {
-    const placeForMap = await this.placeForMapRepository.find(
+    const placeForMap: PlaceForMap[] = await this.placeForMapRepository.find(
       {
         likedUser: rel(User, userId),
         map: rel(GroupMap, mapId),
@@ -148,7 +154,7 @@ export class PlaceService {
     user: User;
     registerPlaceDto: RegisterPlaceDto;
   }) {
-    let place = await this.placeRepository.findOne({
+    let place: Place = await this.placeRepository.findOne({
       kakaoPlace: rel(KakaoPlace, kakaoPlaceId),
     });
     if (place === null) {
@@ -172,17 +178,17 @@ export class PlaceService {
       throw new PlaceForMapConflictException();
     }
 
-    const tags = await this.tagRepository.find({
+    const tags: Tag[] = await this.tagRepository.find({
       name: { $in: registerPlaceDto.tagNames },
       map: rel(GroupMap, mapId),
     });
 
     const restTagNames = registerPlaceDto.tagNames.filter(
-      (v) => !tags.find((k) => k.name === v),
+      (v: string) => !tags.find((k: Tag): boolean => k.name === v),
     );
 
     if (restTagNames.length) {
-      const defaultTags = await this.tagIconRepository.find({
+      const defaultTags: TagIcon[] = await this.tagIconRepository.find({
         name: {
           $in: restTagNames,
         },
