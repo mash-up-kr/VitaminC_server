@@ -1,5 +1,13 @@
 # Korrk (꼬르륵)
 
+![korrk](./docs/korrk.png)
+
+## Members
+
+| <img src="https://avatars.githubusercontent.com/u/71132893" width="80"> | <img src="https://avatars.githubusercontent.com/u/46392068" width="80"> | <img src="https://avatars.githubusercontent.com/u/16033316" width="80"> | <img src="https://avatars.githubusercontent.com/u/43634786" width="80"> |
+| :---------------------------------------------------------------------: | :---------------------------------------------------------------------: | :---------------------------------------------------------------------: | :---------------------------------------------------------------------: |
+|                    [주병호](https://github.com/Ho-s)                    |                [이찬웅](https://github.com/chanwoonglee)                |                  [정세훈](https://github.com/dearyeon)                  |                 [김바다](https://github.com/sally0226)                  |
+
 ## Tech Stack
 
 <img src="https://img.shields.io/badge/Typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white"> <img src="https://img.shields.io/badge/nestjs-E0234E?style=for-the-badge&logo=nestjs&logoColor=white"> <img src="https://img.shields.io/badge/postgresql-4169E1?style=for-the-badge&logo=postgresql&logoColor=white">
@@ -8,7 +16,7 @@
 
 ## ERD
 
-![korrk-erd](./docs/korrk-erd.png)
+![korrk-erd](./docs/korrk-erd.svg)
 
 ## Before getting started
 
