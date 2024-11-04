@@ -5,8 +5,8 @@ services:
     build: .
     ports:
       - '${PORT}:${PORT}'
-    depends_on:
-      # - korrk_postgres
+    # depends_on:
+    # - korrk_postgres
 
   # korrk_postgres:
   #   image: postgres
