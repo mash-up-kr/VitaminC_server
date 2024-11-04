@@ -22,7 +22,11 @@ const MikroOrmConfig: Options = {
   highlighter: new SqlHighlighter(),
   driver: PostgreSqlDriver,
   extensions: [Migrator],
-  host: configService.get('DB_HOST'),
+  host:
+    configService.get('NODE_ENV') === 'production' &&
+    configService.get('DB_HOST') === 'localhost'
+      ? 'korrk_postgres'
+      : configService.get('DB_HOST'),
   user: configService.get('DB_USER'),
   password: configService.get('DB_PASSWORD'),
   port: configService.get('DB_PORT') ?? 5432,
