@@ -1,4 +1,14 @@
 services:
+  app:
+    container_name: korrk_backend
+    restart: always
+    build: .
+    ports:
+      - '${PORT}:${PORT}'
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   postgres:
     image: postgres
     container_name: postgres

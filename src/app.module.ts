@@ -25,7 +25,7 @@ import { UtilModule } from './util/util.module';
       envFilePath: `${__dirname}/../.${getNodeEnv}.env`,
       cache: true,
       validate: envValidation,
-      ignoreEnvFile: isIgnoreEnvFile,
+      // ignoreEnvFile: isIgnoreEnvFile,
     }),
     MikroOrmModule.forRoot(),
     AuthModule,
