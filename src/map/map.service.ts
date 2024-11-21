@@ -16,6 +16,7 @@ import {
   UserMapRepository,
   UserMapRole,
   UserMapRoleValueType,
+  UserRepository,
 } from 'src/entities';
 import { Tag } from 'src/entities/tag.entity';
 import { TagRepository } from 'src/entities/tag.repository';
@@ -61,7 +62,32 @@ export class MapService {
     @InjectRepository(TagIcon)
     private readonly tagIconRepository: TagIconRepository,
     private readonly utilService: UtilService,
+    @InjectRepository(User)
+    private readonly userRepository: UserRepository,
   ) {}
+
+  async testLike() {
+    const ids = [2, 5, 35, 33, 202, 101, 1];
+
+    const userList = await this.userRepository.find({ id: { $in: ids } });
+
+    const allPlaceForMap = await this.placeForMapRepository.findAll({
+      where: { map: { id: '9e45b065-9d68-4113-9a5e-1cd278b8883a' } },
+      populate: ['likedUser', 'place', 'likedUser.likedPlace.place'],
+    });
+    console.log(allPlaceForMap);
+
+    for (const placeForMap of allPlaceForMap) {
+      const filtered = userList.filter(
+        (user) => !placeForMap.likedUser.contains(user),
+      );
+      placeForMap.likedUser.add(filtered);
+    }
+
+    await this.placeForMapRepository.flush();
+
+    return true;
+  }
 
   async create(
     createMapDto: CreateMapDto,
