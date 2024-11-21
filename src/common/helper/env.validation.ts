@@ -79,16 +79,16 @@ export class EnvironmentVariables {
   GPT_KEY: string;
 
   @IsString()
-  NCP_ACCESS_KEY_ID: string;
+  AWS_S3_ACCESS_KEY: string;
 
   @IsString()
-  NCP_SECRET_ACCESS_KEY: string;
+  AWS_S3_SECRET_KEY: string;
 
   @IsString()
-  NCP_BUCKET_NAME: string;
+  AWS_S3_REGION: string;
 
   @IsString()
-  NCP_ENDPOINT: string;
+  AWS_S3_BUCKET_NAME: string;
 }
 
 export function envValidation(config: Record<string, unknown>) {
