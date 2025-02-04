@@ -40,7 +40,7 @@ export class User {
   @Property({ type: 'string', default: null })
   nickname: string | null = null;
 
-  @Property({ type: 'string', default: null })
+  @Property({ type: 'string', default: null, length: 1024 })
   profileImage: string | null = null;
 
   @Property()
