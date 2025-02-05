@@ -310,6 +310,15 @@
           "nullable": false,
           "mappedType": "integer"
         },
+        "location": {
+          "name": "location",
+          "type": "geometry",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "unknown"
+        },
         "x": {
           "name": "x",
           "type": "double precision",

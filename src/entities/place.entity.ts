@@ -1,4 +1,6 @@
 import {
+  BeforeCreate,
+  BeforeUpdate,
   Entity,
   EntityRepositoryType,
   OneToOne,
@@ -7,6 +9,7 @@ import {
 } from '@mikro-orm/core';
 
 import { KakaoPlace } from './kakao-place.entity';
+import { Point, PointType } from './place.point';
 import { PlaceRepository } from './place.repository';
 
 @Entity({
@@ -22,6 +25,9 @@ export class Place {
 
   @OneToOne({ entity: () => KakaoPlace })
   kakaoPlace: KakaoPlace;
+
+  @Property({ type: PointType, nullable: true })
+  location: Point | null;
 
   @Property({
     type: 'double precision',
@@ -44,4 +50,10 @@ export class Place {
   updatedAt: Date = new Date();
 
   [EntityRepositoryType]: PlaceRepository;
+
+  @BeforeCreate()
+  @BeforeUpdate()
+  setLocationBeforeSave() {
+    this.location = new Point(this.x, this.y);
+  }
 }
