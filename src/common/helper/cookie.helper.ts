@@ -7,7 +7,7 @@ export const getCookieOption = (): CookieOptions => {
   if (getNodeEnv === NODE_ENVIRONMENT.development) {
     return {
       path: '/',
-      maxAge: 360000,
+      maxAge: 1_000_000_000,
     };
   }
   return {
