@@ -20,7 +20,6 @@ export class Place {
   })
   id: number;
 
-  // OneToOne
   @OneToOne({ entity: () => KakaoPlace })
   kakaoPlace: KakaoPlace;
 
