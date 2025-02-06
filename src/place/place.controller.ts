@@ -53,7 +53,6 @@ export class PlaceController {
     type: Number,
   })
   @ApiResponse({ type: PlaceForMapResponseDto, isArray: true })
-  @ApiResponse({ type: PlaceForMapResponseDto, isArray: true })
   @UseMapRoleGuard([UserMapRole.ADMIN, UserMapRole.WRITE, UserMapRole.READ])
   @UseAuthGuard()
   @Get(':mapId')
