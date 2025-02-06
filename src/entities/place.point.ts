@@ -35,6 +35,6 @@ export class PointType extends Type<Point | undefined, string | undefined> {
   }
 
   getColumnType(): string {
-    return 'geometry';
+    return 'geometry(Point, 4326)';
   }
 }
