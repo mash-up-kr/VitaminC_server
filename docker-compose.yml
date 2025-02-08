@@ -9,7 +9,7 @@ services:
       - korrk_postgres
 
   korrk_postgres:
-    image: postgis/postgis
+    image: postgis/postgis:16-3.5
     container_name: korrk_postgres
     healthcheck:
       test: ['CMD', 'pg_isready', '-U', 'postgres']
