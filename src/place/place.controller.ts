@@ -87,8 +87,8 @@ export class PlaceController {
   ) {
     return await this.placeService.getAllPlaceByRadiusGeoQuery({
       mapId,
-      centerX: lat,
-      centerY: lng,
+      centerX: lng,
+      centerY: lat,
       radius,
     });
   }
