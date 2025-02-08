@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
-import { MikroORM, raw, rel } from '@mikro-orm/core';
+import { MikroORM, rel } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
-import { QueryBuilder } from '@mikro-orm/postgresql';
 
 import { Point } from 'src/entities/place.point';
 import {
@@ -103,10 +102,6 @@ export class PlaceService {
     const placesForMapList = await this.placeForMapRepository
       .createQueryBuilder('pfm')
       .leftJoinAndSelect('pfm.place', 'place')
-      .leftJoinAndSelect('place.kakaoPlace', 'kakaoPlace')
-      .leftJoinAndSelect('pfm.createdBy', 'createdBy')
-      .leftJoinAndSelect('pfm.tags', 'tags')
-      .leftJoinAndSelect('pfm.likedUser', 'likedUser')
       .where({ map: rel(GroupMap, mapId) })
       .andWhere(
         `ST_DWithin(place.location::geography, ST_SetSRID(ST_MakePoint(?, ?), 4326)::geography, ?)`,
@@ -114,6 +109,13 @@ export class PlaceService {
       )
       .orderBy({ 'pfm.createdAt': 'DESC' })
       .getResultList();
+
+    await this.orm.em.populate(placesForMapList, [
+      'place.kakaoPlace',
+      'createdBy',
+      'tags',
+      'likedUser',
+    ]);
 
     return placesForMapList.map(
       (placeForMap: PlaceForMap) => new PlaceForMapResponseDto(placeForMap),
