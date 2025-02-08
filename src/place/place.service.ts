@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 
-import { rel } from '@mikro-orm/core';
+import { MikroORM, raw, rel } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
+import { QueryBuilder } from '@mikro-orm/postgresql';
 
+import { Point } from 'src/entities/place.point';
 import {
   PlaceForMapConflictException,
   PlaceNotFoundException,
@@ -46,6 +48,7 @@ export class PlaceService {
     private readonly tagIconRepository: TagIconRepository,
     @InjectRepository(UserMap)
     private readonly userMapRepository: UserMapRepository,
+    private readonly orm: MikroORM,
   ) {}
 
   /**
@@ -84,6 +87,51 @@ export class PlaceService {
     return placesForMapList.map(
       (placeForMap: PlaceForMap) => new PlaceForMapResponseDto(placeForMap),
     );
+  }
+
+  async getAllPlaceByRadiusGeoQuery({
+    mapId,
+    centerX,
+    centerY,
+    radius,
+  }: {
+    mapId: string;
+    centerX: number;
+    centerY: number;
+    radius: number;
+  }): Promise<PlaceForMapResponseDto[]> {
+    const placesForMapList = await this.placeForMapRepository
+      .createQueryBuilder('pfm')
+      .leftJoinAndSelect('pfm.place', 'place')
+      .leftJoinAndSelect('place.kakaoPlace', 'kakaoPlace')
+      .leftJoinAndSelect('pfm.createdBy', 'createdBy')
+      .leftJoinAndSelect('pfm.tags', 'tags')
+      .leftJoinAndSelect('pfm.likedUser', 'likedUser')
+      .where({ map: rel(GroupMap, mapId) })
+      .andWhere(
+        `ST_DWithin(place.location::geography, ST_SetSRID(ST_MakePoint(?, ?), 4326)::geography, ?)`,
+        [centerX, centerY, radius],
+      )
+      .orderBy({ 'pfm.createdAt': 'DESC' })
+      .getResultList();
+
+    return placesForMapList.map(
+      (placeForMap: PlaceForMap) => new PlaceForMapResponseDto(placeForMap),
+    );
+  }
+
+  async syncLocationWithXY() {
+    const em = this.orm.em.fork();
+    const places = await em
+      .getRepository(Place)
+      .findAll({ where: { location: null } });
+
+    for (const place of places) {
+      const newLocation = new Point(place.x, place.y);
+      place.location = newLocation;
+    }
+
+    await em.flush();
   }
 
   async findUserLikePlace(

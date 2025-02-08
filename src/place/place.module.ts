@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 
@@ -34,4 +34,10 @@ import { PlaceService } from './place.service';
   controllers: [PlaceController],
   providers: [PlaceService],
 })
-export class PlaceModule {}
+export class PlaceModule implements OnModuleInit {
+  constructor(private readonly placeService: PlaceService) {}
+
+  async onModuleInit() {
+    await this.placeService.syncLocationWithXY();
+  }
+}
