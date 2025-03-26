@@ -6,7 +6,7 @@
 
 | <img src="https://avatars.githubusercontent.com/u/71132893" width="80"> | <img src="https://avatars.githubusercontent.com/u/46392068" width="80"> | <img src="https://avatars.githubusercontent.com/u/16033316" width="80"> | <img src="https://avatars.githubusercontent.com/u/43634786" width="80"> |
 | :---------------------------------------------------------------------: | :---------------------------------------------------------------------: | :---------------------------------------------------------------------: | :---------------------------------------------------------------------: |
-|                    [주병호](https://github.com/Ho-s)                    |                [이찬웅](https://github.com/chanwoonglee)                |                  [정세훈](https://github.com/dearyeon)                  |                 [김바다](https://github.com/sally0226)                  |
+|                    [주병호](https://github.com/Ho-s)                    |                [이찬웅](https://github.com/chanwoonglee)                |                  [정세훈](https://github.com/saehun)                  |                 [김바다](https://github.com/sally0226)                  |
 
 ## Tech Stack
 
