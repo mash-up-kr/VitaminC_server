@@ -6,7 +6,7 @@ export const INVITE_LINK_EXPIRATION_DAYS = 7;
 export const INVITE_LINK_PREVIEW_LENGTH = 6;
 export const DEFAULT_CATEGORY_ICON_CODE = 100;
 
-export const GPT_USAGE_MAX_LIMIT = 10;
+export const GPT_USAGE_MAX_LIMIT = 1;
 
 export const RESTAURANT_CATEGORY_LIST = [
   '일식',
