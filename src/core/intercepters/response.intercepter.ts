@@ -16,6 +16,11 @@ export interface Response<T> {
 @Injectable()
 export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
   intercept(_: ExecutionContext, next: CallHandler): Observable<Response<T>> {
+    const request = _.switchToHttp().getRequest();
+    if (request.path.startsWith('/proxy')) {
+      return next.handle();
+    }
+
     return next.handle().pipe(
       map((data: T) => {
         return { message: 'success', data };

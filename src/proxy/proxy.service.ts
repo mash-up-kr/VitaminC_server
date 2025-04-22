@@ -1,7 +1,9 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Injectable, StreamableFile } from '@nestjs/common';
 
+import { Response } from 'express';
 import { map } from 'rxjs/operators';
+import { isReadable } from 'stream';
 
 @Injectable()
 export class ProxyService {
@@ -18,5 +20,25 @@ export class ProxyService {
         })),
       )
       .toPromise();
+  }
+
+  async proxyImage(host: string, path: string, res: Response) {
+    const { data, headers, status } = await this.httpService.axiosRef.request({
+      url: `https://${host}/${path}`,
+      method: 'GET',
+      responseType: 'stream',
+      validateStatus: () => true,
+      decompress: false,
+    });
+
+    for (const key in headers) {
+      res.setHeader(key, headers[key]);
+    }
+    res.status(status);
+    if (isReadable(data)) {
+      return new StreamableFile(data);
+    } else {
+      throw new Error('Stream is not readable');
+    }
   }
 }
