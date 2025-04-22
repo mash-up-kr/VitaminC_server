@@ -15,7 +15,7 @@ import { PlaceForMap } from './place-for-map.entity';
 import { UserMap } from './user-map.entity';
 import { UserRepository } from './user.repository';
 
-const uniqueIndexKeyName = ['provider', 'providerId'];
+const uniqueIndexKeyName = ['provider', 'providerId'] as const;
 
 export const UserProvider = {
   KAKAO: 'KAKAO',
@@ -30,8 +30,12 @@ export type UserProviderValueType =
   (typeof UserProvider)[keyof typeof UserProvider];
 export type UserRoleValueType = (typeof UserRole)[keyof typeof UserRole];
 
-@Unique({ properties: uniqueIndexKeyName })
-@Index({ properties: uniqueIndexKeyName })
+@Unique<typeof User, (typeof uniqueIndexKeyName)[number]>({
+  properties: [...uniqueIndexKeyName],
+})
+@Index<typeof User, (typeof uniqueIndexKeyName)[number]>({
+  properties: [...uniqueIndexKeyName],
+})
 @Entity({ repository: () => UserRepository })
 export class User {
   @PrimaryKey({ autoincrement: true })
