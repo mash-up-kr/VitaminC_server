@@ -53,7 +53,6 @@ export class PlaceController {
     type: Number,
   })
   @ApiResponse({ type: PlaceForMapResponseDto, isArray: true })
-  @ApiResponse({ type: PlaceForMapResponseDto, isArray: true })
   @UseMapRoleGuard([UserMapRole.ADMIN, UserMapRole.WRITE, UserMapRole.READ])
   @UseAuthGuard()
   @Get(':mapId')
@@ -66,6 +65,31 @@ export class PlaceController {
       mapId,
       offset,
       limit,
+    });
+  }
+
+  @ApiOperation({
+    summary: '맛집지도 (GroupMap)에 등록된 장소 lat, lng, radius로 가져오기',
+  })
+  @ApiParam({ name: 'mapId', description: '지도(GroupMap) id' })
+  @ApiQuery({ name: 'lat', description: '가운데 위도', type: Number })
+  @ApiQuery({ name: 'lng', description: '가운데 경도', type: Number })
+  @ApiQuery({ name: 'radius', description: '반경 (m)', type: Number })
+  @ApiResponse({ type: PlaceForMapResponseDto, isArray: true })
+  @UseMapRoleGuard([UserMapRole.ADMIN, UserMapRole.WRITE, UserMapRole.READ])
+  @UseAuthGuard()
+  @Get(':mapId/nearby')
+  async getNearbyPlaceForMap(
+    @Param('mapId') mapId: string,
+    @Query('lat') lat: number,
+    @Query('lng') lng: number,
+    @Query('radius') radius: number,
+  ) {
+    return await this.placeService.getAllPlaceByRadiusGeoQuery({
+      mapId,
+      centerX: lng,
+      centerY: lat,
+      radius,
     });
   }
 

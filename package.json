@@ -14,6 +14,7 @@
     "build": "nest build # && pnpm sentry:sourcemaps",
     "migrate:create:dev": "dotenv -e .development.env -- npx mikro-orm migration:create",
     "migrate:up:dev": "dotenv -e .development.env -- npx mikro-orm migration:up",
+    "migrate:down:dev": "dotenv -e .development.env -- npx mikro-orm migration:down",
     "show:database:schema": "dotenv -e .development.env -- npx mikro-orm schema:create --dump",
     "show:database:schema:update": "dotenv -e .development.env -- npx mikro-orm schema:update --no-drop-tables --dump",
     "database:schema:update": "dotenv -e .development.env -- npx mikro-orm schema:update --no-drop-tables -r",

@@ -69,4 +69,30 @@ $ pnpm start:dev
 
 ### [sentry url](https://vitaminc.sentry.io/projects/node-nestjs/?project=4507516570697728)
 
+## GeoQuery with PostgreSQL
+
+To use Geo Queries in PostgreSQL, you need to install the PostGIS extension.
+
+### Using Docker
+
+You can use the official PostGIS-enabled PostgreSQL image, which includes everything pre-installed: [`PostGIS`](https://registry.hub.docker.com/r/postgis/postgis/)
+
+### Installing Locally (Linux/macOS)
+
+#### Ubuntu/Debian (APT Package Manager)
+
+```sh
+sudo apt-get install postgis postgresql-16-postgis
+```
+
+#### macOS (Homebrew)
+
+```sh
+brew install postgis
+```
+
 ## Todo
+
+PostGIS 설치 필요
+
+Before running postgresql postGIS extension installed needed
